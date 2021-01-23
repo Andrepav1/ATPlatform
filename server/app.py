@@ -10,9 +10,14 @@ def home():
     return 'GET Home'
 
 
-# A route to return all of the available entries in our catalog.
 @app.route('/api/', methods=['GET'])
 def api_all():
     return 'GET API Index'
+
+
+@app.route('/test', methods=['GET'])
+def test():
+  return 'test'
+
 
 app.run()
