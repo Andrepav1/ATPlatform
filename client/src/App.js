@@ -1,24 +1,34 @@
-import logo from './logo.svg';
+import React from 'react'
 import './App.css';
+
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
+import Sidebar from './components/Sidebar'
+
+import LandingPage from './pages/LandingPage'
+import DashboardPage from './pages/DashboardPage'
+import BacktestingPage from './pages/BacktestingPage'
+import TradeHistoryPage from './pages/TradeHistoryPage'
+import StrategiesPage from './pages/StrategiesPage'
+import SettingsPage from './pages/SettingsPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Sidebar />
+        <Switch>
+          <Route path="/" exact component={DashboardPage} />
+          <Route path="/landing" exact component={LandingPage} />
+          <Route path="/strategies" component={StrategiesPage} />
+          <Route path="/backtesting" component={BacktestingPage} />
+          <Route path="/history" component={TradeHistoryPage} />
+          <Route path="/settings" component={SettingsPage} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
