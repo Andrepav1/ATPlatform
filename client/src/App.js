@@ -1,9 +1,10 @@
-import React from 'react'
 import './App.css';
-
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import React from 'react'
+import { connect } from 'react-redux'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 import Sidebar from './components/Sidebar'
+import Header from './components/Header'
 
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
@@ -13,23 +14,43 @@ import StrategiesPage from './pages/StrategiesPage'
 import SettingsPage from './pages/SettingsPage'
 import NotFoundPage from './pages/NotFoundPage'
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Sidebar />
-        <Switch>
-          <Route path="/" exact component={DashboardPage} />
-          <Route path="/landing" exact component={LandingPage} />
-          <Route path="/strategies" component={StrategiesPage} />
-          <Route path="/backtesting" component={BacktestingPage} />
-          <Route path="/history" component={TradeHistoryPage} />
-          <Route path="/settings" component={SettingsPage} />
-          <Route component={NotFoundPage} />
-        </Switch>
-      </div>
-    </Router>
-  );
+function App({ authenticated }) {
+
+  if(authenticated) {
+    return (
+      <Router>
+        <div className="App">
+          <Header />
+          <Sidebar />
+          <Switch>
+            <Redirect exact from='/landing' to='/'/>
+            <Route path="/" exact component={DashboardPage} />
+            <Route path="/strategies" component={StrategiesPage} />
+            <Route path="/backtesting" component={BacktestingPage} />
+            <Route path="/history" component={TradeHistoryPage} />
+            <Route path="/settings" component={SettingsPage} />
+            <Route component={NotFoundPage} />
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
+  else {
+    return (
+      <Router>
+        <div className="Landing">
+          <Route path="/landing" exact render={() => <LandingPage />} />
+          <Redirect to="/landing" />
+        </div>
+      </Router>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    authenticated: state.authenticated
+  }
+}
+
+export default connect(mapStateToProps)(App)
