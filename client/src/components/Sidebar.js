@@ -15,10 +15,7 @@ function Sidebar() {
   return (
     <ProSidebar 
       collapsed={false} 
-      breakPoint="md"
-      onToggle={(toggle) => {
-        console.log("toggle", toggle);
-      }}
+      breakPoint="lg"
       >
       <SidebarHeader>
         
