@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,7 +15,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { BASE_URL } from '../constants/apiConstants';
+import { BASE_URL } from '../util/apiConstants';
+import { fetchRequest } from '../util/fetch';
 
 import '../App.css';
 
@@ -48,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ACCOUNTS_URL = BASE_URL + "/auth/accounts"; 
+const ACCOUNTS_URL = BASE_URL + "/accounts"; 
 const LOGIN_URL = BASE_URL + "/auth/login"; 
 
 function LandingPage({ login }) {
@@ -57,74 +60,67 @@ function LandingPage({ login }) {
 
   const [api_key, setApi_key] = useState('')
   const [account_id, setAccount_id] = useState('')
+  const [account_id_alias, setAccount_id_alias] = useState('')
   const [accounts, setAccounts] = useState([])
   const [textFieldDisabled, setTextFieldDisabled] = useState(false)
+  const [demoAccountChecked, setDemoAccountChecked] = useState(true)
   
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleSelect = (event) => {
-    setAccount_id(event.target.innerText);
+  const handleSelect = (account) => {
+    setAccount_id(account.id);
+    setAccount_id_alias(account.alias);
     setAnchorEl(null);
   };
 
   const authenticate = () => {
-
-    // Request to server 
-    fetch(LOGIN_URL, {
+    fetchRequest({
+      url: LOGIN_URL,
       method: 'POST',
-      mode: 'cors',
+      body: { apiKey: api_key, accountId: account_id, live: !demoAccountChecked },
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       },
-      body: JSON.stringify({ apiKey: api_key })
     })
-    .then(response => response.json())
-    .then(({ error }) => {
-      if(error) {
-        return alert("Could not use API KEY");
-      }
-      login(api_key, account_id);
+    .then(() => {
+      login(api_key, account_id, !demoAccountChecked);
     })
-    .catch((err) => {
-      alert("Could not use API KEY", err);
+    .catch((error) => {
+      alert(error.errorMessage?error.errorMessage:"Could not use API KEY");
     })
   }
 
   const requestAccounts = () => {
 
-    var url = new URL(ACCOUNTS_URL);
-    url.search = new URLSearchParams({ apiKey: api_key }); 
+    var acc_url = new URL(ACCOUNTS_URL);
+    acc_url.search = new URLSearchParams({ apiKey: api_key, live: !demoAccountChecked }); 
     
-    fetch(url.toString(), {
-      mode: 'cors',
-    })
-    .then(response => response.json())
-    .then(({ accounts, error }) => {
-
-      if(error || accounts.lenght === 0) {
+    fetchRequest({ url: acc_url.toString() })
+    .then(({ accounts }) => {
+      if(accounts.lenght === 0) {
         setAccounts([]);
-        alert("Could not use API KEY", error);
+        alert("Could not use API KEY");
       }
       else if(accounts.length === 1) {
         setAccount_id(accounts[0].id)
+        setAccount_id_alias(accounts[0].alias)
         authenticate();
       }
       else {
         setAccounts(accounts);
         setAccount_id(accounts[0].id);
+        setAccount_id_alias(accounts[0].alias)
         setTextFieldDisabled(true);
-        // console.log(accounts);
+        console.log(accounts);
       }
-
     })
-    .catch((err) => {
+    .catch((error) => {
       setAccounts([]);
-      alert("Could not use API KEY", err);
+      alert(error.errorMessage?error.errorMessage:"Could not use API KEY");
     })
-
   }
 
   return (
@@ -151,6 +147,16 @@ function LandingPage({ login }) {
               value={api_key}
               onChange={(event) => setApi_key(event.target.value)}
             />
+            <FormControlLabel
+              control={
+                <Checkbox 
+                  disabled={textFieldDisabled}
+                  checked={demoAccountChecked} 
+                  onChange={({ target: {checked} }) => setDemoAccountChecked(checked)} 
+                  color="primary" 
+                />}
+              label="Use Demo Account"
+            />
             <Button
               disabled={textFieldDisabled}
               fullWidth
@@ -165,7 +171,7 @@ function LandingPage({ login }) {
               accounts.length !== 0 &&
               <div>
                 <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                  {"Selected Account: " + account_id}
+                  {"Selected Account: " + account_id + " (" + account_id_alias + ")"}
                 </Button>
                 <Menu
                   variant="selectedMenu"
@@ -174,7 +180,12 @@ function LandingPage({ login }) {
                   open={Boolean(anchorEl)}
                 >
                   {
-                    accounts.map(({id})=>(<MenuItem onClick={handleSelect}>{id}</MenuItem>))
+                    accounts.map((account) => 
+                      (
+                        <MenuItem onClick={() => handleSelect(account)}>
+                          {account.id + " (" + account.alias + ")"}
+                        </MenuItem>
+                      ))
                   }
                 </Menu>
                 <Button
@@ -197,9 +208,9 @@ function LandingPage({ login }) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (api_key, account_id) => dispatch({
+    login: (api_key, account_id, live) => dispatch({
       type: 'LOGIN',
-      payload: { api_key, account_id },
+      payload: { api_key, account_id, live },
     })
   }
 }

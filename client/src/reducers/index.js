@@ -3,7 +3,8 @@
 const INITIAL_STATE = {
   authenticated: false,
   api_key: null,
-  account_id: null
+  account_id: null,
+  live: false
 }
 
 const Auth = (state = INITIAL_STATE, action) => {
@@ -12,7 +13,9 @@ const Auth = (state = INITIAL_STATE, action) => {
     case "LOGIN":
       state.authenticated = true;
       state.api_key = action.payload.api_key;
-      state.api_key = action.payload.account_id;
+      state.account_id = action.payload.account_id;
+      state.live = action.payload.live;
+      console.log("LOGIN", state);
       break;
       case "LOGOUT":
         state = INITIAL_STATE
