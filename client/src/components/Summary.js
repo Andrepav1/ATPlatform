@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,23 +8,29 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Title from './Title';
 
-const useStyles = makeStyles((theme) => ({
-  
-}));
+// const useStyles = makeStyles((theme) => ({
+
+// }));
 
 export default function Summary({ data }) {
 
-  const styles = useStyles();
+  // const styles = useStyles();
 
-  // const getSummaryData = () => {
-  //   for (const [key, value] of Object.entries(data)) {
-  //     console.log(`${key}: ${value}`);
-  //   } 
-  // }
+  const getDataValue = (value, isPercentage = false) => {
+    if(data && data[value]) {
+      if(isPercentage) {
+        return (parseFloat(data[value])*100).toFixed(1) + "%";
+      }
+      return parseFloat(data[value]).toFixed(2)
+    }
+    else {
+      return " - "
+    }
+  }
 
   return (
     <React.Fragment>
-      <Title>{"Summary for " + data.alias}</Title>
+      <Title>{"Summary for " + (data&&data.alias?data.alias:"\t")}</Title>
       <Table size="small">
         <TableBody>
 
@@ -33,7 +39,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Balance"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{parseFloat(data.balance).toFixed(2)}</Typography>
+              <Typography noWrap>{ getDataValue("balance") }</Typography>
             </TableCell>
           </TableRow>
 
@@ -42,7 +48,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Equity"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{parseFloat(data.NAV).toFixed(2)}</Typography>
+              <Typography noWrap>{ getDataValue("NAV") }</Typography>
             </TableCell>
           </TableRow>
 
@@ -51,7 +57,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Margin used"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{parseFloat(data.marginUsed).toFixed(2)}</Typography>
+              <Typography noWrap>{ getDataValue("marginUsed")}</Typography>
             </TableCell>
           </TableRow>
 
@@ -60,7 +66,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Free margin"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{parseFloat(data.marginAvailable).toFixed(2)}</Typography>
+              <Typography noWrap>{getDataValue("marginAvailable")}</Typography>
             </TableCell>
           </TableRow>
           
@@ -69,7 +75,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Unrealized P/L"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{parseFloat(data.unrealizedPL).toFixed(2)}</Typography>
+              <Typography noWrap>{getDataValue("unrealizedPL")}</Typography>
             </TableCell>
           </TableRow>
 
@@ -78,7 +84,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Margin used (%)"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{(parseFloat(data.marginCallPercent)*100).toFixed(1) + "%"}</Typography>
+              <Typography noWrap>{getDataValue("marginCallPercent", true)}</Typography>
             </TableCell>
           </TableRow>
 

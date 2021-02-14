@@ -9,13 +9,13 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Chart from '../components/Chart';
 import Summary from '../components/Summary';
-import Orders from '../components/Orders';
+import Activity from '../components/Activity';
 
 // util
 import { fetchRequest } from '../util/fetch'
 import { BASE_URL, SOCKET_IO_ENDPOINT } from '../util/apiConstants';
 const SUMMARY_URL = BASE_URL + "/accounts/summary"
-const ORDERS_URL = BASE_URL + "/orders"
+const TRANSACTIONS_URL = BASE_URL + "/transactions"
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -35,7 +35,7 @@ function DashboardPage({ api_key, account_id }) {
   const styles = useStyles();
 
   const [summaryData, setSummaryData] = useState();
-  const [ordersData, setOrdersData] = useState()
+  const [activityData, setActivityData] = useState()
 
   useEffect(() => {
 
@@ -55,10 +55,12 @@ function DashboardPage({ api_key, account_id }) {
 
     // =================================================
     // fetching orders once when visiting page 
-    fetchRequest({ url: ORDERS_URL })
+    let transactions_url = new URL(TRANSACTIONS_URL);
+    transactions_url.search = new URLSearchParams({ apiKey: api_key, accountId: account_id }); 
+    fetchRequest({ url: transactions_url })
     .then((result) => {
       console.log(result);
-      setOrdersData(result);
+      setActivityData(result);
     })
     .catch((error) => {
       console.log("fetch error", error);
@@ -74,10 +76,6 @@ function DashboardPage({ api_key, account_id }) {
 
     return () => socket.disconnect();
   }, [api_key, account_id]);
-  
-  if(!summaryData || !ordersData) {
-    return null;
-  }
 
   return (
     <div className="Main">
@@ -98,7 +96,7 @@ function DashboardPage({ api_key, account_id }) {
 
           <Grid item xs={12} md={7} lg={8}>
             <Paper className={styles.paper}>
-              <Orders />
+              <Activity data={activityData} />
             </Paper>
           </Grid>
 
