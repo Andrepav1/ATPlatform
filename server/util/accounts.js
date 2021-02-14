@@ -17,6 +17,7 @@ const getAccountSummary = (accountId) => {
     .then(({ account }) => {
       resolve(account)
     }).catch((error) => {
+      console.log("reject", error);
       reject(error)
     });
   });

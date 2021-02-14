@@ -4,7 +4,7 @@ const fx = require('simple-fxtrade');
 
 const getOrders = () => {
   return new Promise(function(resolve, reject) {
-    fx.positions()
+    fx.orders()
     .then((result) => {
       resolve(result)
     }).catch((error) => {

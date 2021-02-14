@@ -367,6 +367,11 @@ kareem@2.3.2:
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.2.tgz#78c4508894985b8d38a0dc15e1a8e11078f2ca93"
   integrity sha512-STHz9P7X2L4Kwn72fA4rGyqyXdmrMSdxqHx9IXon/FXluXieaFA6KJ2upcHAHxQPQ0LeM/OjLrhFxifHewOALQ==
 
+lodash@^4.17.20:
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
+  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -665,10 +670,9 @@ sift@7.0.1:
   resolved "https://registry.yarnpkg.com/sift/-/sift-7.0.1.tgz#47d62c50b159d316f1372f8b53f9c10cd21a4b08"
   integrity sha512-oqD7PMJ+uO6jV9EQCl0LrRw1OwsiPsiFQR5AR30heR+4Dl7jBBbDLnNvWiak20tzZlSE1H7RB30SX/1j/YYT7g==
 
-simple-fxtrade@^1.1.7:
+simple-fxtrade@Andrepav1/simple-fxtrade:
   version "1.1.7"
-  resolved "https://registry.yarnpkg.com/simple-fxtrade/-/simple-fxtrade-1.1.7.tgz#e4012a2aab98eb9519994854186910f14b7bb4fb"
-  integrity sha512-se/Rm3Tu1J70uVSAxStHzN1kOOTt9duzciOCaLLDi9o5OjkIA+twpRJxvuJPfrjmdGYnsZFvWDa48O2wDBT7iw==
+  resolved "https://codeload.github.com/Andrepav1/simple-fxtrade/tar.gz/e798c2cec5769c6b096e2d1e6e7365a687a0cc1c"
   dependencies:
     axios "^0.16.2"
 
