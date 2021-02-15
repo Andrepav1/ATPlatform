@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { BASE_URL } from '../util/apiConstants';
-import { fetchRequest } from '../util/fetch';
+import { fetchRequest } from '../util/network';
 
 import '../App.css';
 

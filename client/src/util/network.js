@@ -1,3 +1,4 @@
+import { BASE_URL } from './apiConstants';
 
 const fetchRequest = ({ url, method = "GET", mode = "cors", body, headers }) => {
   return new Promise(function(resolve,reject) {
@@ -19,6 +20,13 @@ const fetchRequest = ({ url, method = "GET", mode = "cors", body, headers }) => 
   });
 }
 
+const createURL = (route, params, base_url = BASE_URL) => {
+  let url = new URL(base_url + route);
+  url.search = new URLSearchParams(params);
+  return url; 
+}
+
 export {
-  fetchRequest
+  fetchRequest,
+  createURL
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import socketIOClient from "socket.io-client";
 import { connect } from "react-redux";
 
+// materia UI import
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +13,8 @@ import Summary from '../components/Summary';
 import Activity from '../components/Activity';
 
 // util
-import { fetchRequest } from '../util/fetch'
-import { BASE_URL, SOCKET_IO_ENDPOINT } from '../util/apiConstants';
-const SUMMARY_URL = BASE_URL + "/accounts/summary"
-const TRANSACTIONS_URL = BASE_URL + "/transactions"
+import { fetchRequest, createURL } from '../util/network'
+import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -41,9 +40,7 @@ function DashboardPage({ api_key, account_id }) {
 
     // =================================================
     // fetching summary once when visiting page 
-    let summary_url = new URL(SUMMARY_URL);
-    summary_url.search = new URLSearchParams({ apiKey: api_key, accountId: account_id }); 
-    
+    let summary_url = createURL("/accounts/summary", { apiKey: api_key, accountId: account_id })
     fetchRequest({ url: summary_url.toString() })
     .then((result) => {
       console.log(result);
@@ -55,12 +52,12 @@ function DashboardPage({ api_key, account_id }) {
 
     // =================================================
     // fetching orders once when visiting page 
-    let transactions_url = new URL(TRANSACTIONS_URL);
-    transactions_url.search = new URLSearchParams({ apiKey: api_key, accountId: account_id }); 
+    let transactions_url = createURL("/transactions", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: transactions_url })
     .then((result) => {
       console.log(result);
-      setActivityData(result);
+      let transactionCount = 6;
+      setActivityData(result.reverse().slice(0,transactionCount));
     })
     .catch((error) => {
       console.log("fetch error", error);
@@ -96,7 +93,7 @@ function DashboardPage({ api_key, account_id }) {
 
           <Grid item xs={12} md={7} lg={8}>
             <Paper className={styles.paper}>
-              <Activity data={activityData} />
+              <Activity data={activityData} title="Recent Activity" />
             </Paper>
           </Grid>
 
