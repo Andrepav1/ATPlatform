@@ -3,15 +3,6 @@ var router = express.Router();
 const fx = require('simple-fxtrade');
 
 var { getAccountSummary } = require('../util/accounts');
-// ====================================================================
-// TEMPORARY BECAUSE THE IMPORT FUNCTION DOESN'T WORK AND I CAN'T BE BOTHERED NOW TO FIX IT
-// var { getAccountSummary } = require('../util/accounts');
-// const getAccountSummary = () => {
-//   return new Promise(function(resolve, reject) {
-    
-//   });
-// }
-// ====================================================================
 
 const TRANSACTION_PER_PAGE = 20;
 
@@ -33,6 +24,7 @@ const getTransactionsPage = (page, accountId) => {
     .then(({ lastTransactionID }) => {
       
       const sinceId = parseInt(lastTransactionID) - page*TRANSACTION_PER_PAGE;
+      
       getTransactionSinceId(sinceId)
       .then((result) => {
         resolve(result);

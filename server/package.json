@@ -18,6 +18,7 @@
     "morgan": "~1.9.1",
     "node-cron": "^2.0.3",
     "simple-fxtrade": "Andrepav1/simple-fxtrade",
-    "socket.io": "^3.1.1"
+    "socket.io": "^3.1.1",
+    "technicalindicators": "^3.1.0"
   }
 }
