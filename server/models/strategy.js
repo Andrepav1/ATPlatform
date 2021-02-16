@@ -1,10 +1,10 @@
-const { Timestamp } = require('mongodb');
-const { ObjectID } = require('mongodb');
 const db = require('../db');
+const Indicator = require('./technical-indicator');
 
 const strategySchema = new db.Schema({
   name: String,
-  description: String
+  description: String,
+  indicators: [Indicator]
 });
 
 const Strategy = db.model('Strategy', strategySchema);
