@@ -13,6 +13,7 @@ import TradeHistoryPage from './pages/TradeHistoryPage'
 import StrategiesPage from './pages/StrategiesPage'
 import SettingsPage from './pages/SettingsPage'
 import NotFoundPage from './pages/NotFoundPage'
+import EditStrategyPage from './pages/EditStrategyPage';
 
 function App({ authenticated }) {
 
@@ -25,7 +26,8 @@ function App({ authenticated }) {
           <Switch>
             <Redirect exact from='/landing' to='/'/>
             <Route path="/" exact component={DashboardPage} />
-            <Route path="/strategies" component={StrategiesPage} />
+            <Route exact path="/strategies" component={StrategiesPage} />
+            <Route path="/strategies/edit" component={EditStrategyPage} />
             <Route path="/backtesting" component={BacktestingPage} />
             <Route path="/history" component={TradeHistoryPage} />
             <Route path="/settings" component={SettingsPage} />
