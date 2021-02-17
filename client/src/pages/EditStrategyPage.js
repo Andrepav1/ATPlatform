@@ -10,6 +10,9 @@ import Box from '@material-ui/core/Box';
 import '../App.css';
 import IndicatorFormDialog from '../components/IndicatorFormDialog';
 import { fetchRequest, createURL } from '../util/network';
+import IndicatorsTable from '../components/IndicatorsTable';
+import { Grid, Paper } from '@material-ui/core';
+import StrategySummary from '../components/StrategySummary';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -17,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   },
   subheader: {
     paddingBottom: theme.spacing(2),
+  },
+  horizontalMargin: {
+    marginRight: theme.spacing(2),
   }
 }));
 
@@ -27,10 +33,13 @@ function EditStrategyPage() {
   const [open, setOpen] = React.useState(false);
   const [indicatorsData, setIndicatorsData] = useState([]);
   
-  const [strategyIndicator, setStrategyIndicator] = useState([]);
+  const [strategyIndicators, setStrategyIndicators] = useState([]);
+
+  const [strategyName, setStrategyName] = useState("")
+  const [strategyDescription, setStrategyDescription] = useState("")
 
   const confirmIndicator = (indicator) => {
-    setStrategyIndicator([...strategyIndicator, indicator])
+    setStrategyIndicators([...strategyIndicators, indicator])
   }
 
   useEffect(() => {
@@ -50,16 +59,35 @@ function EditStrategyPage() {
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
         <Box display="flex" flexDirection="row" className={styles.subheader}>
-          <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
+          <Button className={styles.horizontalMargin} variant="outlined" color="primary" onClick={() => setOpen(true)}>
             {"New Technical Indicator"}
           </Button>
-          <Button variant={"contained"} color="primary">
+          <Button className={styles.horizontalMargin}variant={"contained"} color="primary">
             {"Save"}
           </Button>
         </Box>
         {
           open && <IndicatorFormDialog indicators={indicatorsData} open={open} setOpen={setOpen} confirmIndicator={confirmIndicator} />
         }
+        <Grid container spacing={2}>
+          
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper className={styles.paper}>
+              <StrategySummary 
+                strategyName={strategyName} 
+                setStrategyName={setStrategyName} 
+                strategyDescription={strategyDescription} 
+                setStrategyDescription={setStrategyDescription}
+              />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={8} lg={9}>
+            <Paper className={styles.paper}>
+              <IndicatorsTable indicators={strategyIndicators} />
+            </Paper>
+          </Grid>
+        </Grid>
       </Container>
     </div>
   );

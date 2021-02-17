@@ -27,11 +27,7 @@ function StrategiesPage({ api_key, account_id }) {
 
   const styles = useStyles();
 
-  const [strategiesData, setStrategiesData] = useState([{}, {}, {}, {}])
-  
-  const newStrategyHandler = () => {
-
-  }
+  const [strategiesData, setStrategiesData] = useState([{}, {}, {}, {}]);
 
   useEffect(() => {
     let strategies_url = createURL("/strategies", { apiKey: api_key, accountId: account_id });
@@ -50,7 +46,7 @@ function StrategiesPage({ api_key, account_id }) {
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
         <Box display="flex" flexDirection="row-reverse" className={styles.subheader}>
-          <Button variant={"contained"} color="primary" onClick={newStrategyHandler}>  
+          <Button variant={"contained"} color="primary" href="/strategies/edit">  
             {"New Strategy"}
           </Button>
         </Box>
