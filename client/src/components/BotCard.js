@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function StrategyCard({ data }) {
+export default function BotCard({ data }) {
 
   const styles = useStyles();
 
   // ======= TEST DATA =======
-  // data.name = "Test Strategy"
-  // data.description = "Strategy based on MACD, RSI and SMA"
-  // data.indicators = [{ name: "Awesome Oscillator (AO)", config: {} }, { name: "Awesome Oscillator (AO)", config: {} },{ name: "MA Convergence Divergence (MACD)", config: {} }, { name: "Force Index (FI)", config: {} }]
+  data.name = "Test Bot"
+  data.description = "Active Strategy"
+  data.instruments = ["EUR/USD","AUD/USD","GBP/CHF","CAD/AUD","EUR/JPY"];
   // ======= TEST DATA =======
 
   return (
@@ -51,22 +51,15 @@ export default function StrategyCard({ data }) {
           />
           <CardContent>
             <div className={styles.cardPricing}>
-              <Typography component="h6" variant="h6" color="textPrimary" key={uuid()}>{data.indicators.length} Technical Indicators:</Typography>
+              <Typography component="h6" variant="h6" color="textPrimary" key={uuid()}>{data.instruments.length} Instruments:</Typography>
             </div>
-            <ul className={styles.list}>
-              {
-                data.indicators.map((indicator) => (
-                  <Typography component="li" variant="subtitle1" align="center" key={uuid()} noWrap>
-                    {indicator.name}
-                  </Typography>
-                ))
-              }
-            </ul>
+            <div>    
+              <Typography variant="subtitle1" align="center" key={uuid()}>
+                { data.instruments.split(", ") }
+              </Typography>
+            </div>
           </CardContent>
           <CardActions>
-            <Button fullWidth variant={"contained"} color="primary">
-              {"View"}
-            </Button>
             <Button fullWidth variant={"outlined"} color="primary">
               {"Edit"}
             </Button>

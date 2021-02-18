@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
+import uuid from 'react-uuid';
 
 //material UI imports
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,15 +28,14 @@ function StrategiesPage({ api_key, account_id }) {
 
   const styles = useStyles();
 
-  const [strategiesData, setStrategiesData] = useState([{}, {}, {}, {}]);
+  const [strategiesData, setStrategiesData] = useState([]);
 
   useEffect(() => {
     let strategies_url = createURL("/strategies", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: strategies_url })
-    .then((result) => {
-      console.log(result);
-
-      // setStrategiesData(result);
+    .then(({strategies}) => {
+      console.log(strategies);
+      setStrategiesData(strategies);
     })
     .catch((error) => {
       console.log("fetch error", error);
@@ -53,7 +53,7 @@ function StrategiesPage({ api_key, account_id }) {
         <Grid container spacing={2}>
           {
             strategiesData.map((strategy) => (
-              <StrategyCard data={strategy} />
+              <StrategyCard key={uuid()} data={strategy} />
             ))
           }
         </Grid>

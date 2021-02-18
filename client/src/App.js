@@ -14,6 +14,7 @@ import StrategiesPage from './pages/StrategiesPage'
 import SettingsPage from './pages/SettingsPage'
 import NotFoundPage from './pages/NotFoundPage'
 import EditStrategyPage from './pages/EditStrategyPage';
+import BotsPage from './pages/BotsPage';
 
 function App({ authenticated }) {
 
@@ -26,6 +27,7 @@ function App({ authenticated }) {
           <Switch>
             <Redirect exact from='/landing' to='/'/>
             <Route path="/" exact component={DashboardPage} />
+            <Route path="/bots" exact component={BotsPage} />
             <Route exact path="/strategies" component={StrategiesPage} />
             <Route path="/strategies/edit" component={EditStrategyPage} />
             <Route path="/backtesting" component={BacktestingPage} />

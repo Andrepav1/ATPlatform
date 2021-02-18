@@ -6,7 +6,7 @@ import { ProSidebar, Menu, MenuItem, SidebarContent, SidebarFooter, SidebarHeade
 import 'react-pro-sidebar/dist/css/styles.css';
 
 // icons 
-import { FaGem, FaHistory } from "react-icons/fa";
+import { FaGem, FaHistory, FaRobot } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { BiTestTube } from "react-icons/bi";
 import { VscGraph } from 'react-icons/vsc'
@@ -23,6 +23,10 @@ function Sidebar() {
 
       <SidebarContent>
         <Menu iconShape="circle">
+          <MenuItem icon={<FaRobot />}>
+            Your Bots
+            <Link to="/bots" />
+          </MenuItem>
           <MenuItem icon={<VscGraph />}>
             Dashboard
             <Link to="/" />

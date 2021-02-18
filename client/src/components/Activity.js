@@ -1,4 +1,6 @@
 import React from 'react';
+import uuid from 'react-uuid';
+
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -28,7 +30,7 @@ export default function Activity({ data, title, full, changePageHandler, current
   const getActivityRow = (data) => {
 
     return (
-      <TableRow key={data.id}> 
+      <TableRow key={uuid()}> 
         <TableCell>{data.id}</TableCell>
         <TableCell>{data.time}</TableCell>
         <TableCell>{data.instrument}</TableCell>

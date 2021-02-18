@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from "react-redux";
+import uuid from 'react-uuid';
 
 //material UI imports
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function EditStrategyPage() {
-
+function EditStrategyPage({ history }) {
+  
   const styles = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -39,15 +40,50 @@ function EditStrategyPage() {
   const [strategyDescription, setStrategyDescription] = useState("")
 
   const confirmIndicator = (indicator) => {
+    indicator.id = uuid();
     setStrategyIndicators([...strategyIndicators, indicator])
   }
 
+  const editIndicator = (id) => {
+    console.log("edit", id); // textDecorationColor: 
+  }
+
+  const removeIndicator = (id) => {
+    setStrategyIndicators(strategyIndicators.filter((indicator) => indicator.id !== id))
+  }
+
+  const saveStrategy = () => {
+
+    let strategy = {
+      name: strategyName,
+      description: strategyDescription,
+      indicators: strategyIndicators
+    }
+
+    let save_strategy_url = createURL("/strategies");
+    fetchRequest({ 
+      url: save_strategy_url, 
+      body: { strategy }, 
+      method: "POST", 
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      } 
+    })
+    .then((result) => {
+      console.log(result);
+      history.push("/strategies");
+    })
+    .catch((error) => {
+      console.log("error", error);
+    })
+  }
+  
   useEffect(() => {
     let indicators_url = createURL("/indicators");
     fetchRequest({ url: indicators_url })
     .then((result) => {
       console.log(result);
-
+      
       setIndicatorsData(result);
     })
     .catch((error) => {
@@ -62,7 +98,7 @@ function EditStrategyPage() {
           <Button className={styles.horizontalMargin} variant="outlined" color="primary" onClick={() => setOpen(true)}>
             {"New Technical Indicator"}
           </Button>
-          <Button className={styles.horizontalMargin}variant={"contained"} color="primary">
+          <Button className={styles.horizontalMargin} variant={"contained"} color="primary" onClick={saveStrategy}>
             {"Save"}
           </Button>
         </Box>
@@ -84,7 +120,7 @@ function EditStrategyPage() {
 
           <Grid item xs={12} md={8} lg={9}>
             <Paper className={styles.paper}>
-              <IndicatorsTable indicators={strategyIndicators} />
+              <IndicatorsTable indicators={strategyIndicators} editIndicator={editIndicator} removeIndicator={removeIndicator}/>
             </Paper>
           </Grid>
         </Grid>
