@@ -1,12 +1,19 @@
+const { Schema } = require('mongoose');
 const db = require('../db');
-const Indicator = require('./technical-indicator');
 
-const strategySchema = new db.Schema({
+const IndicatorSchema = new db.Schema({
   name: String,
-  description: String,
-  indicators: [Indicator]
+  config: Object,
+  signalConfig: Object
 });
 
-const Strategy = db.model('Strategy', strategySchema);
+const StrategySchema = new db.Schema({
+  name: String,
+  description: String,
+  indicators: [IndicatorSchema],
+  userId: Schema.Types.ObjectId
+});
 
-module.exports = Strategy;
+const Strategy = db.model('Strategy', StrategySchema);
+
+module.exports = { Strategy, StrategySchema };

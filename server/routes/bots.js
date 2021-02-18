@@ -1,42 +1,42 @@
 var express = require('express');
 var router = express.Router();
 const fx = require('simple-fxtrade');
-const { Strategy } = require('../models/strategy');
+const { Bot } = require('../models/bot');
 
 
-// Get all strategies
+// Get all bots
 router.get('/', (req, res, next) => {
-  Strategy.find({}, (error, strategies) => {
+  Bot.find({}, (error, bots) => {
     if(error) return res.json({error});
-    res.json({strategies});
+    res.json({bots});
   })
 })
 
-// get single strategy
+// get single bot
 router.get('/:id', (req, res, next) => {
 
 })
 
-// delete strategy
+// delete bot
 router.delete('/:id', (req, res, next) => {
 
 })
 
-// create strategy
+// create bot
 router.post('/', (req, res, next) => {
 
-  const { strategy } = req.body;
+  const { bot } = req.body;
   
   // Create an instance of model
-  var strategy_instance = new Strategy(strategy);
+  var bot_instance = new Bot(bot);
 
   // Save the new model instance, passing a callback
-  strategy_instance.save((error) => {
+  bot_instance.save((error) => {
     if (error) return res.json({ error })
-    console.log("strategy saved");
+    console.log("bot saved");
   });
 
-  res.json({strategy});
+  res.json({bot});
 })
 
 module.exports = router;

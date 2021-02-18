@@ -381,108 +381,126 @@ const getIndicatorSignalConfig = (name) => {
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case"ADX":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case"ATR":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "AwesomeOscillator":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "BollingerBands":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "CCI":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "ForceIndex":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     // case "KST":
     //   return [
         // {
         //   name: "candlesSize",
+        //   defaultValue: "H1"
         // }
     //   ];
     case "MFI":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "MACD":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "OBV":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "PSAR":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "ROC":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "RSI":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "SMA":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "Stochastic": 
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "StochasticRSI":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ]; 
     case "TRIX":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "VWAP":
@@ -491,36 +509,42 @@ const getIndicatorSignalConfig = (name) => {
     //   return [
         // {
         //   name: "candlesSize",
+        //   defaultValue: "H1"
         // }
     //   ];
     case "EMA":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "WMA":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "WEMA":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "WilliamsR":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     case "IchimokuCloud":
       return [
         {
           name: "candlesSize",
+          defaultValue: "H1"
         }
       ];
     default:

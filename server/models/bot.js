@@ -1,15 +1,15 @@
-const { ObjectID } = require('mongodb');
+const { Schema } = require('mongoose');
 const db = require('../db');
 
-const botSchema = new db.Schema({
+const BotSchema = new db.Schema({
   name: String,
-  activeStrategy: ObjectID,
-  startTime: Timestamp,
-  endTime: Timestamp,
+  activeStrategyId: Schema.Types.ObjectId,
+  startTime: Date,
+  endTime: Date,
   instruments: [String],
-  userID: ObjectID
+  userId: Schema.Types.ObjectId
 });
 
-const Bot = db.model('Bot', botSchema);
+const Bot = db.model('Bot', BotSchema);
 
-module.exports = Bot;
+module.exports = { Bot, BotSchema };

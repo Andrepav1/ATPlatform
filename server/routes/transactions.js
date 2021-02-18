@@ -53,7 +53,7 @@ router.get('/', (req, res, next) => {
 });
 
 
-router.post('/idrange', (req, res, next) => {
+router.get('/idrange', (req, res, next) => {
   const { from, to } = req.query;
   fx.transactions.idrange({ from, to })
     .then((result) => {
@@ -63,7 +63,7 @@ router.post('/idrange', (req, res, next) => {
     });
 })
 
-router.post('/sinceid', (req, res, next) => {
+router.get('/sinceid', (req, res, next) => {
   const { id } = req.query;
 
   getTransactionSinceId(id)
