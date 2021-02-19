@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function BotDialog({ strategies, instruments, open, setOpen, confirmBot }) {
+export default function BotDialog({ strategies, instruments, open, setOpen, confirmBot, editStrategy }) {
 
   const styles = useStyles();
   const [name, setName] = useState();
@@ -49,7 +49,18 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
   }
 
   const handleConfirmBot = () => {
-    setOpen(false);
+
+    if(!activeStrategy) {
+      return alert("You need to select a strategy first");
+    }
+    
+    if(activeInstruments.length === 0) {
+      return alert("You need to select at least an instrument");
+    }
+
+    if(!name) {
+      return alert("You need to select a name");
+    }
 
     if(alwaysOn) {
       setEndTime(null);
@@ -58,7 +69,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
 
     let bot = {
       name,
-      activeStrategyId: activeStrategy._id,
+      activeStrategy: { id: activeStrategy._id, name: activeStrategy.name },
       startTime,
       endTime,
       instruments: activeInstruments
@@ -121,7 +132,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
             {
               instruments && 
               instruments.map((instrument) => (
-                <MenuItem key={uuid()} value={instrument}>{instrument}</MenuItem>
+                <MenuItem key={uuid()} value={instrument.name}>{instrument.displayName}</MenuItem>
               ))
             }
             </Select>

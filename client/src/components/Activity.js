@@ -13,7 +13,7 @@ import Title from './Title';
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   },
   title: {
 
@@ -27,14 +27,33 @@ const useStyles = makeStyles((theme) => ({
 export default function Activity({ data, title, full, changePageHandler, currentPage }) {
   const styles = useStyles();
 
+  const getType = (type) => {
+    switch (type) {
+      case "TRADE_CLIENT_EXTENSIONS_MODIFY":
+        return "Client Settings Modified";
+      case "DAILY_FINANCING":
+        return "Financing";
+      case "MARKET_ORDER":
+        return "Order Set";
+      case "DIVIDEND_ADJUSTMENT":
+        return "Divident Adjustment";
+      case "ORDER_FILL":
+        return "Order Filled";
+      default:
+        return type;
+    }
+  }
+
   const getActivityRow = (data) => {
+
+    // if(data.type === "TRADE_CLIENT_EXTENSIONS_MODIFY") return;
 
     return (
       <TableRow key={uuid()}> 
         <TableCell>{data.id}</TableCell>
-        <TableCell>{data.time}</TableCell>
+        <TableCell>{data.time.substring(0, 10)}</TableCell>
         <TableCell>{data.instrument}</TableCell>
-        <TableCell>{data.type}</TableCell>
+        <TableCell>{getType(data.type)}</TableCell>
         <TableCell align="right">{data.financing}</TableCell>
       </TableRow>
     );

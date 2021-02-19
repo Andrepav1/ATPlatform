@@ -44,7 +44,7 @@ export default function StrategyCard({ data }) {
         <Card>
           <CardHeader
             title={data.name}
-            subheader={data.description}
+            subheader={data.description?data.description:"No description"}
             titleTypographyProps={{ align: 'center' }}
             subheaderTypographyProps={{ align: 'center' }}
             className={styles.cardHeader}

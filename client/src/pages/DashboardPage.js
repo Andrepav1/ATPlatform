@@ -15,6 +15,9 @@ import Activity from '../components/Activity';
 // util
 import { fetchRequest, createURL } from '../util/network'
 import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
+import OpenPositions from '../components/OpenPositions';
+
+const FIXED_HEIGHT = "320px";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,6 +29,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
+  },
+  paperFixedHeight: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+    height: FIXED_HEIGHT
   }
 }));
 
@@ -35,13 +45,14 @@ function DashboardPage({ api_key, account_id }) {
 
   const [summaryData, setSummaryData] = useState();
   const [activityData, setActivityData] = useState()
+  const [positionsData, setPositionsData] = useState()
 
   useEffect(() => {
 
     // =================================================
     // fetching summary once when visiting page 
     let summary_url = createURL("/accounts/summary", { apiKey: api_key, accountId: account_id })
-    fetchRequest({ url: summary_url.toString() })
+    fetchRequest({ url: summary_url })
     .then((result) => {
       console.log(result);
       setSummaryData(result);
@@ -51,12 +62,24 @@ function DashboardPage({ api_key, account_id }) {
     })
 
     // =================================================
-    // fetching orders once when visiting page 
+    // fetching summary once when visiting page 
+    let positions_url = createURL("/trades", { apiKey: api_key, accountId: account_id })
+    fetchRequest({ url: positions_url })
+    .then(({trades}) => {
+      console.log(trades);
+      setPositionsData(trades);
+    })
+    .catch((error) => {
+      console.log("fetch error", error);
+    })
+
+    // =================================================
+    // fetching transactions once when visiting page 
     let transactions_url = createURL("/transactions", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: transactions_url })
     .then((result) => {
       console.log(result);
-      let transactionCount = 6;
+      let transactionCount = 5;
       setActivityData(result.reverse().slice(0,transactionCount));
     })
     .catch((error) => {
@@ -64,12 +87,19 @@ function DashboardPage({ api_key, account_id }) {
     })
 
     // =================================================
-    // keep fetching summary
+    // socket.io data
     const socket = socketIOClient(SOCKET_IO_ENDPOINT, { query: { apiKey: api_key, accountId: account_id }});
-
+    
+    // keep fetching summary
     socket.on("Summary", data => {
       setSummaryData(data);
     });
+
+    // keep fetching open positions
+    socket.on("OpenPositions", data => {
+      setPositionsData(data);
+    });
+
 
     return () => socket.disconnect();
   }, [api_key, account_id]);
@@ -79,23 +109,36 @@ function DashboardPage({ api_key, account_id }) {
       <Container maxWidth="xl" className={styles.container}>
         <Grid container spacing={2}>
           
+          <Grid item xs={12} md={7} lg={8}>
+            <Paper className={styles.paperFixedHeight}>
+              <OpenPositions positions={positionsData} />
+            </Paper>
+          </Grid>
+          
+          <Grid item xs={12} md={5} lg={4}>
+            <Paper className={styles.paperFixedHeight}>
+              <Summary data={summaryData} />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={5} lg={4}>
+            <Paper className={styles.paperFixedHeight}>
+              {/* <Summary data={summaryData} /> */}
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={7} lg={8}>
+            <Paper className={styles.paperFixedHeight}>
+              <Activity data={activityData} title="Recent Activity" />
+            </Paper>
+          </Grid>
+
           <Grid item xs={12}>
             <Paper className={styles.paper}>
               <Chart />
             </Paper>
           </Grid>
-          
-          <Grid item xs={12} md={5} lg={4}>
-            <Paper className={styles.paper}>
-              <Summary data={summaryData} />
-            </Paper>
-          </Grid>
 
-          <Grid item xs={12} md={7} lg={8}>
-            <Paper className={styles.paper}>
-              <Activity data={activityData} title="Recent Activity" />
-            </Paper>
-          </Grid>
 
         </Grid>
       </Container>

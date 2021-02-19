@@ -9,6 +9,8 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Brightness1Icon from '@material-ui/icons/Brightness1';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   cardHeader: {
@@ -19,10 +21,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'baseline',
   },
-  list: {
-    margin: 0,
-    padding: 0,
-    listStyle: 'none',
+  instruments: {
     height: "80px",
     overflow: "hidden"
   }
@@ -33,29 +32,32 @@ export default function BotCard({ data }) {
   const styles = useStyles();
 
   // ======= TEST DATA =======
-  data.name = "Test Bot"
-  data.description = "Active Strategy"
-  data.instruments = ["EUR/USD","AUD/USD","GBP/CHF","CAD/AUD","EUR/JPY"];
+  // data.name = "Test Bot"
+  // data.activeStrategy = "TESTStrategy"
+  // data.instruments = ["EUR/USD","AUD/USD","GBP/CHF","CAD/AUD","EUR/JPY"];
   // ======= TEST DATA =======
 
   return (
     <React.Fragment key={uuid()}>
       <Grid item xs={12} sm={6} md={6}>
         <Card>
+          <Box display="flex" flexDirection="row-reverse" style={{ position: "relative" }}>
+            <Brightness1Icon style={{ color: data.live?"#1bf723":"#de0000", position: "absolute", fontSize: 16, marginTop: 12, marginRight: 12 }} />
+          </Box>
           <CardHeader
             title={data.name}
-            subheader={data.description}
+            subheader={data.activeStrategy.name}
             titleTypographyProps={{ align: 'center' }}
             subheaderTypographyProps={{ align: 'center' }}
             className={styles.cardHeader}
           />
           <CardContent>
             <div className={styles.cardPricing}>
-              <Typography component="h6" variant="h6" color="textPrimary" key={uuid()}>{data.instruments.length} Instruments:</Typography>
+              <Typography component="h6" variant="h6" color="textPrimary" key={uuid()}>Active on instruments:</Typography>
             </div>
             <div>    
-              <Typography variant="subtitle1" align="center" key={uuid()}>
-                { data.instruments.split(", ") }
+              <Typography className={styles.instruments} variant="subtitle1" align="center" key={uuid()}>
+                { data.instruments.join(", ") }
               </Typography>
             </div>
           </CardContent>

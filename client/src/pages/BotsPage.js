@@ -34,14 +34,12 @@ function BotsPage({ api_key, account_id }) {
   const [instrumentsData, setInstrumentsData] = useState([]);
   const [botsData, setBotsData] = useState([]);
 
-  // new data
-  // const [currentBot, setCurrentBot] = useState();
-
   const newBotHandler = () => {
     setOpen(true);
   }
 
   const confirmBot = (bot) => {
+    setOpen(false);
     
     let save_bot_url = createURL("/bots");
     fetchRequest({ 
@@ -53,10 +51,21 @@ function BotsPage({ api_key, account_id }) {
       } 
     })
     .then((result) => {
-      console.log(result);
+      refetchBots();
     })
     .catch((error) => {
       console.log("error", error);
+    })
+  }
+
+  const refetchBots = () => {
+    let bots_url = createURL("/bots", { apiKey: api_key, accountId: account_id });
+    fetchRequest({ url: bots_url })
+    .then(({bots}) => {
+      setBotsData(bots);
+    })
+    .catch((error) => {
+      console.log("fetch error", error);
     })
   }
 
@@ -64,7 +73,6 @@ function BotsPage({ api_key, account_id }) {
     let strategies_url = createURL("/strategies", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: strategies_url })
     .then(({strategies}) => {
-
       setStrategiesData(strategies);
     })
     .catch((error) => {
@@ -74,7 +82,6 @@ function BotsPage({ api_key, account_id }) {
     let instruments_url = createURL("/instruments", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: instruments_url })
     .then(({instruments}) => {
-
       setInstrumentsData(instruments);
     })
     .catch((error) => {
@@ -84,12 +91,12 @@ function BotsPage({ api_key, account_id }) {
     let bots_url = createURL("/bots", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: bots_url })
     .then(({bots}) => {
-
       setBotsData(bots);
     })
     .catch((error) => {
       console.log("fetch error", error);
     })
+
   },[account_id, api_key]);
 
   return (

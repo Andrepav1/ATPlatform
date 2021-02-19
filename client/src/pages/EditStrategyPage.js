@@ -54,6 +54,10 @@ function EditStrategyPage({ history }) {
 
   const saveStrategy = () => {
 
+    if(!strategyName) {
+      return alert("You need to select a name")
+    }
+    
     let strategy = {
       name: strategyName,
       description: strategyDescription,
