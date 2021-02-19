@@ -1,0 +1,3 @@
+
+const CURRENCY_PAIR_UNIT = 1000;
+const METAL_UNIT = 50;
