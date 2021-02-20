@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
 
   getTrades()
   .then((result) => {
-    
+    console.log(result);
     res.json(result);
   }).catch((error) => {
     console.log(error);
@@ -25,5 +25,19 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.post(('/close'), (req, res, next) => {
+
+  const { id } = req.body;
+  console.log(id);
+  fx.trades.close({ id })
+  .then((result) => {
+    console.log(result);
+    res.json(result);
+  }).catch((error) => {
+    console.log(error);
+    res.json({ error });
+  });
+
+});
 
 module.exports = router;

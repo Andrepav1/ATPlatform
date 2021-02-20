@@ -10,7 +10,8 @@ const BotSchema = new db.Schema({
   startTime: Date,
   endTime: Date,
   instruments: [String],
-  userId: Schema.Types.ObjectId
+  userId: Schema.Types.ObjectId,
+  live: Boolean
 });
 
 const Bot = db.model('Bot', BotSchema);

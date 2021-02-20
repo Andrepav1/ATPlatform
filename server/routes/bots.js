@@ -1,4 +1,5 @@
 var express = require('express');
+const ObjectId = require('mongoose').Types.ObjectId; 
 var router = express.Router();
 const fx = require('simple-fxtrade');
 const { Bot } = require('../models/bot');
@@ -37,6 +38,17 @@ router.post('/', (req, res, next) => {
   });
 
   res.json({bot});
+})
+
+router.put('/update', (req, res, next) => {
+
+  const { id, status } = req.body;
+
+  Bot.findByIdAndUpdate(id, { $set: { live: status } }, null, (error, result) => {
+    if(error) return res.json({error});
+    res.json(result);
+  })
+
 })
 
 module.exports = router;
