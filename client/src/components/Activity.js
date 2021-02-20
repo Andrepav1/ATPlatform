@@ -35,6 +35,8 @@ export default function Activity({ data, title, full, changePageHandler, current
         return "Financing";
       case "MARKET_ORDER":
         return "Order Set";
+      case "ORDER_CANCEL":
+        return "Order Cancelled";
       case "DIVIDEND_ADJUSTMENT":
         return "Divident Adjustment";
       case "ORDER_FILL":

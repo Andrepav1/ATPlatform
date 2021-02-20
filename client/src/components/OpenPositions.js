@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import { Box, IconButton } from '@material-ui/core';
 import Title from './Title';
+import { fetchRequest, createURL } from '../util/network';
+import ConfirmDialog from './ConfirmDialog';
 
 const useStyles = makeStyles((theme) => ({
   noTransactionsText: {
@@ -21,8 +23,40 @@ const useStyles = makeStyles((theme) => ({
 export default function OpenPositions({ positions }) {
   const styles = useStyles();
 
-  const closePosition = (id) => {
+  const [open, setOpen] = React.useState(false);
+  
+  const [closingPositionId, setClosingPositionId] = React.useState();
 
+  const confirmClosePosition = () => {
+
+    var close_trade_url = createURL("/trades/close");
+
+    fetchRequest({
+      url: close_trade_url,
+      method: 'POST',
+      body: { id: closingPositionId },
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+    })
+    .then((result) => { // success
+      console.log(result)
+      cancelClosePosition();
+    })
+    .catch((error) => {
+      alert(error);
+    })
+    
+  }
+
+  const cancelClosePosition = (id) => {
+    setClosingPositionId(null);
+    setOpen(false);
+  }
+
+  const closePosition = (id) => {
+    setClosingPositionId(id);
+    setOpen(true);
   }
 
   const getBUYSELLText = (isBuy) => {
@@ -93,6 +127,17 @@ export default function OpenPositions({ positions }) {
           {positions.map((position) => getPositionRow(position))}
         </TableBody>
       </Table>
+      {
+        open &&
+        <ConfirmDialog 
+          title="Closing Position"
+          text="Are you sure you want to close this position?" 
+          open={open} 
+          setOpen={setOpen} 
+          confirmAction={confirmClosePosition} 
+          cancelAction={cancelClosePosition}
+        />
+      }
     </React.Fragment>
   );
 }

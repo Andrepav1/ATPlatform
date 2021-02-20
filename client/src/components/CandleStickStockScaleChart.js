@@ -27,36 +27,21 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, MovingAverageTooltip, MACDTooltip } from "react-stockcharts/lib/tooltip";
 import { ema, sma, macd } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { last } from "react-stockcharts/lib/utils";
+import { last, timeIntervalBarWidth } from "react-stockcharts/lib/utils";
 
-
+import { scaleTime } from "d3-scale";
+import { utcDay } from "d3-time";
 import { tsvParse } from  "d3-dsv";
 import { format } from "d3-format";
 import { timeParse, timeFormat } from "d3-time-format";
 
+import { curveMonotoneX } from "d3-shape";
 
-function parseData(parse) {
-	return function(d) {
-		d.date = parse(d.date);
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
+import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
 
-		return d;
-	};
-}
 
 const parseDate = timeParse("%Y-%m-%d");
 
-export function getData(callback) {
-	fetch("https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/MSFT.tsv")
-  .then(response => response.text())
-  .then(data => {
-    callback(tsvParse(data, parseData(parseDate)))
-  })
-}
 // #######################################################
 
 
@@ -75,60 +60,103 @@ const macdAppearance = {
 	},
 };
 
-
-function CandleStickStockScaleChart({ width, ratio }) {
-
-  const [initialData, setInitialData] = useState();
-
-  useEffect(() => {
-
-    getData((data) => {
-      setInitialData(data);
-    })
-
-  }, [])
-
-  if(!initialData) return null;
-
-  console.log("initialData", initialData);
-
-  const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
-
-  const {
-    data,
-    xScale,
-    xAccessor,
-    displayXAccessor,
-  } = xScaleProvider(initialData);
-
-  const xExtents = [
-    xAccessor(last(data)),
-    xAccessor(data[data.length - 100])
-  ];
-
-  return (
-    <ChartCanvas 
-      height={400}
-      ratio={ratio}
-      width={width}
-      margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
-      type={"hybrid"}
-      seriesName="MSFT"
-      data={data}
-      xScale={xScale}
-      xAccessor={xAccessor}
-      displayXAccessor={displayXAccessor}
-      xExtents={xExtents}
-    >
-      <Chart id={1} yExtents={d => [d.high, d.low]}>
-        <XAxis axisAt="bottom" orient="bottom" ticks={6}/>
-        <YAxis axisAt="left" orient="left" ticks={5} />
-        <CandlestickSeries />
-      </Chart>
-    </ChartCanvas>
-  );
+class CandleStickChart extends React.Component {
+  render() {
+    const { width, data, ratio } = this.props;
+    const xAccessor = (d) => d.date;
+    const xExtents = [
+      xAccessor(last(data)),
+      xAccessor(data[data.length - 100])
+    ];
+    return (
+      <ChartCanvas
+        ratio={ratio}
+        margin={{ left: 50, right: 50, top: 10, bottom: 30 }
+       }
+        seriesName="MSFT"
+        data={data}
+        xAccessor={xAccessor}
+        xScale={scaleTime()}
+        xExtents={xExtents}
+      >
+        <Chart id={1} yExtents={(d) => [d.high, d.low]}>
+          <XAxis axisAt="bottom" orient="bottom" ticks={6} />
+          <YAxis axisAt="left" orient="left" ticks={5} />
+          <CandlestickSeries width={timeIntervalBarWidth(utcDay)} />
+        </Chart>
+      </ChartCanvas>
+    );
+  }
 }
 
+const canvasGradient = createVerticalLinearGradient([
+	{ stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
+	{ stop: 0.7, color: hexToRGBA("#6fa4fc", 0.4) },
+	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
+]);
+
+class AreaChart extends React.Component {
+	render() {
+		const { data, type, width, ratio } = this.props;
+		return (
+      
+			<ChartCanvas ratio={ratio} width={width} height={400}
+				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+        paddingRight={600}
+				seriesName="MSFT"
+				data={data} type={type}
+				xAccessor={d => d.date}
+				xScale={scaleTime()}
+				xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}
+			>
+				<Chart id={0} yExtents={d => d.close} paddingRight={600} >
+					<defs>
+						<linearGradient id="MyGradient" x1="0" y1="100%" x2="0" y2="0%">
+							<stop offset="0%" stopColor="#b5d0ff" stopOpacity={0.2} />
+							<stop offset="70%" stopColor="#6fa4fc" stopOpacity={0.4} />
+							<stop offset="100%"  stopColor="#4286f4" stopOpacity={0.8} />
+						</linearGradient>
+					</defs>
+					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+					<YAxis axisAt="left" orient="left" />
+					<AreaSeries
+            paddingRight={600}
+						yAccessor={d => d.close}
+						fill="url(#MyGradient)"
+						strokeWidth={2}
+						interpolation={curveMonotoneX}
+						canvasGradient={canvasGradient}
+					/>
+				</Chart>
+			</ChartCanvas>
+		);
+	}
+}
+
+
+AreaChart.propTypes = {
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+AreaChart.defaultProps = {
+	type: "svg",
+};
+AreaChart = fitWidth(AreaChart);
+
+export default AreaChart;
+
+
+// ============================================================================
+// ============================================================================
+// ============================================================================
+// ============================================================================
+// ============================================================================
+// ============================================================================
+// ============================================================================
+// ============================================================================
 
 class CandleStickChartPanToLoadMore extends React.Component {
 	constructor(props) {
@@ -170,6 +198,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 			macdCalculator,
 			smaVolume50
 		]);
+
 		/* SERVER - START */
 		const dataToCalculate = inputData.slice(-LENGTH_TO_SHOW - maxWindowSize);
 
@@ -252,16 +281,22 @@ class CandleStickChartPanToLoadMore extends React.Component {
 		const { data, ema26, ema12, macdCalculator, smaVolume50, xScale, xAccessor, displayXAccessor } = this.state;
 
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={600}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale} xAccessor={xAccessor} displayXAccessor={displayXAccessor}
-					onLoadMore={this.handleDownloadMore}>
-				<Chart id={1} height={400}
-						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+			<ChartCanvas 
+        // ratio={ratio} 
+        // width={width} 
+        // height={600}
+        // margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
+        // seriesName="MSFT"
+        // data={data}
+        // xScale={xScale} xAccessor={xAccessor} displayXAccessor={displayXAccessor}
+        // onLoadMore={this.handleDownloadMore}
+      >
+				{/* <Chart 
+          height={400}
+          yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
+          padding={{ top: 10, bottom: 20 }}
+        > */}
+					{/* <XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
 					<MouseCoordinateY
@@ -274,9 +309,9 @@ class CandleStickChartPanToLoadMore extends React.Component {
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
 					<CurrentCoordinate yAccessor={ema26.accessor()} fill={ema26.stroke()} />
-					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
+					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} /> */}
 
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+					{/* <EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
@@ -297,24 +332,25 @@ class CandleStickChartPanToLoadMore extends React.Component {
 								...ema12.options(),
 							},
 						]}
-						/>
-				</Chart>
-				<Chart id={2} height={150}
+						/> */}
+				{/* </Chart> */}
+				{/* <Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						origin={(w, h) => [0, h - 300]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+						origin={(w, h) => [0, h - 300]}> */}
+					{/* <YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/> */}
 
-					<MouseCoordinateY
+					{/* <MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={format(".4s")} />
+						displayFormat={format(".4s")} /> */}
 
-					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					{/* <BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
-				</Chart>
-				<Chart id={3} height={150}
-						yExtents={macdCalculator.accessor()}
-						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+				</Chart> */}
+				{/* <Chart 
+          height={150}
+          yExtents={macdCalculator.accessor()}
+          origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 
@@ -335,24 +371,19 @@ class CandleStickChartPanToLoadMore extends React.Component {
 						options={macdCalculator.options()}
 						appearance={macdAppearance}
 						/>
-				</Chart>
-				<CrossHairCursor />
+				</Chart> */}
+				{/* <CrossHairCursor /> */}
 			</ChartCanvas>
 		);
 	}
 }
 
-// CandleStickChartPanToLoadMore.propTypes = {
-// 	data: PropTypes.array.isRequired,
-// 	width: PropTypes.number.isRequired,
-// 	ratio: PropTypes.number.isRequired,
-// 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+// CandleStickChart.propTypes = {
+//   data: PropTypes.array.isRequired,
+//   width: PropTypes.number.isRequired,
+//   ratio: PropTypes.number.isRequired
 // };
 
-// CandleStickChartPanToLoadMore.defaultProps = {
-// 	type: "svg",
-// };
+// CandleStickChart = fitWidth(CandleStickChart);
 
-// export default fitWidth(CandleStickChartPanToLoadMore);
-
-export default fitWidth(CandleStickStockScaleChart);
+// export default CandleStickChart;

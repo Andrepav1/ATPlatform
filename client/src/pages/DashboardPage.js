@@ -8,7 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Chart from '../components/Chart';
 import Summary from '../components/Summary';
 import Activity from '../components/Activity';
 
@@ -16,6 +15,7 @@ import Activity from '../components/Activity';
 import { fetchRequest, createURL } from '../util/network'
 import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
 import OpenPositions from '../components/OpenPositions';
+import BotSummary from '../components/BotSummary';
 
 const FIXED_HEIGHT = "320px";
 
@@ -46,6 +46,7 @@ function DashboardPage({ api_key, account_id }) {
   const [summaryData, setSummaryData] = useState();
   const [activityData, setActivityData] = useState()
   const [positionsData, setPositionsData] = useState()
+  const [botsData, setBotsData] = useState([]);
 
   useEffect(() => {
 
@@ -87,6 +88,17 @@ function DashboardPage({ api_key, account_id }) {
     })
 
     // =================================================
+    // fetching bots once when visiting page 
+    let bots_url = createURL("/bots", { apiKey: api_key, accountId: account_id });
+    fetchRequest({ url: bots_url })
+    .then(({bots}) => {
+      setBotsData(bots);
+    })
+    .catch((error) => {
+      console.log("fetch error", error);
+    })
+
+    // =================================================
     // socket.io data
     const socket = socketIOClient(SOCKET_IO_ENDPOINT, { query: { apiKey: api_key, accountId: account_id }});
     
@@ -109,25 +121,25 @@ function DashboardPage({ api_key, account_id }) {
       <Container maxWidth="xl" className={styles.container}>
         <Grid container spacing={2}>
           
-          <Grid item xs={12} md={7} lg={8}>
+          <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
               <OpenPositions positions={positionsData} />
             </Paper>
           </Grid>
           
-          <Grid item xs={12} md={5} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
               <Summary data={summaryData} />
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={5} lg={4}>
+          <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
-              {/* <Summary data={summaryData} /> */}
+              <BotSummary bots={botsData} setBots={setBotsData} />
             </Paper>
           </Grid>
-
-          <Grid item xs={12} md={7} lg={8}>
+          
+          <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
               <Activity data={activityData} title="Recent Activity" />
             </Paper>
@@ -135,10 +147,9 @@ function DashboardPage({ api_key, account_id }) {
 
           <Grid item xs={12}>
             <Paper className={styles.paper}>
-              <Chart />
+              
             </Paper>
           </Grid>
-
 
         </Grid>
       </Container>
