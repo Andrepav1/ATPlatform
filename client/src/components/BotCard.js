@@ -62,7 +62,10 @@ export default function BotCard({ data }) {
             </div>
           </CardContent>
           <CardActions>
-            <Button fullWidth variant={"outlined"} color="primary">
+            <Button fullWidth variant={"outlined"} color="secondary">
+              {"Remove"}
+            </Button>
+            <Button fullWidth variant={"contained"} color="primary">
               {"Edit"}
             </Button>
           </CardActions>

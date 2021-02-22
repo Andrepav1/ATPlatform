@@ -14,6 +14,7 @@ import { fetchRequest, createURL } from '../util/network';
 import IndicatorsTable from '../components/IndicatorsTable';
 import { Grid, Paper } from '@material-ui/core';
 import StrategySummary from '../components/StrategySummary';
+import StrategyRiskSummary from '../components/StrategyRiskSummary';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
   horizontalMargin: {
     marginRight: theme.spacing(2),
+  },
+  paper: {
+    marginBottom: theme.spacing(2)
   }
 }));
 
@@ -39,13 +43,36 @@ function EditStrategyPage({ history }) {
   const [strategyName, setStrategyName] = useState("")
   const [strategyDescription, setStrategyDescription] = useState("")
 
+  // To edit an indicator
+  const [editingIndicator, setEditingIndicator] = useState();
+
   const confirmIndicator = (indicator) => {
-    indicator.id = uuid();
-    setStrategyIndicators([...strategyIndicators, indicator])
+
+    if(indicator.id) { // editing indicator
+      editingIndicator(null);
+      let newStrategyIndicators = [];
+      for (let i = 0; i < strategyIndicators.length; i++) {
+        if(strategyIndicators[i].id === indicator.id) {
+          newStrategyIndicators.push(indicator)
+        }
+        else {
+          newStrategyIndicators.push(strategyIndicators[i])
+        }
+        setStrategyIndicators(newStrategyIndicators);
+      }
+    }
+    else { // new indicator
+      indicator.id = uuid();
+      setStrategyIndicators([...strategyIndicators, indicator])  
+    }
   }
 
-  const editIndicator = (id) => {
-    console.log("edit", id); // textDecorationColor: 
+  const editIndicator = (id) => { // Editing Indicator TODO
+    // let indicator = strategyIndicators.find((indicator) => id === indicator.id);
+    // setEditingIndicator(indicator);
+    // console.log("edit", indicator);
+    
+    // setOpen(true);
   }
 
   const removeIndicator = (id) => {
@@ -107,7 +134,15 @@ function EditStrategyPage({ history }) {
           </Button>
         </Box>
         {
-          open && <IndicatorFormDialog indicators={indicatorsData} open={open} setOpen={setOpen} confirmIndicator={confirmIndicator} />
+          open && 
+          <IndicatorFormDialog 
+            indicators={indicatorsData} 
+            open={open} 
+            setOpen={setOpen} 
+            confirmIndicator={confirmIndicator} 
+            editingIndicator={editingIndicator}
+            setEditingIndicator={setEditingIndicator}
+          />
         }
         <Grid container spacing={2}>
           
@@ -120,6 +155,9 @@ function EditStrategyPage({ history }) {
                 setStrategyDescription={setStrategyDescription}
               />
             </Paper>
+            <Paper className={styles.paper}>
+              <StrategyRiskSummary />
+            </Paper>
           </Grid>
 
           <Grid item xs={12} md={8} lg={9}>
@@ -128,6 +166,7 @@ function EditStrategyPage({ history }) {
             </Paper>
           </Grid>
         </Grid>
+
       </Container>
     </div>
   );

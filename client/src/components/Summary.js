@@ -16,12 +16,23 @@ export default function Summary({ data }) {
 
   // const styles = useStyles();
 
+  console.log(data);
+
+  const getCurrencySymbol = (currency) => {
+    switch (currency) {
+      case "EUR": return "€";
+      case "GBP": return "£";
+      case "USD": return "$"; 
+      default: return "";
+    }
+  }
+
   const getDataValue = (value, isPercentage = false) => {
     if(data && data[value]) {
       if(isPercentage) {
         return (parseFloat(data[value])*100).toFixed(1) + "%";
       }
-      return parseFloat(data[value]).toFixed(2)
+      return getCurrencySymbol(data["currency"]) + " " + parseFloat(data[value]).toFixed(2)
     }
     else {
       return " - "
@@ -84,7 +95,7 @@ export default function Summary({ data }) {
               <Typography noWrap>{"Margin used (%)"}</Typography>
             </TableCell>
             <TableCell align="right">
-              <Typography noWrap>{getDataValue("marginCallPercent", true)}</Typography>
+              <Typography noWrap>{ getDataValue("marginCallPercent", true) }</Typography>
             </TableCell>
           </TableRow>
 

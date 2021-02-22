@@ -64,10 +64,10 @@ export default function StrategyCard({ data }) {
             </ul>
           </CardContent>
           <CardActions>
-            <Button fullWidth variant={"contained"} color="primary">
-              {"View"}
+            <Button fullWidth variant={"outlined"} color="secondary">
+              {"Remove"}
             </Button>
-            <Button fullWidth variant={"outlined"} color="primary">
+            <Button fullWidth variant={"contained"} color="primary">
               {"Edit"}
             </Button>
           </CardActions>

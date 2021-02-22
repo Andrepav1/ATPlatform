@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import uuid from 'react-uuid';
 
 import Button from '@material-ui/core/Button';
@@ -29,18 +29,37 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function IndicatorFormDialog({ indicators, open, setOpen, confirmIndicator }) {
+export default function IndicatorFormDialog({ indicators, open, setOpen, confirmIndicator, editingIndicator, setEditingIndicator }) {
 
   const styles = useStyles();
   const [currentIndicator, setCurrentIndicator] = useState()
   const [currentConfig, setCurrentConfig] = useState()
   const [currentSignalConfig, setCurrentSignalConfig] = useState()
 
+  useEffect(() => {
+    
+    if(editingIndicator) { // Editing TODO
+
+      let newIndicator = indicators.find((element) => element.name === editingIndicator.name);
+      setCurrentIndicator(newIndicator);
+      setCurrentConfig(editingIndicator.config);
+      setCurrentSignalConfig(editingIndicator.signalConfig);
+    }
+  }, [editingIndicator, indicators])
+
+  const handleCancel = () => {
+    setEditingIndicator(null);
+    setOpen(false);
+  }
+
   const setCurrentIndicatorHandler = (indicator) => {
-    const config = {}
-    const signalConfig = {}
-    indicator.config.forEach((data) => config[data.name] = data.defaultValue)
-    indicator.signalConfig.forEach((data) => signalConfig[data.name] = data.defaultValue)
+    
+    let config = {}
+    let signalConfig = {}
+    
+    indicator.config.forEach((data) => config[data.name] = data["defaultValue"])
+    indicator.signalConfig.forEach((data) => signalConfig[data.name] = data["defaultValue"])
+
     setCurrentIndicator(indicator);
     setCurrentConfig(config);
     setCurrentSignalConfig(signalConfig);
@@ -135,10 +154,10 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
 
               if(data.name === "candlesSize") {
                 return (
-                  <FormControl fullWidth className={styles.margin}>
+                  <FormControl key={uuid()} fullWidth className={styles.margin}>
                     <InputLabel className={styles.labelPadding}>Candle Size</InputLabel>
                     <Select
-                      key={uuid()}
+                      
                       fullWidth
                       defaultValue={data.defaultValue}
                       onChange={({ target: { value } }) => handleSignalConfigChange("candlesSize", value)}
@@ -172,7 +191,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
           }
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary" variant="outlined" className={styles.button}>
+          <Button onClick={() => handleCancel()} color="primary" variant="outlined" className={styles.button}>
             Cancel
           </Button>
           <Button onClick={() => handleConfirmIndicator()} color="primary" variant="contained" disabled={!currentIndicator} className={styles.confirmButton}>
