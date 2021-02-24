@@ -69,7 +69,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
 
     let bot = {
       name,
-      activeStrategy: { id: activeStrategy._id, name: activeStrategy.name },
+      activeStrategy: activeStrategy._id,
       startTime,
       endTime,
       instruments: activeInstruments

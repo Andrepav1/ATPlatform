@@ -74,7 +74,8 @@ export default function BotSummary({ bots, setBots }) {
             <TableCell align="left">
               <Typography noWrap>Bot Name</Typography>
             </TableCell>
-            <TableCell size="small">
+            <TableCell size="small" align="right">
+              <Typography noWrap style={{ marginRight: 16 }}>Live</Typography>
             </TableCell>
           </TableRow>
         </TableHead>

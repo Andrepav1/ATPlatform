@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, FormControl, FormControlLabel, InputLabel, makeStyles, MenuItem, Select, TextField } from '@material-ui/core';
+import { Checkbox, FormControl, FormControlLabel, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
 import Title from './Title';
 import uuid from 'react-uuid';
 

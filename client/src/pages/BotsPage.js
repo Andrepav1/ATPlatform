@@ -50,7 +50,7 @@ function BotsPage({ api_key, account_id }) {
         'Content-Type': 'application/json;charset=utf-8'
       } 
     })
-    .then((result) => {
+    .then(() => {
       refetchBots();
     })
     .catch((error) => {
