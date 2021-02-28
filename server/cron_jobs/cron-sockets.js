@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-var { getAccountSummary } = require('./util/accounts');
+var { getAccountSummary } = require('../util/accounts');
 const fx = require('simple-fxtrade');
 
 const activeSockets = new Set();

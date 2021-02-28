@@ -3,14 +3,18 @@ const ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
 const fx = require('simple-fxtrade');
 const { Bot } = require('../models/bot');
-
+const { getBots } = require('../util/bots');
 
 // Get all bots
 router.get('/', (req, res, next) => {
-  Bot.find({}, (error, bots) => {
-    if(error) return res.json({error});
-    res.json({bots});
-  })
+  getBots()
+  .then((bots) => {
+    // console.log(bots);
+    res.json({ bots });
+  }).catch((error) => {
+    // console.log(error);
+    res.json({ error });
+  });
 })
 
 // get single bot

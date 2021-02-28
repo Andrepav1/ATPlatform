@@ -677,7 +677,7 @@ sift@7.0.1:
 
 simple-fxtrade@Andrepav1/simple-fxtrade:
   version "1.1.7"
-  resolved "https://codeload.github.com/Andrepav1/simple-fxtrade/tar.gz/e798c2cec5769c6b096e2d1e6e7365a687a0cc1c"
+  resolved "https://codeload.github.com/Andrepav1/simple-fxtrade/tar.gz/d94b41fc99908e753c76bc027c3c02ff517b09fc"
   dependencies:
     axios "^0.16.2"
 

@@ -3,12 +3,10 @@ const db = require('../db');
 
 const BotSchema = new db.Schema({
   name: String,
-  activeStrategy: {
-    id: Schema.Types.ObjectId,
-    name: String
-  },
+  activeStrategy: { type: Schema.Types.ObjectId, ref: 'Strategy' },
   startTime: Date,
   endTime: Date,
+  chartPeriod: String,
   instruments: [String],
   userId: Schema.Types.ObjectId,
   live: Boolean

@@ -27,7 +27,7 @@ const {
   IchimokuCloud
 } = require('technicalindicators');
 
-const technicalIndicators = [
+const technicalIndicators = {
   ADL,
   ADX,
   ATR,
@@ -54,7 +54,7 @@ const technicalIndicators = [
   WEMA,
   WilliamsR,
   IchimokuCloud
-];
+};
 
 
 const getIndicatorObject = (name) => {
@@ -471,8 +471,12 @@ const getIndicatorSignalConfig = (name) => {
     case "RSI":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "lowerBound",
+          defaultValue: 30
+        },
+        {
+          name: "upperBound",
+          defaultValue: 70
         }
       ];
     case "SMA":

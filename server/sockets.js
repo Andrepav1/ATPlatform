@@ -1,6 +1,6 @@
 const socketIo = require("socket.io");
 
-const { addSocket, removeSocket } = require('./cron-sockets');
+const { addSocket, removeSocket } = require('./cron_jobs/cron-sockets');
 
 const initSocket = (server) => {
 
