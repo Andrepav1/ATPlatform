@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BotCard({ data }) {
 
   const styles = useStyles();
+  console.log(data);
 
   // ======= TEST DATA =======
   // data.name = "Test Bot"
@@ -46,7 +47,7 @@ export default function BotCard({ data }) {
           </Box>
           <CardHeader
             title={data.name}
-            subheader={data.activeStrategy.name}
+            subheader={data.activeStrategy.name + " (" + data.chartPeriod + ")"}
             titleTypographyProps={{ align: 'center' }}
             subheaderTypographyProps={{ align: 'center' }}
             className={styles.cardHeader}

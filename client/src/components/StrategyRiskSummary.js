@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function StrategyRiskSummary({  }) {
+export default function StrategyRiskSummary() {
 
   const styles = useStyles();
 

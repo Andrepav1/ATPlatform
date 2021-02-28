@@ -42,7 +42,8 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [activeInstruments, setActiveInstruments] = useState([]);
-  const [alwaysOn, setAlwaysOn] = useState(false);
+  const [alwaysOn, setAlwaysOn] = useState(true);
+  const [chartPeriod, setChartPeriod] = useState("H1");
   
   const setStrategyHandler = (strategy) => {
     setActiveStrategy(strategy);
@@ -72,7 +73,9 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
       activeStrategy: activeStrategy._id,
       startTime,
       endTime,
-      instruments: activeInstruments
+      instruments: activeInstruments,
+      chartPeriod,
+      live: false
     }
     
     confirmBot(bot);
@@ -118,7 +121,6 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
           <FormControl fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>Active Instruments</InputLabel>
             <Select
-              className={styles.margin}
               fullWidth 
               multiple
               id="activeInstruments"
@@ -135,6 +137,23 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
                 <MenuItem key={uuid()} value={instrument.name}>{instrument.displayName}</MenuItem>
               ))
             }
+            </Select>
+          </FormControl>
+          <FormControl key={uuid()} fullWidth className={styles.margin}>
+            <InputLabel className={styles.labelPadding}>Chart Period</InputLabel>
+            <Select
+              fullWidth
+              value={chartPeriod}
+              defaultValue={"H1"}
+              onChange={({ target: { value } }) => setChartPeriod(value)}
+              variant="filled"
+            >
+              <MenuItem value={"M5"}>M5</MenuItem>
+              <MenuItem value={"M15"}>M15</MenuItem>
+              <MenuItem value={"M30"}>M30</MenuItem>
+              <MenuItem value={"H1"}>H1</MenuItem>
+              <MenuItem value={"H4"}>H4</MenuItem>
+              <MenuItem value={"D1"}>D1</MenuItem>
             </Select>
           </FormControl>
           <FormControlLabel
