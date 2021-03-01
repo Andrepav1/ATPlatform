@@ -1,12 +1,12 @@
 const {
-  ADL,
+  // ADL,
   ADX,
   ATR,
   AwesomeOscillator,
   BollingerBands,
   CCI,
   ForceIndex,
-  KST,
+  KST, // NOT CURRENTLY AVAILABLE 
   MFI,
   MACD,
   OBV,
@@ -19,23 +19,26 @@ const {
   TRIX,
   TypicalPrice, // NOT CURRENTLY AVAILABLE 
   VWAP,
-  VolumeProfile,
+  VolumeProfile, // NOT CURRENTLY AVAILABLE 
   EMA,
   WMA,
   WEMA,
   WilliamsR,
-  IchimokuCloud
+  IchimokuCloud,
+  // NOT TECHNICAL INDICATORS
+  bullish,
+  bearish
 } = require('technicalindicators');
 
 const technicalIndicators = {
-  ADL,
+  // ADL, // MAYBE ADD LATER
   ADX,
   ATR,
   AwesomeOscillator,
   BollingerBands,
   CCI,
   ForceIndex,
-  // KST,
+  // KST, // NOT CURRENTLY AVAILABLE 
   MFI,
   MACD,
   OBV,
@@ -48,7 +51,7 @@ const technicalIndicators = {
   TRIX,
   // TypicalPrice, // NOT CURRENTLY AVAILABLE 
   VWAP,
-  // VolumeProfile,
+  // VolumeProfile, // NOT CURRENTLY AVAILABLE 
   EMA,
   WMA,
   WEMA,
@@ -56,6 +59,13 @@ const technicalIndicators = {
   IchimokuCloud
 };
 
+const signals = {
+	STRONG_SELL: 0,
+	SELL: 1,
+  NEUTRAL: 2,
+  BUY: 3, 
+  STRONG_BUY: 4
+}
 
 const getIndicatorObject = (name) => {
   return technicalIndicators[name];
@@ -77,7 +87,7 @@ const getIndicatorExpectedInput = (name) => {
       return ["high","low","open","close"];
     case "ForceIndex":
       return ["volume","high","low","open","close"];
-    // case "KST":
+    // case "KST": // NOT CURRENTLY AVAILABLE 
     //   return ["values"];
     case "MFI":
       return ["volume","high","low","close"];
@@ -103,7 +113,7 @@ const getIndicatorExpectedInput = (name) => {
     //   return ["high","low","close"];
     case "VWAP":
       return ["volume","high","low","open","close"];
-    // case "VolumeProfile":
+    // case "VolumeProfile": // NOT CURRENTLY AVAILABLE 
     //   return ["volume","high","low","open","close"];
     case "EMA":
       return ["values"];
@@ -117,6 +127,50 @@ const getIndicatorExpectedInput = (name) => {
       return ["high","low"];
     default:
       return [];
+  }
+}
+
+const getIndicatorSignal = ({ name, signalConfig, config }, values) => {
+
+  console.log(values);
+  switch (name) {
+    // case "ADL":
+    case"ADX":
+    const lastValue = values[values.length-1];
+
+    if(parseInt(lastValue.adx) < 25) // if adx is < 25, trend is weak
+      return signals.NEUTRAL;
+    
+
+    const lastValues = values.slice(values.length-config.period);
+    console.log(lastValues);
+
+    case"ATR":
+    case "AwesomeOscillator":
+    case "BollingerBands":
+    case "CCI":
+    case "ForceIndex":
+    // case "KST": // NOT CURRENTLY AVAILABLE 
+    case "MFI":
+    case "MACD":
+    case "OBV":
+    case "PSAR":
+    case "ROC":
+    case "RSI":
+    case "SMA":
+    case "Stochastic":
+    case "StochasticRSI":
+    case "TRIX":
+    // case "TypicalPrice": // NOT CURRENTLY AVAILABLE 
+    case "VWAP":
+    // case "VolumeProfile": // NOT CURRENTLY AVAILABLE 
+    case "EMA":
+    case "WMA":
+    case "WEMA":
+    case "WilliamsR":
+    case "IchimokuCloud":
+    default:
+      return signals.NEUTRAL;
   }
 }
 
@@ -380,92 +434,92 @@ const getIndicatorSignalConfig = (name) => {
     case "ADL":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case"ADX":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case"ATR":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "AwesomeOscillator":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "BollingerBands":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "CCI":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "ForceIndex":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     // case "KST":
     //   return [
         // {
-        //   name: "candlesSize",
-        //   defaultValue: "H1"
+        //   name: "keepSignalFor",
+        //   defaultValue: "Do not keep signal"
         // }
     //   ];
     case "MFI":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "MACD":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "OBV":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "PSAR":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "ROC":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "RSI":
@@ -482,29 +536,29 @@ const getIndicatorSignalConfig = (name) => {
     case "SMA":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "Stochastic": 
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "StochasticRSI":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ]; 
     case "TRIX":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "VWAP":
@@ -512,43 +566,43 @@ const getIndicatorSignalConfig = (name) => {
     // case "VolumeProfile":
     //   return [
         // {
-        //   name: "candlesSize",
-        //   defaultValue: "H1"
+        //   name: "keepSignalFor",
+        //   defaultValue: "Do not keep signal"
         // }
     //   ];
     case "EMA":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "WMA":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "WEMA":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "WilliamsR":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     case "IchimokuCloud":
       return [
         {
-          name: "candlesSize",
-          defaultValue: "H1"
+          name: "keepSignalFor",
+          defaultValue: "Do not keep signal"
         }
       ];
     default:
@@ -560,6 +614,8 @@ module.exports = {
   technicalIndicators,
   getIndicatorExpectedInput,
   getIndicatorConfig,
+  getIndicatorSignal,
   getIndicatorSignalConfig,
-  getIndicatorObject
+  getIndicatorObject,
+  signals
 }

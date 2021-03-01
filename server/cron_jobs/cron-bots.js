@@ -1,9 +1,9 @@
 const cron = require('node-cron');
 const { getBots } = require('../util/bots');
 const { getInstruments } = require('../util/instruments');
-const { getIndicatorObject, getIndicatorExpectedInput } = require('../util/technical-indicator')
+const { getIndicatorObject, getIndicatorExpectedInput, getIndicatorSignal } = require('../util/technical-indicator')
 
-
+// extract the values needed by the indicator from the instrument candles
 const extractInputData = (candles, values) => {
   let inputData = {}
 
@@ -23,33 +23,35 @@ const extractInputData = (candles, values) => {
   return inputData;
 }
 
+// returns an array of values using the indicator config and expected input
 const calculateIndicator = (indicator, candles) => {
-
   let expectedInput = getIndicatorExpectedInput(indicator.name);
   let inputData = extractInputData(candles, expectedInput);
   inputData = { ...indicator.config, ...inputData, format: (a) => a.toFixed(4) };
 
   let tiObj = getIndicatorObject(indicator.name);
-  let result = tiObj.calculate(inputData);
-
+  return tiObj.calculate(inputData);
 }
 
+// Calculates a buy/sell/neutral signal for each of the indicators
 const calculateSignal = (strategy, candles) => {
 
+  let signals = [];
+
   strategy.indicators.forEach(indicator => {
-    calculateIndicator(indicator, candles);
+    let tiValues = calculateIndicator(indicator, candles);
+    signals.push(getIndicatorSignal(indicator,tiValues));
   });
 
+  console.log(signals);
 }
 
 const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
 
   let instrumentsData = await getInstruments(instruments, chartPeriod);
 
-  let numberOfCandles = 200;
-
   instrumentsData.forEach(({ candles, instrument }) => {
-    calculateSignal(activeStrategy, candles.slice(0, numberOfCandles));
+    calculateSignal(activeStrategy, candles);
   });
 
 
@@ -74,7 +76,7 @@ const calculateBots = async (chartPeriod) => {
 
 }
 
-// cron.schedule('*/15  *  *   *   *   *', () => calculateBots("M5"));
+// cron.schedule('*/2  *  *   *   *   *', () => calculateBots("M5"));
 
 // Schedule bots 5 seconds after the set time...
 // ...making sure that OANDA instruments data is updated

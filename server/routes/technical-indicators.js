@@ -7,7 +7,8 @@ const { technicalIndicators, getIndicatorConfig, getIndicatorSignalConfig } = re
 // get all indicators
 router.get('/', (req, res, next) => {
 
-  const formattedIndicators = technicalIndicators.map((indicator) => {
+  let tiArray = Object.values(technicalIndicators)
+  const formattedIndicators = tiArray.map((indicator) => {
     return {
       name: indicator.name,
       config: getIndicatorConfig(indicator.name),
