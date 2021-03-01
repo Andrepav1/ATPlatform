@@ -32,12 +32,6 @@ export default function StrategyCard({ data }) {
 
   const styles = useStyles();
 
-  // ======= TEST DATA =======
-  // data.name = "Test Strategy"
-  // data.description = "Strategy based on MACD, RSI and SMA"
-  // data.indicators = [{ name: "Awesome Oscillator (AO)", config: {} }, { name: "Awesome Oscillator (AO)", config: {} },{ name: "MA Convergence Divergence (MACD)", config: {} }, { name: "Force Index (FI)", config: {} }]
-  // ======= TEST DATA =======
-
   return (
     <React.Fragment key={uuid()}>
       <Grid item xs={12} sm={6} md={6}>
@@ -46,7 +40,7 @@ export default function StrategyCard({ data }) {
             title={data.name}
             subheader={data.description?data.description:"No description"}
             titleTypographyProps={{ align: 'center' }}
-            subheaderTypographyProps={{ align: 'center' }}
+            subheaderTypographyProps={{ align: 'center', style: { height: 44, overflow: "hidden" }}}
             className={styles.cardHeader}
           />
           <CardContent>

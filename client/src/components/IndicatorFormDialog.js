@@ -152,23 +152,27 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
             currentIndicator && 
             currentIndicator.signalConfig.map((data) => {
 
-              if(data.name === "candlesSize") {
+              if(data.name === "keepSignalFor") {
                 return (
                   <FormControl key={uuid()} fullWidth className={styles.margin}>
-                    <InputLabel className={styles.labelPadding}>Candle Size</InputLabel>
+                    <InputLabel className={styles.labelPadding}>Keep Signal For</InputLabel>
                     <Select
-                      
                       fullWidth
                       defaultValue={data.defaultValue}
-                      onChange={({ target: { value } }) => handleSignalConfigChange("candlesSize", value)}
+                      onChange={({ target: { value } }) => handleSignalConfigChange("keepSignalFor", value)}
                       variant="filled"
                     >
-                      <MenuItem value={"M5"}>M5</MenuItem>
-                      <MenuItem value={"M15"}>M15</MenuItem>
-                      <MenuItem value={"M30"}>M30</MenuItem>
-                      <MenuItem value={"H1"}>H1</MenuItem>
-                      <MenuItem value={"H4"}>H4</MenuItem>
-                      <MenuItem value={"D1"}>D1</MenuItem>
+                      <MenuItem value={"Do not keep signal"}>Do not keep signal</MenuItem>
+                      <MenuItem value={1}>1 candle</MenuItem>
+                      <MenuItem value={2}>2 candles</MenuItem>
+                      <MenuItem value={3}>3 candles</MenuItem>
+                      <MenuItem value={4}>4 candles</MenuItem>
+                      <MenuItem value={5}>5 candles</MenuItem>
+                      <MenuItem value={6}>6 candles</MenuItem>
+                      <MenuItem value={7}>7 candles</MenuItem>
+                      <MenuItem value={8}>8 candles</MenuItem>
+                      <MenuItem value={9}>9 candles</MenuItem>
+                      <MenuItem value={10}>10 candles</MenuItem>
                     </Select>
                   </FormControl>
                 )

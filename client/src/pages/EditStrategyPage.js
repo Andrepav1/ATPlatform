@@ -146,7 +146,7 @@ function EditStrategyPage({ history }) {
         }
         <Grid container spacing={2}>
           
-          <Grid item xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={5} lg={4}>
             <Paper className={styles.paper}>
               <StrategySummary 
                 strategyName={strategyName} 
@@ -160,7 +160,7 @@ function EditStrategyPage({ history }) {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={8} lg={9}>
+          <Grid item xs={12} md={7} lg={8}>
             <Paper className={styles.paper}>
               <IndicatorsTable indicators={strategyIndicators} editIndicator={editIndicator} removeIndicator={removeIndicator}/>
             </Paper>

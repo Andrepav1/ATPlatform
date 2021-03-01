@@ -17,8 +17,15 @@ export default function StrategyRiskSummary() {
 
   const styles = useStyles();
 
-  const [autoRiskManagement, setAutoRiskManagement] = useState(false)
-  const [RRR, setRRR] = useState()
+  const [autoRiskManagement, setAutoRiskManagement] = useState(true)
+  const [RRR, setRRR] = useState("")
+
+  const setAutoRiskManagementHandler = (checked) => {
+    setAutoRiskManagement(checked);
+    if(checked) {
+      setRRR("");
+    }
+  }
   
   return (
     <React.Fragment>
@@ -29,13 +36,11 @@ export default function StrategyRiskSummary() {
           <Select
             key={uuid()}
             fullWidth
-            defaultValue={"None"}
             value={RRR}
             onChange={({ target: { value } }) => setRRR(value)}
             variant="filled"
             disabled={autoRiskManagement}
           >
-            <MenuItem value={"None"}>None</MenuItem>
             <MenuItem value={"1"}>1:1</MenuItem>
             <MenuItem value={"1.5"}>1.5:1</MenuItem>
             <MenuItem value={"2"}>2:1</MenuItem>
@@ -50,7 +55,7 @@ export default function StrategyRiskSummary() {
           control={
             <Checkbox
               checked={autoRiskManagement} 
-              onChange={({ target: {checked} }) => setAutoRiskManagement(checked)} 
+              onChange={({ target: {checked} }) => setAutoRiskManagementHandler(checked)} 
               color="primary" 
             />}
           label="Auto Risk Management"

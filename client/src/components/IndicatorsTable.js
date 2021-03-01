@@ -21,12 +21,17 @@ const useStyles = makeStyles((theme) => ({
 export default function IndicatorsTable({ indicators, editIndicator, removeIndicator }) {
   const styles = useStyles();
 
+  const getConfigData = ({ config, signalConfig }) => {
+    let configData = Object.entries({ ...config, ...signalConfig});
+    return configData.map(([k,v]) => k + ": " + v).join(", ");
+  }
+
   const getIndicatorRow = (indicator) => {
 
     return (
       <TableRow key={uuid()}> 
         <TableCell>{indicator.name}</TableCell>
-        <TableCell>{indicator.signalConfig.candlesSize}</TableCell>
+        <TableCell>{getConfigData(indicator)}</TableCell>
         <TableCell size="small">
           <Box display="flex" flexDirection="row-reverse">
             <IconButton color="default" onClick={() => editIndicator(indicator.id)}>
@@ -48,7 +53,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
           <TableHead>
             <TableRow>
               <TableCell>Indicator</TableCell>
-              <TableCell>Candle Size</TableCell>
+              <TableCell>Configuration</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -64,7 +69,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
         <TableHead>
           <TableRow>
             <TableCell>Indicator</TableCell>
-            <TableCell>Candle Size</TableCell>
+            <TableCell>Configuration</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
