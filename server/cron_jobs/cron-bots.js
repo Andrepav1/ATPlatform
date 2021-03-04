@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const { getBots } = require('../util/bots');
 const { getInstruments } = require('../util/instruments');
-const { getIndicatorObject, getIndicatorExpectedInput, getIndicatorSignal } = require('../util/technical-indicator')
+const { calculateIndicatorValues, getIndicatorExpectedInput, getIndicatorSignal } = require('../util/technical-indicator')
 
 // extract the values needed by the indicator from the instrument candles
 const extractInputData = (candles, values) => {
@@ -29,8 +29,7 @@ const calculateIndicator = (indicator, candles) => {
   let inputData = extractInputData(candles, expectedInput);
   inputData = { ...indicator.config, ...inputData, format: (a) => a.toFixed(4) };
 
-  let tiObj = getIndicatorObject(indicator.name);
-  return tiObj.calculate(inputData);
+  return calculateIndicatorValues(indicator, inputData);
 }
 
 // Calculates a buy/sell/neutral signal for each of the indicators
@@ -40,7 +39,7 @@ const calculateSignal = (strategy, candles) => {
 
   strategy.indicators.forEach(indicator => {
     let tiValues = calculateIndicator(indicator, candles);
-    signals.push(getIndicatorSignal(indicator,tiValues));
+    signals.push(getIndicatorSignal(indicator, tiValues));
   });
 
   console.log(signals);
@@ -76,7 +75,7 @@ const calculateBots = async (chartPeriod) => {
 
 }
 
-// cron.schedule('*/2  *  *   *   *   *', () => calculateBots("M5"));
+// cron.schedule('*/5  *  *   *   *   *', () => calculateBots("H1"));
 
 // Schedule bots 5 seconds after the set time...
 // ...making sure that OANDA instruments data is updated
