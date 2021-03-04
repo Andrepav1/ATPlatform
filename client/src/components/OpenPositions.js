@@ -13,6 +13,7 @@ import { Box, IconButton } from '@material-ui/core';
 import Title from './Title';
 import { fetchRequest, createURL } from '../util/network';
 import ConfirmDialog from './ConfirmDialog';
+import { BUY_GREEN, SELL_RED } from '../util/colors'
 
 const useStyles = makeStyles((theme) => ({
   noTransactionsText: {
@@ -61,7 +62,7 @@ export default function OpenPositions({ positions }) {
 
   const getBUYSELLText = (isBuy) => {
     return (
-      <b style={{ backgroundColor: isBuy?"#1bf723":"#de0000", padding: 6, borderRadius: 4, color: "white" }}>{isBuy?"BUY":"SELL"}</b> 
+      <b style={{ backgroundColor: isBuy?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white" }}>{isBuy?"BUY":"SELL"}</b> 
     )
   }
 
