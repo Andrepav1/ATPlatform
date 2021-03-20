@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const fx = require('simple-fxtrade');
-const { technicalIndicators, getIndicatorConfig, getIndicatorSignalConfig } = require('../util/technical-indicator')
+const { technicalIndicators, getIndicatorConfig, getIndicatorComponents } = require('../util/technical-indicator')
 
 
 // get all indicators
@@ -12,7 +11,7 @@ router.get('/', (req, res, next) => {
     return {
       name: indicator.name,
       config: getIndicatorConfig(indicator.name),
-      signalConfig: getIndicatorSignalConfig(indicator.name),
+      components: getIndicatorComponents(indicator.name),
     }
   })
 

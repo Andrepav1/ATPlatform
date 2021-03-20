@@ -37,23 +37,34 @@ const calculateSignal = (strategy, candles) => {
 
   let signals = [];
 
+  // let cLog = [...candles];
+  // console.log(cLog.reverse().slice(0,10));
+
+  let values = extractInputData(candles, ["values"]).values.reverse();
+  console.log(values);
+
   strategy.indicators.forEach(indicator => {
     let tiValues = calculateIndicator(indicator, candles);
-    signals.push(getIndicatorSignal(indicator, tiValues));
+    signals.push(getIndicatorSignal(indicator, tiValues, values));
   });
 
   console.log(signals);
+
+  return signals;
 }
 
 const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
 
-  let instrumentsData = await getInstruments(instruments, chartPeriod);
+  try {
+    let instrumentsData = await getInstruments(instruments, chartPeriod);
 
-  instrumentsData.forEach(({ candles, instrument }) => {
-    calculateSignal(activeStrategy, candles);
-  });
+    instrumentsData.forEach(({ candles, instrument }) => {
+      let signals = calculateSignal(activeStrategy, candles);
+    });
 
-
+  } catch (error) {
+    console.log(error.errorMessage);
+  }
 }
 
 const calculateBots = async (chartPeriod) => {
@@ -70,12 +81,12 @@ const calculateBots = async (chartPeriod) => {
     }); 
 
   } catch (error) {
-    console.log(error);
+    console.log(error.errorMessage);
   }
 
-}
+} 
 
-// cron.schedule('*/5  *  *   *   *   *', () => calculateBots("H1"));
+// cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M30"));
 
 // Schedule bots 5 seconds after the set time...
 // ...making sure that OANDA instruments data is updated

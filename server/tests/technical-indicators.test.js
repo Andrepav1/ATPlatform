@@ -1,4 +1,5 @@
-const { calculateIndicatorValues } = require('../util/technical-indicator');
+const { calculateIndicatorValues, getIndicatorSignal, getIndicatorExpectedInput, signals } = require('../util/technical-indicator');
+const { latestValues, extractInputData } = require('./tests-util');
 
 test('Testing DoubleMovingAverageCrossover', () => {
 
@@ -9,8 +10,8 @@ test('Testing DoubleMovingAverageCrossover', () => {
     shortPeriod: 7, 
     longPeriod: 15
   }
+
   const result = calculateIndicatorValues({ name: "DoubleMovingAverageCrossover" }, inputData)
-  
   
   const expected = [
     { short: 12, long: 8 },
@@ -27,4 +28,21 @@ test('Testing DoubleMovingAverageCrossover', () => {
   ];
 
   expect(result.reverse()).toEqual(expected);
+})
+
+test('ATR Testing', () => {
+
+  const expectedInput = getIndicatorExpectedInput("ATR");
+  let inputData = extractInputData(latestValues, expectedInput);
+  inputData = { ...inputData, period: 14, format: (a) => a.toFixed(4) };
+
+  const values = calculateIndicatorValues({ name: "ATR" }, inputData);
+
+  const signal = getIndicatorSignal({ 
+    name: "ATR", 
+    signalConfig: { buySignal: 10, sellSignal: 10, keepSignalFor: 10, }}, 
+    values
+  );
+
+  expect(signal).toEqual(signals.NEUTRAL);
 })

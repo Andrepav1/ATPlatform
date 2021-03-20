@@ -6,7 +6,6 @@ const {
   BollingerBands,
   CCI,
   ForceIndex,
-  KST, // NOT CURRENTLY AVAILABLE 
   MFI,
   MACD,
   OBV,
@@ -17,18 +16,15 @@ const {
   Stochastic,
   StochasticRSI,
   TRIX,
-  TypicalPrice, // NOT CURRENTLY AVAILABLE 
   VWAP,
-  VolumeProfile, // NOT CURRENTLY AVAILABLE 
   EMA,
   WMA,
   WEMA,
   WilliamsR,
   IchimokuCloud,
-  // NOT TECHNICAL INDICATORS
-  crossDown,
-  crossUp
 } = require('technicalindicators');
+
+const { comparisons, signals } = require('../util/constants');
 
 function getMovingAverageObject(type) {
   switch (type) {
@@ -105,50 +101,48 @@ class DoubleMovingAverageCrossover {
   }
 } 
 
-class TripleMovingAverageCrossover {
-  constructor() {
-    this.name = "TripleMovingAverageCrossover";
-    this.label = "Triple Moving Average Crossover"
-  }
+// class TripleMovingAverageCrossover {
+//   constructor() {
+//     this.name = "TripleMovingAverageCrossover";
+//     this.label = "Triple Moving Average Crossover"
+//   }
 
-  calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format }) {
-    return TripleMovingAverageCrossover.calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format })
-  }
+//   calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format }) {
+//     return TripleMovingAverageCrossover.calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format })
+//   }
 
-  static calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format = x => x }) {
+//   static calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format = x => x }) {
     
-    const shortMA = getMovingAverageObject(shortMethod);
-    const mediumMA = getMovingAverageObject(mediumMethod);
-    const longMA = getMovingAverageObject(longMethod);
+//     const shortMA = getMovingAverageObject(shortMethod);
+//     const mediumMA = getMovingAverageObject(mediumMethod);
+//     const longMA = getMovingAverageObject(longMethod);
 
-    const shortValues = shortMA.calculate({ values, period: shortPeriod, format }).reverse();
-    const mediumValues = mediumMA.calculate({ values, period: mediumPeriod, format }).reverse();
-    const longValues = longMA.calculate({ values, period: longPeriod, format }).reverse();
+//     const shortValues = shortMA.calculate({ values, period: shortPeriod, format }).reverse();
+//     const mediumValues = mediumMA.calculate({ values, period: mediumPeriod, format }).reverse();
+//     const longValues = longMA.calculate({ values, period: longPeriod, format }).reverse();
 
-    const result = []
+//     const result = []
 
-    let arrLength = longValues.length;
-    for (let i = 0; i < arrLength; i++) {
-      let short = shortValues.shift();
-      let medium = mediumValues.shift();
-      let long = longValues.shift();
-      result.unshift({ short, medium, long });
-    }
+//     let arrLength = longValues.length;
+//     for (let i = 0; i < arrLength; i++) {
+//       let short = shortValues.shift();
+//       let medium = mediumValues.shift();
+//       let long = longValues.shift();
+//       result.unshift({ short, medium, long });
+//     }
 
-    return result;
-  }
-} 
+//     return result;
+//   }
+// } 
 
 
 const technicalIndicators = {
-  // ADL, // MAYBE ADD LATER
   ADX,
   ATR,
   AwesomeOscillator,
   BollingerBands,
   CCI,
   ForceIndex,
-  // KST, // NOT CURRENTLY AVAILABLE 
   MFI,
   MACD,
   OBV,
@@ -158,16 +152,12 @@ const technicalIndicators = {
   Stochastic,
   StochasticRSI,
   TRIX,
-  // TypicalPrice, // NOT CURRENTLY AVAILABLE 
   VWAP,
-  // VolumeProfile, // NOT CURRENTLY AVAILABLE 
   WilliamsR,
   IchimokuCloud,
-
   // MOVING AVERAGE CROSSOVER INDICATORS
   MovingAveragePriceCrossover,
   DoubleMovingAverageCrossover,
-  TripleMovingAverageCrossover
 };
 
 // return an array
@@ -190,16 +180,57 @@ const crossOver = (lineA, lineB) => {
   return result;
 }
 
-const signals = {
-	STRONG_SELL: 0,
-	SELL: 1,
-  NEUTRAL: 2,
-  BUY: 3, 
-  STRONG_BUY: 4
-}
-
 const getIndicatorObject = (name) => {
   return technicalIndicators[name];
+}
+
+const getIndicatorComponents = (name) => {
+  switch (name) {
+    case "ADL":
+      return ["ADL", "price", "number"];
+    case "ADX":
+      return ["adx","mdi","pdi", "price", "number"];
+    case "ATR":
+      return ["ATR", "price", "number"];
+    case "AwesomeOscillator":
+      return ["AwesomeOscillator", "price", "number"];
+    case "BollingerBands":
+      return ["lower", "middle", "upper", "price", "number"]; 
+    case "CCI":
+      return ["CCI", "price", "number"];
+    case "ForceIndex":
+      return ["ForceIndex", "price", "number"];
+    case "MFI":
+      return ["MFI", "price", "number"];
+    case "MACD":
+      return ["MACD", "price", "number", "histogram", "signal" ];
+    case "OBV":
+      return ["OBV", "price", "number"];
+    case "PSAR":
+      return ["PSAR", "price", "number"];
+    case "ROC":
+      return ["ROC", "price", "number"];
+    case "RSI":
+      return ["RSI", "price", "number"];
+    case "Stochastic":
+      return ["d", "k", "price", "number"];
+    case "StochasticRSI":
+      return ["StochasticRSI", "price", "number"];
+    case "TRIX":
+      return ["TRIX", "price", "number"];
+    case "VWAP":
+      return ["VWAP", "price", "number"];
+    case "WilliamsR":
+      return ["WilliamsR", "price", "number"];
+    case "IchimokuCloud":
+      return ["conversion", "base", "spanA", "spanB"];
+    case "MovingAverage":
+      return ["MA", "price", "number"];
+    case "DoubleMovingAverageCrossover":
+      return ["shortMA", "longMA", "price", "number"];
+    default:
+      return ["price", "number"];
+  }
 }
 
 const getIndicatorExpectedInput = (name) => {
@@ -249,11 +280,11 @@ const getIndicatorExpectedInput = (name) => {
     case "IchimokuCloud":
       return ["high","low"];
     case "MovingAveragePriceCrossover":
-      return ["values"]
+      return ["values"];
     case "DoubleMovingAverageCrossover":
-      return ["values"]
+      return ["values"];
     case "TripleMovingAverageCrossover":
-      return ["values"]
+      return ["values"];
     default:
       return [];
   }
@@ -304,53 +335,64 @@ const calculateIndicatorValues = ({ name }, inputData) => {
       return MovingAveragePriceCrossover.calculate(inputData).reverse();
     case "DoubleMovingAverageCrossover":
       return DoubleMovingAverageCrossover.calculate(inputData).reverse();
-    case "TripleMovingAverageCrossover":
-      return TripleMovingAverageCrossover.calculate(inputData).reverse();
     default:
       return [];
   }
 }
 
-const getIndicatorSignal = ({ name, signalConfig, config }, values) => {
-
+const getIndicatorSignal = ({ name, config }, values) => {
+  
   let result;
-  const latestValues = values.slice(0,signalConfig.keepSignalFor);
+
+  const latestValues = values.slice(0,config.keepSignalFor);
   
   // =======================================================
   // SWITCH
   switch (name) {
     // case "ADL":
     case"ADX":
-    const lastValue = latestValues[0];
+      const lastValue = latestValues[0];
 
-    if(parseInt(lastValue.adx) < 25) { // if adx is < 25, trend is weak
+      if(parseInt(lastValue.adx) < 25) { // if adx is < 25, trend is weak
+        return signals.NEUTRAL;
+      }
+      
+      // get all pdi and mdi values
+      const pdiLine = latestValues.map(({pdi}) => parseFloat(parseFloat(pdi).toFixed(2)))
+      const mdiLine = latestValues.map(({mdi}) => parseFloat(parseFloat(mdi).toFixed(2)))
+
+      // calculate crossUp and cross down reversing values so that most recent value is [0]
+      let crossUpValues = crossUp({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
+      let crossDownValues = crossDown({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
+
+      console.log(pdiLine.reverse());
+      console.log(mdiLine.reverse());
+      console.log(crossUpValues);
+      console.log(crossDownValues);
+      
       return signals.NEUTRAL;
-    }
-    
-    // get all pdi and mdi values
-    const pdiLine = latestValues.map(({pdi}) => parseFloat(parseFloat(pdi).toFixed(2)))
-    const mdiLine = latestValues.map(({mdi}) => parseFloat(parseFloat(mdi).toFixed(2)))
-
-    // calculate crossUp and cross down reversing values so that most recent value is [0]
-    let crossUpValues = crossUp({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
-    let crossDownValues = crossDown({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
-
-    console.log(pdiLine.reverse());
-    console.log(mdiLine.reverse());
-    console.log(crossUpValues);
-    console.log(crossDownValues);
-
-    case"ATR":
+    case "ATR":
+      return signals.NEUTRAL;
     case "AwesomeOscillator":
+      return signals.NEUTRAL;
     case "BollingerBands":
+      console.log(latestValues);
+      return signals.NEUTRAL;
     case "CCI":
+      return signals.NEUTRAL;
     case "ForceIndex":
+      return signals.NEUTRAL;
     // case "KST": // NOT CURRENTLY AVAILABLE 
     case "MFI":
+      return signals.NEUTRAL;
     case "MACD":
+      return signals.NEUTRAL;
     case "OBV":
+      return signals.NEUTRAL;
     case "PSAR":
+      return signals.NEUTRAL;
     case "ROC":
+      return signals.NEUTRAL;
     case "RSI":
       for (const value of latestValues) {
         
@@ -363,18 +405,20 @@ const getIndicatorSignal = ({ name, signalConfig, config }, values) => {
         else { } // Do Nothing
       }
       return signals.NEUTRAL;
-    case "SMA":
     case "Stochastic":
+      return signals.NEUTRAL;
     case "StochasticRSI":
+      return signals.NEUTRAL;
     case "TRIX":
+      return signals.NEUTRAL;
     // case "TypicalPrice": // NOT CURRENTLY AVAILABLE 
     case "VWAP":
+      return signals.NEUTRAL;
     // case "VolumeProfile": // NOT CURRENTLY AVAILABLE 
-    case "EMA":
-    case "WMA":
-    case "WEMA":
     case "WilliamsR":
+      return signals.NEUTRAL;
     case "IchimokuCloud":
+      return signals.NEUTRAL;
     case "MovingAveragePriceCrossover":
       
       let mas = latestValues.map(({ma}) => parseFloat(ma));
@@ -397,8 +441,8 @@ const getIndicatorSignal = ({ name, signalConfig, config }, values) => {
       let shortMA = latestValues.map(({short}) => parseFloat(short));
       let longMA = latestValues.map(({long}) => parseFloat(long));
       
-      console.log(shortMA);
-      console.log(longMA);
+      // console.log(shortMA);
+      // console.log(longMA);
 
       result = crossOver(shortMA.reverse(), longMA.reverse()).reverse();
       
@@ -410,26 +454,6 @@ const getIndicatorSignal = ({ name, signalConfig, config }, values) => {
           return signals.BUY;
         }
       }
-      return signals.NEUTRAL;
-      
-    case "TripleMovingAverageCrossover":
-      
-      // let shortMA = latestValues.map(({short}) => parseFloat(short));
-      // let longMA = latestValues.map(({long}) => parseFloat(long));
-      
-      // console.log(shortMA);
-      // console.log(longMA);
-
-      // result = crossOver(shortMA.reverse(), longMA.reverse()).reverse();
-      
-      // for (const value of result) {
-      //   if(value === 1) {
-      //     return signals.SELL;
-      //   }
-      //   else if(value === -1) {
-      //     return signals.BUY;
-      //   }
-      // }
       return signals.NEUTRAL;
       
     default:
@@ -448,6 +472,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 14
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case"ATR":
@@ -456,6 +484,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 14
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "AwesomeOscillator":
@@ -469,6 +501,10 @@ const getIndicatorConfig = (name) => {
           name: "slowPeriod",
           type: "number",
           defaultValue: 34
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "BollingerBands":
@@ -482,6 +518,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 20
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "CCI":
@@ -490,6 +530,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 20
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "ForceIndex":
@@ -498,23 +542,22 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 13
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
-    // case "KST":
-    //   return [
-    //     {
-    //       name: "signalPeriod",
-    //       type: "number",
-    //       defaultValue: 1
-    //     },
-    //     // MANY OTHERS: TODO
-    //   ];
     case "MFI":
       return [
         {
           name: "period",
           type: "number",
           defaultValue: 14
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "MACD":
@@ -533,12 +576,21 @@ const getIndicatorConfig = (name) => {
           name: "signalPeriod",
           type: "number",
           defaultValue: 9
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
         // Boolean: SimpleMAOscillator TODO
         // Boolean: SimpleMASignal TODO
       ];
     case "OBV":
-      return [];
+      return [
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
+        }
+      ];
     case "PSAR":
       return [
         {
@@ -550,6 +602,10 @@ const getIndicatorConfig = (name) => {
           name: "max",
           type: "float",
           defaultValue: 0.2
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "ROC":
@@ -558,6 +614,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 9
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "RSI":
@@ -566,14 +626,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 10
-        }
-      ];
-    case "SMA":
-      return [
+        },
         {
-          name: "period",
-          type: "number",
-          defaultValue: 10
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "Stochastic": 
@@ -587,6 +643,10 @@ const getIndicatorConfig = (name) => {
           name: "signalPeriod",
           type: "number",
           defaultValue: 3
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "StochasticRSI":
@@ -610,6 +670,10 @@ const getIndicatorConfig = (name) => {
           name: "stochasticPeriod",
           type: "number",
           defaultValue: 14
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ]; 
     case "TRIX":
@@ -618,40 +682,17 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 15
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "VWAP":
-      return [];
-    // case "VolumeProfile":
-    //   return [
-    //     {
-    //       name: "noOfBars",
-    //       type: "number",
-    //       defaultValue: 1
-    //     }
-    //   ];
-    case "EMA":
       return [
         {
-          name: "period",
-          type: "number",
-          defaultValue: 14
-        }
-      ];
-    case "WMA":
-      return [
-        {
-          name: "period",
-          type: "number",
-          defaultValue: 14
-        }
-      ];
-    case "WEMA":
-      return [
-        {
-          name: "period",
-          type: "number",
-          defaultValue: 14
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "WilliamsR":
@@ -660,6 +701,10 @@ const getIndicatorConfig = (name) => {
           name: "period",
           type: "number",
           defaultValue: 14
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "IchimokuCloud":
@@ -683,6 +728,10 @@ const getIndicatorConfig = (name) => {
           name: "displacement",
           type: "number",
           defaultValue: 26
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "MovingAveragePriceCrossover":
@@ -697,6 +746,10 @@ const getIndicatorConfig = (name) => {
           type: "enum",
           enum: ["SMA","EMA","WEMA","WMA"],
           defaultValue: "SMA"
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 1
         }
       ];
     case "DoubleMovingAverageCrossover":
@@ -723,421 +776,47 @@ const getIndicatorConfig = (name) => {
           enum: ["SMA","EMA","WEMA","WMA"],
           defaultValue: "SMA"
         },
-      ];
-    case "TripleMovingAverageCrossover":
-      return [
-        {
-          name: "shortPeriod",
-          type: "number",
-          defaultValue: 14
-        },
-        {
-          name: "mediumPeriod",
-          type: "number",
-          defaultValue: 50
-        },
-        {
-          name: "longPeriod",
-          type: "number",
-          defaultValue: 200
-        },
-        {
-          name: "shortMethod",
-          type: "enum",
-          enum: ["SMA","EMA","WEMA","WMA"],
-          defaultValue: "SMA"
-        },
-        {
-          name: "mediumMethod",
-          type: "enum",
-          enum: ["SMA","EMA","WEMA","WMA"],
-          defaultValue: "SMA"
-        },
-        {
-          name: "longMethod",
-          type: "enum",
-          enum: ["SMA","EMA","WEMA","WMA"],
-          defaultValue: "SMA"
-        },
-      ];
-    default:
-      return [];
-  }
-}
-
-
-const getIndicatorSignalConfig = (name) => {
-
-  switch (name) {
-    case "ADL":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
         {
           name: "keepSignalFor",
           defaultValue: 1
         }
       ];
-    case"ADX":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case"ATR":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "AwesomeOscillator":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "BollingerBands":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "CCI":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "ForceIndex":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    // case "KST":
+    // case "TripleMovingAverageCrossover":
     //   return [
-        //   name: "keepSignalFor",
-        //   defaultValue: 1
-        // }
+    //     {
+    //       name: "shortPeriod",
+    //       type: "number",
+    //       defaultValue: 14
+    //     },
+    //     {
+    //       name: "mediumPeriod",
+    //       type: "number",
+    //       defaultValue: 50
+    //     },
+    //     {
+    //       name: "longPeriod",
+    //       type: "number",
+    //       defaultValue: 100
+    //     },
+    //     {
+    //       name: "shortMethod",
+    //       type: "enum",
+    //       enum: ["SMA","EMA","WEMA","WMA"],
+    //       defaultValue: "SMA"
+    //     },
+    //     {
+    //       name: "mediumMethod",
+    //       type: "enum",
+    //       enum: ["SMA","EMA","WEMA","WMA"],
+    //       defaultValue: "SMA"
+    //     },
+    //     {
+    //       name: "longMethod",
+    //       type: "enum",
+    //       enum: ["SMA","EMA","WEMA","WMA"],
+    //       defaultValue: "SMA"
+    //     },
     //   ];
-    case "MFI":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "MACD":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "OBV":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "PSAR":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "ROC":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "RSI":
-      return [
-        {
-          name: "buySignal",
-          label: "Lower Bound",
-          defaultValue: 30,
-          type: "number"
-        },
-        {
-          name: "sellSignal",
-          label: "Upper Bound",
-          defaultValue: 70,
-          type: "number"
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "SMA":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "Stochastic": 
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "StochasticRSI":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ]; 
-    case "TRIX":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "VWAP":
-      return [];
-    // case "VolumeProfile":
-    //   return [
-        //   name: "keepSignalFor",
-        //   defaultValue: 1
-        // }
-    //   ];
-    case "EMA":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "WMA":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "WEMA":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "WilliamsR":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "IchimokuCloud":
-      return [
-        {
-          name: "buySignal",
-          defaultValue: ""
-        },
-        {
-          name: "sellSignal",
-          defaultValue: ""
-        },
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "MovingAveragePriceCrossover":
-      return [
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "DoubleMovingAverageCrossover":
-      return [
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
-    case "TripleMovingAverageCrossover":
-      return [
-        {
-          name: "keepSignalFor",
-          defaultValue: 1
-        }
-      ];
     default:
       return [];
   }
@@ -1145,11 +824,10 @@ const getIndicatorSignalConfig = (name) => {
 
 module.exports = {
   technicalIndicators,
+  getIndicatorComponents,
   getIndicatorExpectedInput,
   getIndicatorConfig,
   getIndicatorSignal,
-  getIndicatorSignalConfig,
   getIndicatorObject,
   calculateIndicatorValues,
-  signals
 }
