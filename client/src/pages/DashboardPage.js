@@ -55,7 +55,7 @@ function DashboardPage({ api_key, account_id }) {
     let summary_url = createURL("/accounts/summary", { apiKey: api_key, accountId: account_id })
     fetchRequest({ url: summary_url })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       setSummaryData(result);
     })
     .catch((error) => {
@@ -67,7 +67,7 @@ function DashboardPage({ api_key, account_id }) {
     let positions_url = createURL("/trades", { apiKey: api_key, accountId: account_id })
     fetchRequest({ url: positions_url })
     .then(({trades}) => {
-      console.log(trades);
+      // console.log(trades);
       setPositionsData(trades);
     })
     .catch((error) => {
@@ -79,7 +79,7 @@ function DashboardPage({ api_key, account_id }) {
     let transactions_url = createURL("/transactions", { apiKey: api_key, accountId: account_id });
     fetchRequest({ url: transactions_url })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       let transactionCount = 5;
       setActivityData(result.reverse().slice(0,transactionCount));
     })

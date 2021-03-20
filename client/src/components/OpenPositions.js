@@ -1,7 +1,6 @@
 import React from 'react';
 import uuid from 'react-uuid';
 
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,14 +14,8 @@ import { fetchRequest, createURL } from '../util/network';
 import ConfirmDialog from './ConfirmDialog';
 import { BUY_GREEN, SELL_RED } from '../util/colors'
 
-const useStyles = makeStyles((theme) => ({
-  noTransactionsText: {
-    padding: theme.spacing(4)
-  },
-}));
 
 export default function OpenPositions({ positions }) {
-  const styles = useStyles();
 
   const [open, setOpen] = React.useState(false);
   
@@ -105,7 +98,7 @@ export default function OpenPositions({ positions }) {
             </TableRow>
           </TableHead>
         </Table>
-        <Typography className={styles.noTransactionsText}>No open positions</Typography>
+        <Typography noWrap style={{ marginTop: 90, color: "#88888888" }}>Nothing here</Typography>
       </React.Fragment>
     )
   }

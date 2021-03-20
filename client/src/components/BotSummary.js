@@ -63,7 +63,14 @@ export default function BotSummary({ bots, setBots }) {
     )
   }
 
-  if(!bots || bots.length === 0) return null;
+  if(!bots || bots.length === 0) {
+    return (
+      <React.Fragment>
+        <Title>Bot Summary</Title>
+        <Typography noWrap style={{ marginTop: 100, color: "#88888888" }}>Nothing here</Typography>
+      </React.Fragment>
+    );
+  }
 
   return (
     <React.Fragment>

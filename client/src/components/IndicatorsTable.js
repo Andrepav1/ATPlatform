@@ -21,9 +21,22 @@ const useStyles = makeStyles((theme) => ({
 export default function IndicatorsTable({ indicators, editIndicator, removeIndicator }) {
   const styles = useStyles();
 
-  const getConfigData = ({ config, signalConfig }) => {
-    let configData = Object.entries({ ...config, ...signalConfig});
+  const getConfigData = ({ config }) => {
+    let configData = Object.entries(config);
     return configData.map(([k,v]) => k + ": " + v).join(", ");
+  }
+
+  const getSignalsData = ({ signals }) => {
+    let buySignals = 0, sellSignals = 0;
+    for (let i = 0; i < signals.length; i++) {
+      if(signals[i].type === "BUY") { // BUY
+        buySignals++;
+      }
+      else { // SELL
+        sellSignals++;
+      }
+    }
+    return buySignals + " BUY, " + sellSignals + " SELL"
   }
 
   const getIndicatorRow = (indicator) => {
@@ -32,6 +45,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
       <TableRow key={uuid()}> 
         <TableCell>{indicator.name}</TableCell>
         <TableCell>{getConfigData(indicator)}</TableCell>
+        <TableCell>{getSignalsData(indicator)}</TableCell>
         <TableCell size="small">
           <Box display="flex" flexDirection="row-reverse">
             <IconButton color="default" onClick={() => editIndicator(indicator.id)}>
@@ -54,6 +68,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
             <TableRow>
               <TableCell>Indicator</TableCell>
               <TableCell>Configuration</TableCell>
+              <TableCell>Signals</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -70,6 +85,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
           <TableRow>
             <TableCell>Indicator</TableCell>
             <TableCell>Configuration</TableCell>
+            <TableCell>Signals</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

@@ -16,7 +16,7 @@ export default function Summary({ data }) {
 
   // const styles = useStyles();
 
-  console.log(data);
+  // console.log(data);
 
   const getCurrencySymbol = (currency) => {
     switch (currency) {

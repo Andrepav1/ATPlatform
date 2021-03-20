@@ -68,6 +68,9 @@ function EditStrategyPage({ history }) {
   }
 
   const editIndicator = (id) => { // Editing Indicator TODO
+
+    alert("Edit indicator: " + id);
+
     // let indicator = strategyIndicators.find((indicator) => id === indicator.id);
     // setEditingIndicator(indicator);
     // console.log("edit", indicator);
@@ -101,7 +104,7 @@ function EditStrategyPage({ history }) {
       } 
     })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       history.push("/strategies");
     })
     .catch((error) => {
@@ -113,7 +116,7 @@ function EditStrategyPage({ history }) {
     let indicators_url = createURL("/indicators");
     fetchRequest({ url: indicators_url })
     .then((result) => {
-      console.log(result);
+      // console.log(result);
       
       setIndicatorsData(result);
     })

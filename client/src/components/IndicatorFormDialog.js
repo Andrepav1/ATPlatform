@@ -10,8 +10,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Divider, FormControl, InputAdornment, InputLabel, makeStyles, Typography } from '@material-ui/core';
-import { BUY_GREEN, SELL_RED } from '../util/colors'
+import { Divider, FormControl, InputLabel, makeStyles, Typography } from '@material-ui/core';
+import SignalsList from './SignalsList';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -35,7 +35,20 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
   const styles = useStyles();
   const [currentIndicator, setCurrentIndicator] = useState()
   const [currentConfig, setCurrentConfig] = useState()
-  const [currentSignalConfig, setCurrentSignalConfig] = useState()
+  const [buySignals, setBuySignals] = useState([]);
+  const [sellSignals, setSellSignals] = useState([]);
+
+  // ======================= 
+  // SIGNAL EXAMPLE 
+  // {
+  //   type: "BUY",
+  //   comparison: 2,
+  //   a: "k",
+  //   b: "price"
+  //   bN: 0
+  // }
+  // =======================
+
 
   useEffect(() => {
     
@@ -44,7 +57,6 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
       let newIndicator = indicators.find((element) => element.name === editingIndicator.name);
       setCurrentIndicator(newIndicator);
       setCurrentConfig(editingIndicator.config);
-      setCurrentSignalConfig(editingIndicator.signalConfig);
     }
   }, [editingIndicator, indicators])
 
@@ -56,14 +68,16 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
   const setCurrentIndicatorHandler = (indicator) => {
     
     let config = {}
-    let signalConfig = {}
-    
-    indicator.config.forEach((data) => config[data.name] = data["defaultValue"])
-    indicator.signalConfig.forEach((data) => signalConfig[data.name] = data["defaultValue"])
 
+    indicator.config.forEach((data) => config[data.name] = data["defaultValue"])
+    
+    // reset signals 
+    setSellSignals([]);
+    setBuySignals([]);
+
+    // set current data
     setCurrentIndicator(indicator);
     setCurrentConfig(config);
-    setCurrentSignalConfig(signalConfig);
   }
 
   const handleConfigChange = (key, value) => {
@@ -79,19 +93,13 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
     setCurrentConfig(newConfig)
   }
 
-  const handleSignalConfigChange = (key, value) => {
-    const newSignalConfig = currentSignalConfig;
-    newSignalConfig[key] = value
-    setCurrentSignalConfig(newSignalConfig)
-  }
-
   const handleConfirmIndicator = () => {
      setOpen(false);
 
      confirmIndicator({
        name: currentIndicator.name,
        config: currentConfig,
-       signalConfig: currentSignalConfig
+       signals: [...sellSignals, ...buySignals]
      })
   }
 
@@ -134,7 +142,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                 display="block"
                 variant="body1"
               >
-                Technical Indicator Configuration
+                Configuration
               </Typography>
             </React.Fragment>
           }
@@ -167,6 +175,29 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                   </FormControl>
                 )
               }
+              else if(data.name === "keepSignalFor") {
+                return (
+                  <FormControl key={uuid()} variant="outlined" fullWidth className={styles.margin}>
+                    <InputLabel style={{ backgroundColor: "white", paddingLeft: 6, paddingRight: 6 }}>Keep Signal For</InputLabel>
+                    <Select
+                      fullWidth
+                      defaultValue={data.defaultValue}
+                      onChange={({ target: { value } }) => handleConfigChange(data.name, value)}
+                    >
+                      <MenuItem value={1}>1 candle</MenuItem>
+                      <MenuItem value={2}>2 candles</MenuItem>
+                      <MenuItem value={3}>3 candles</MenuItem>
+                      <MenuItem value={4}>4 candles</MenuItem>
+                      <MenuItem value={5}>5 candles</MenuItem>
+                      <MenuItem value={6}>6 candles</MenuItem>
+                      <MenuItem value={7}>7 candles</MenuItem>
+                      <MenuItem value={8}>8 candles</MenuItem>
+                      <MenuItem value={9}>9 candles</MenuItem>
+                      <MenuItem value={10}>10 candles</MenuItem>
+                    </Select>
+                  </FormControl>
+                )
+              }
               else {
                 return (
                   <TextField
@@ -187,9 +218,9 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
               }
             })
           }
-          
+
           {
-            currentIndicator && (currentIndicator.signalConfig.length !== 0) &&
+            currentIndicator &&
             <React.Fragment>
               <Divider variant="fullWidth" style={{ marginTop: 16, marginBottom: 4 }} />
               <Typography
@@ -198,96 +229,16 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                 display="block"
                 variant="body1"
               >
-                Signal Configuration
+                Signals
               </Typography>
+            
+              <SignalsList signals={buySignals} setSignals={setBuySignals} type={"BUY"} indicator={currentIndicator} />
+              
+              <SignalsList signals={sellSignals} setSignals={setSellSignals} type={"SELL"} indicator={currentIndicator} />
+
             </React.Fragment>
           }
 
-          {
-            currentIndicator && 
-            currentIndicator.signalConfig.map((data) => {
-
-              if(data.name === "keepSignalFor") {
-                return (
-                  <FormControl key={uuid()} variant="outlined" fullWidth className={styles.margin}>
-                    <InputLabel style={{ backgroundColor: "white", paddingLeft: 6, paddingRight: 6 }}>Keep Signal For</InputLabel>
-                    <Select
-                      fullWidth
-                      defaultValue={data.defaultValue}
-                      onChange={({ target: { value } }) => handleSignalConfigChange("keepSignalFor", value)}
-                    >
-                      <MenuItem value={1}>1 candle</MenuItem>
-                      <MenuItem value={2}>2 candles</MenuItem>
-                      <MenuItem value={3}>3 candles</MenuItem>
-                      <MenuItem value={4}>4 candles</MenuItem>
-                      <MenuItem value={5}>5 candles</MenuItem>
-                      <MenuItem value={6}>6 candles</MenuItem>
-                      <MenuItem value={7}>7 candles</MenuItem>
-                      <MenuItem value={8}>8 candles</MenuItem>
-                      <MenuItem value={9}>9 candles</MenuItem>
-                      <MenuItem value={10}>10 candles</MenuItem>
-                    </Select>
-                  </FormControl>
-                )
-              }
-              else if (data.name === "buySignal") {
-                return (
-                  <TextField
-                    fullWidth
-                    id={data.name}
-                    label={data.label}
-                    type={data.type}
-                    className={styles.margin}
-                    defaultValue={data.defaultValue}
-                    onChange={({ target: { value } }) => handleSignalConfigChange("buySignal", value)}
-                    variant="outlined"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <b style={{ backgroundColor: BUY_GREEN, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{"BUY"}</b>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )
-              }
-              else if (data.name === "sellSignal") {
-                return (
-                  <TextField
-                    fullWidth
-                    id={data.name}
-                    label={data.label}
-                    type={data.type}
-                    className={styles.margin}
-                    defaultValue={data.defaultValue}
-                    onChange={({ target: { value } }) => handleSignalConfigChange("sellSignal", value)}
-                    variant="outlined"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <b style={{ backgroundColor: SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{"SELL"}</b>
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                );
-              }
-              else {
-                return (
-                  <TextField
-                    id={data.name}
-                    key={uuid()}
-                    fullWidth
-                    label={data.name}
-                    type={data.type}
-                    className={styles.margin}
-                    defaultValue={data.defaultValue}
-                    variant="filled"
-                  />
-                );
-              }
-            })
-          }
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleCancel()} color="primary" variant="outlined" className={styles.button}>
