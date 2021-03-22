@@ -15,7 +15,7 @@ const extractInputData = (candles, values) => {
       case "values": // use "close" as default value, could be changed in the future no problemo
         inputData.values = candles.map(_ => parseFloat(_.mid.c));
         break;
-      default: // open, close, high, low
+      default: // open (o), close (c), high (h), low (l)
         inputData[value] = candles.map(_ => parseFloat(_.mid[value.charAt(0)]));
         break;
     }
@@ -33,22 +33,25 @@ const calculateIndicator = (indicator, candles) => {
 }
 
 // Calculates a buy/sell/neutral signal for each of the indicators
+// and use them together to produce a single signal for the given instrument
 const calculateSignal = (strategy, candles) => {
 
   let signals = [];
 
-  // let cLog = [...candles];
-  // console.log(cLog.reverse().slice(0,10));
+  // console.log(candles.reverse());
 
-  let values = extractInputData(candles, ["values"]).values.reverse();
-  console.log(values);
-
+  // prices from oldest to newest
+  let prices = extractInputData(candles, ["values"]).values;
+  
   strategy.indicators.forEach(indicator => {
     let tiValues = calculateIndicator(indicator, candles);
-    signals.push(getIndicatorSignal(indicator, tiValues, values));
+    
+    let signal = getIndicatorSignal(indicator, tiValues, prices);
+    
+    signals.push(signal);
   });
 
-  console.log(signals);
+  // console.log(signals);
 
   return signals;
 }
@@ -59,7 +62,16 @@ const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
     let instrumentsData = await getInstruments(instruments, chartPeriod);
 
     instrumentsData.forEach(({ candles, instrument }) => {
+      
+      // removing last candle if it is not complete
+      if(!candles[candles.length-1].complete) {
+        candles.pop();
+      }
+
       let signals = calculateSignal(activeStrategy, candles);
+
+      console.log(instrument, "signals:", signals.join(", "));
+
     });
 
   } catch (error) {
@@ -86,7 +98,7 @@ const calculateBots = async (chartPeriod) => {
 
 } 
 
-// cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M30"));
+cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M15"));
 
 // Schedule bots 5 seconds after the set time...
 // ...making sure that OANDA instruments data is updated

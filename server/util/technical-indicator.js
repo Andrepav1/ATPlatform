@@ -24,7 +24,7 @@ const {
   IchimokuCloud,
 } = require('technicalindicators');
 
-const { comparisons, signals } = require('../util/constants');
+const { Comparison, Signal } = require('../util/constants');
 
 function getMovingAverageObject(type) {
   switch (type) {
@@ -160,21 +160,41 @@ const technicalIndicators = {
   DoubleMovingAverageCrossover,
 };
 
-// return an array
-// value = 1,  if line A crosses above line B
-// value = -1, if line A crosses below line B 
-// otherwise 0
-const crossOver = (lineA, lineB) => {
-  let result = [0];
-  for (let i = 1; i < lineA.length; i++) {
-    if(lineA[i] > lineB[i] && lineA[i-1] < lineB[i-1]) { // line A crossing above
-      result[i] = 1;
+// returns an array
+// CROSS_UP,  if line A crosses above line B
+// CROSS_DOWN, if line A crosses below line B 
+// NO_CROSS otherwise
+const getCrossOver = (values, a, b) => {
+  let result = [];
+  for (let i = 0; i < values.length-1; i++) {
+    let currValues = values[i];
+    let nextValues = values[i+1];
+    
+    if(nextValues[a] > nextValues[b] && currValues[a] < currValues[b]) { // line A crossing above
+      result[i] = Comparison.CROSS_UP;
     }
-    else if(lineA[i] < lineB[i] && lineA[i-1] > lineB[i-1]) { // line A crossing below
-      result[i] = -1;
+    else if(nextValues[a] < nextValues[b] && currValues[a] > currValues[b]) { // line A crossing below
+      result[i] = Comparison.CROSS_DOWN;
     }
     else {
-      result[i] = 0;
+      result[i] = Comparison.NO_CROSS;
+    }
+  }
+  return result;
+}
+
+// returns an array
+// GREATER_THAN, if A > B
+// LESS_THAN, if A < B 
+const getComparison = (values, a, b) => {
+  let result = [];
+  for (let i = 0; i < values.length; i++) {
+    let currValues = values[i];
+    if(currValues[a] >= currValues[b]) {
+      result.push(Comparison.GREATER_THAN);
+    }
+    else {
+      result.push(Comparison.LESS_THAN);
     }
   }
   return result;
@@ -224,7 +244,7 @@ const getIndicatorComponents = (name) => {
       return ["WilliamsR", "price", "number"];
     case "IchimokuCloud":
       return ["conversion", "base", "spanA", "spanB"];
-    case "MovingAverage":
+    case "MovingAveragePriceCrossover":
       return ["MA", "price", "number"];
     case "DoubleMovingAverageCrossover":
       return ["shortMA", "longMA", "price", "number"];
@@ -290,175 +310,221 @@ const getIndicatorExpectedInput = (name) => {
   }
 }
 
-// inputData values array goes from least to most recent, inside this function ...
-// ... we reverse the array, so that most recent is index [0].
 const calculateIndicatorValues = ({ name }, inputData) => {
 
   switch (name) {
     case "ADX":
-      return ADX.calculate(inputData).reverse();
+      return ADX.calculate(inputData);
     case "ATR":
-      return ATR.calculate(inputData).reverse();
+      return ATR.calculate(inputData);
     case "AwesomeOscillator":
-      return AwesomeOscillator.calculate(inputData).reverse();
+      return AwesomeOscillator.calculate(inputData);
     case "BollingerBands":
-      return BollingerBands.calculate(inputData).reverse();
+      return BollingerBands.calculate(inputData);
     case "CCI":
-      return CCI.calculate(inputData).reverse();
+      return CCI.calculate(inputData);
     case "ForceIndex":
-      return ForceIndex.calculate(inputData).reverse();
+      return ForceIndex.calculate(inputData);
     case "MFI":
-      return MFI.calculate(inputData).reverse();
+      return MFI.calculate(inputData);
     case "MACD":
-      return MACD.calculate(inputData).reverse();
+      return MACD.calculate(inputData);
     case "OBV":
-      return OBV.calculate(inputData).reverse();
+      return OBV.calculate(inputData);
     case "PSAR":
-      return PSAR.calculate(inputData).reverse();
+      return PSAR.calculate(inputData);
     case "ROC":
-      return ROC.calculate(inputData).reverse();
+      return ROC.calculate(inputData);
     case "RSI":
-      return RSI.calculate(inputData).reverse();
+      return RSI.calculate(inputData);
     case "Stochastic":
-      return Stochastic.calculate(inputData).reverse();
+      return Stochastic.calculate(inputData);
     case "StochasticRSI":
-      return StochasticRSI.calculate(inputData).reverse();
+      return StochasticRSI.calculate(inputData);
     case "TRIX":
-      return TRIX.calculate(inputData).reverse();
+      return TRIX.calculate(inputData);
     case "VWAP":
-      return VWAP.calculate(inputData).reverse();
+      return VWAP.calculate(inputData);
     case "WilliamsR":
-      return WilliamsR.calculate(inputData).reverse();
+      return WilliamsR.calculate(inputData);
     case "IchimokuCloud":
-      return IchimokuCloud.calculate(inputData).reverse();
+      return IchimokuCloud.calculate(inputData);
     case "MovingAveragePriceCrossover":
-      return MovingAveragePriceCrossover.calculate(inputData).reverse();
+      return MovingAveragePriceCrossover.calculate(inputData);
     case "DoubleMovingAverageCrossover":
-      return DoubleMovingAverageCrossover.calculate(inputData).reverse();
+      return DoubleMovingAverageCrossover.calculate(inputData);
     default:
       return [];
   }
 }
 
-const getIndicatorSignal = ({ name, config }, values) => {
+const calculateSignal = () => {
+
+}
+
+const getIndicatorSignal = ({ name, config, signals }, values, prices) => {
   
-  let result;
+  console.log(prices[prices.length-1]);
 
-  const latestValues = values.slice(0,config.keepSignalFor);
-  
-  // =======================================================
-  // SWITCH
-  switch (name) {
-    // case "ADL":
-    case"ADX":
-      const lastValue = latestValues[0];
-
-      if(parseInt(lastValue.adx) < 25) { // if adx is < 25, trend is weak
-        return signals.NEUTRAL;
-      }
-      
-      // get all pdi and mdi values
-      const pdiLine = latestValues.map(({pdi}) => parseFloat(parseFloat(pdi).toFixed(2)))
-      const mdiLine = latestValues.map(({mdi}) => parseFloat(parseFloat(mdi).toFixed(2)))
-
-      // calculate crossUp and cross down reversing values so that most recent value is [0]
-      let crossUpValues = crossUp({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
-      let crossDownValues = crossDown({ lineA: pdiLine, lineB: mdiLine, reversedInput: true })
-
-      console.log(pdiLine.reverse());
-      console.log(mdiLine.reverse());
-      console.log(crossUpValues);
-      console.log(crossDownValues);
-      
-      return signals.NEUTRAL;
-    case "ATR":
-      return signals.NEUTRAL;
-    case "AwesomeOscillator":
-      return signals.NEUTRAL;
-    case "BollingerBands":
-      console.log(latestValues);
-      return signals.NEUTRAL;
-    case "CCI":
-      return signals.NEUTRAL;
-    case "ForceIndex":
-      return signals.NEUTRAL;
-    // case "KST": // NOT CURRENTLY AVAILABLE 
-    case "MFI":
-      return signals.NEUTRAL;
-    case "MACD":
-      return signals.NEUTRAL;
-    case "OBV":
-      return signals.NEUTRAL;
-    case "PSAR":
-      return signals.NEUTRAL;
-    case "ROC":
-      return signals.NEUTRAL;
-    case "RSI":
-      for (const value of latestValues) {
-        
-        if(value >= signalConfig.sellSignal) {
-          return signals.SELL;
-        }
-        else if(value <= signalConfig.buySignal) {
-          return signals.BUY;
-        }
-        else { } // Do Nothing
-      }
-      return signals.NEUTRAL;
-    case "Stochastic":
-      return signals.NEUTRAL;
-    case "StochasticRSI":
-      return signals.NEUTRAL;
-    case "TRIX":
-      return signals.NEUTRAL;
-    // case "TypicalPrice": // NOT CURRENTLY AVAILABLE 
-    case "VWAP":
-      return signals.NEUTRAL;
-    // case "VolumeProfile": // NOT CURRENTLY AVAILABLE 
-    case "WilliamsR":
-      return signals.NEUTRAL;
-    case "IchimokuCloud":
-      return signals.NEUTRAL;
-    case "MovingAveragePriceCrossover":
-      
-      let mas = latestValues.map(({ma}) => parseFloat(ma));
-      let prices = latestValues.map(({price}) => parseFloat(price));
-
-      result = crossOver(mas.reverse(), prices.reverse()).reverse();
-      
-      for (const value of result) {
-        if(value === 1) {
-          return signals.BUY;
-        }
-        else if(value === -1) {
-          return signals.SELL;
-        }
-      }
-      return signals.NEUTRAL;
-      
-    case "DoubleMovingAverageCrossover":
-      
-      let shortMA = latestValues.map(({short}) => parseFloat(short));
-      let longMA = latestValues.map(({long}) => parseFloat(long));
-      
-      // console.log(shortMA);
-      // console.log(longMA);
-
-      result = crossOver(shortMA.reverse(), longMA.reverse()).reverse();
-      
-      for (const value of result) {
-        if(value === 1) {
-          return signals.SELL;
-        }
-        else if(value === -1) {
-          return signals.BUY;
-        }
-      }
-      return signals.NEUTRAL;
-      
-    default:
-      return signals.NEUTRAL;
+  // values and prices are oldest to newest (ASC order).
+  let latestValues = values.slice(values.length - config.keepSignalFor, values.length);
+  let latestPrices = prices.slice(prices.length - config.keepSignalFor, prices.length);
+  for (let i = 0; i < latestValues.length; i++) {
+    latestValues[i].price = latestPrices[i];
   }
+
+
+  console.log(config, values.length, signals.length);
+
+  let buySignals = signals.filter((signal) => signal.type === "BUY");
+  let sellSignals = signals.filter((signal) => signal.type === "SELL");
+
+  console.log("BUY", buySignals.length, " SELL", sellSignals.length);
+
+  for (const signal of signals) {
+  
+    if(signal.a === "number" || signal.b === "number") {
+      for (let i = 0; i < latestValues.length; i++) {
+        latestValues[i].bN = signal.bN;
+      }
+    }
+    let signalGenerator;
+
+    // console.log(latestValues);
+    console.log(signal.comparison, signal.a, signal.b);
+    switch (signal.comparison) {
+      case Comparison.LESS_THAN:
+      case Comparison.GREATER_THAN:
+        let comparisonValues = getComparison(latestValues, signal.a, signal.b);
+        
+        signalGenerator = comparisonValues.map((comp) => comp===signal.comparison);
+        console.log(signalGenerator);
+
+        break;
+      case Comparison.CROSS:
+      case Comparison.CROSS_DOWN:
+      case Comparison.CROSS_UP:
+        let crossOverValues = getCrossOver(latestValues, signal.a, signal.b);
+
+        if(signal.comparison === comparison.CROSS) {
+          signalGenerator = crossValues.map((comp) => comp===Comparison.CROSS_DOWN || comp===Comparison.CROSS_UP);
+        }
+        else {
+          signalGenerator = crossOverValues.map((comp) => comp===signal.comparison);
+        }
+
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  return Signal.NEUTRAL;
+
+  // let latestValues = values.slice(0,config.keepSignalFor);
+  
+  // // =======================================================
+  // // SWITCH
+  // switch (name) {
+  //   case"ADX":
+
+  //     // get all pdi and mdi values
+  //     // const pdiLine = latestValues.map(({pdi}) => parseFloat(parseFloat(pdi).toFixed(2)))
+  //     // const mdiLine = latestValues.map(({mdi}) => parseFloat(parseFloat(mdi).toFixed(2)))
+
+  //     // calculate crossUp and cross down reversing values so that most recent value is [0]
+  //     // let crossUpValues = crossUp({ values[a]: pdiLine, values[b]: mdiLine, reversedInput: true })
+  //     // let crossDownValues = crossDown({ values[a]: pdiLine, values[b]: mdiLine, reversedInput: true })
+      
+  //     return Signal.NEUTRAL;
+  //   case "ATR":
+  //     return Signal.NEUTRAL;
+  //   case "AwesomeOscillator":
+  //     return Signal.NEUTRAL;
+  //   case "BollingerBands":
+      
+  //     return Signal.NEUTRAL;
+  //   case "CCI":
+  //     return Signal.NEUTRAL;
+  //   case "ForceIndex":
+  //     return Signal.NEUTRAL;
+  //   case "MFI":
+  //     return Signal.NEUTRAL;
+  //   case "MACD":
+  //     return Signal.NEUTRAL;
+  //   case "OBV":
+  //     return Signal.NEUTRAL;
+  //   case "PSAR":
+  //     return Signal.NEUTRAL;
+  //   case "ROC":
+  //     return Signal.NEUTRAL;
+  //   case "RSI":
+  //     for (const value of latestValues) {
+        
+  //       if(value >= signalConfig.sellSignal) {
+  //         return Signal.SELL;
+  //       }
+  //       else if(value <= signalConfig.buySignal) {
+  //         return Signal.BUY;
+  //       }
+  //       else { } // Do Nothing
+  //     }
+  //     return Signal.NEUTRAL;
+  //   case "Stochastic":
+  //     return Signal.NEUTRAL;
+  //   case "StochasticRSI":
+  //     return Signal.NEUTRAL;
+  //   case "TRIX":
+  //     return Signal.NEUTRAL;
+  //   case "VWAP":
+  //     return Signal.NEUTRAL;
+  //   case "WilliamsR":
+  //     return Signal.NEUTRAL;
+  //   case "IchimokuCloud":
+  //     return Signal.NEUTRAL;
+  //   case "MovingAveragePriceCrossover":
+      
+  //     let mas = latestValues.map(({ma}) => parseFloat(ma));
+  //     let prices = latestValues.map(({price}) => parseFloat(price));
+
+  //     result = crossOver(mas.reverse(), prices.reverse()).reverse();
+      
+  //     for (const value of result) {
+  //       if(value === 1) {
+  //         return Signal.BUY;
+  //       }
+  //       else if(value === -1) {
+  //         return Signal.SELL;
+  //       }
+  //     }
+  //     return Signal.NEUTRAL;
+      
+  //   case "DoubleMovingAverageCrossover":
+      
+  //     let shortMA = latestValues.map(({short}) => parseFloat(short));
+  //     let longMA = latestValues.map(({long}) => parseFloat(long));
+      
+  //     // console.log(shortMA);
+  //     // console.log(longMA);
+
+  //     result = crossOver(shortMA.reverse(), longMA.reverse()).reverse();
+      
+  //     for (const value of result) {
+  //       if(value === 1) {
+  //         return Signal.SELL;
+  //       }
+  //       else if(value === -1) {
+  //         return Signal.BUY;
+  //       }
+  //     }
+  //     return Signal.NEUTRAL;
+      
+  //   default:
+  //     return Signal.NEUTRAL;
+  // }
+
+
 }
 
 const getIndicatorConfig = (name) => {
@@ -475,7 +541,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case"ATR":
@@ -487,7 +553,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "AwesomeOscillator":
@@ -504,7 +570,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "BollingerBands":
@@ -521,7 +587,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "CCI":
@@ -533,7 +599,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "ForceIndex":
@@ -545,7 +611,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "MFI":
@@ -557,7 +623,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "MACD":
@@ -579,7 +645,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
         // Boolean: SimpleMAOscillator TODO
         // Boolean: SimpleMASignal TODO
@@ -588,7 +654,7 @@ const getIndicatorConfig = (name) => {
       return [
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "PSAR":
@@ -605,7 +671,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "ROC":
@@ -617,7 +683,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "RSI":
@@ -629,7 +695,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "Stochastic": 
@@ -646,7 +712,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "StochasticRSI":
@@ -673,7 +739,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ]; 
     case "TRIX":
@@ -685,14 +751,14 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "VWAP":
       return [
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "WilliamsR":
@@ -704,7 +770,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "IchimokuCloud":
@@ -731,7 +797,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "MovingAveragePriceCrossover":
@@ -749,7 +815,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     case "DoubleMovingAverageCrossover":
@@ -778,7 +844,7 @@ const getIndicatorConfig = (name) => {
         },
         {
           name: "keepSignalFor",
-          defaultValue: 1
+          defaultValue: 0
         }
       ];
     // case "TripleMovingAverageCrossover":

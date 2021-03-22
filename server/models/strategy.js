@@ -1,10 +1,18 @@
 const { Schema } = require('mongoose');
 const db = require('../db');
 
+const SignalSchema = new db.Schema({
+  type: String,
+  comparison: Number,
+  a: String,
+  b: String,
+  bN: Number
+});
+
 const IndicatorSchema = new db.Schema({
   name: String,
   config: Object,
-  signalConfig: Object
+  signals: [SignalSchema]
 });
 
 const StrategySchema = new db.Schema({

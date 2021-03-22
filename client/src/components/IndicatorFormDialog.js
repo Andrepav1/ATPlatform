@@ -82,14 +82,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
 
   const handleConfigChange = (key, value) => {
     const newConfig = currentConfig;
-
-    if(key === "period") {
-      newConfig[key] = parseInt(value)
-    }
-    else {
-      newConfig[key] = value
-    }
-    
+    newConfig[key] = value
     setCurrentConfig(newConfig)
   }
 
@@ -184,6 +177,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                       defaultValue={data.defaultValue}
                       onChange={({ target: { value } }) => handleConfigChange(data.name, value)}
                     >
+                      <MenuItem value={0}>Do not keep signal</MenuItem>
                       <MenuItem value={1}>1 candle</MenuItem>
                       <MenuItem value={2}>2 candles</MenuItem>
                       <MenuItem value={3}>3 candles</MenuItem>
@@ -229,12 +223,20 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                 display="block"
                 variant="body1"
               >
-                Signals
+                Signal when (as a conjuction)
               </Typography>
             
+            {
+              // Can only have one type of signal for technical indicator
+              sellSignals.length === 0 && 
               <SignalsList signals={buySignals} setSignals={setBuySignals} type={"BUY"} indicator={currentIndicator} />
-              
+            }
+
+            {
+              // Can only have one type of signal for technical indicator
+              buySignals.length === 0 &&
               <SignalsList signals={sellSignals} setSignals={setSellSignals} type={"SELL"} indicator={currentIndicator} />
+            }
 
             </React.Fragment>
           }

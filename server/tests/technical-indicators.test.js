@@ -27,22 +27,34 @@ test('Testing DoubleMovingAverageCrossover', () => {
     { short: 22, long: 18 }
   ];
 
-  expect(result.reverse()).toEqual(expected);
+  expect(result).toEqual(expected);
 })
 
-test('ATR Testing', () => {
+// test('ATR Testing', () => {
 
-  const expectedInput = getIndicatorExpectedInput("ATR");
+//   const expectedInput = getIndicatorExpectedInput("ATR");
+//   let inputData = extractInputData(latestValues, expectedInput);
+//   inputData = { ...inputData, period: 14, format: (a) => a.toFixed(4) };
+
+//   const values = calculateIndicatorValues({ name: "ATR" }, inputData);
+
+// })
+
+test('Testing int, float, string values equivalence (on Stochastic)', () => {
+
+  const expectedInput = getIndicatorExpectedInput("Stochastic");
   let inputData = extractInputData(latestValues, expectedInput);
-  inputData = { ...inputData, period: 14, format: (a) => a.toFixed(4) };
 
-  const values = calculateIndicatorValues({ name: "ATR" }, inputData);
+  intInputData = { ...inputData, period: 14, signalPeriod: 4, format: (a) => a.toFixed(4) };
+  const intValues = calculateIndicatorValues({ name: "ATR" }, intInputData);
+  
+  stringInputData = { ...inputData, period: "14", signalPeriod: "4", format: (a) => a.toFixed(4) };
+  const stringValues = calculateIndicatorValues({ name: "ATR" }, stringInputData);
 
-  const signal = getIndicatorSignal({ 
-    name: "ATR", 
-    signalConfig: { buySignal: 10, sellSignal: 10, keepSignalFor: 10, }}, 
-    values
-  );
+  floatInputData = { ...inputData, period: 14.0, signalPeriod: 4.0, format: (a) => a.toFixed(4) };
+  const floatValues = calculateIndicatorValues({ name: "ATR" }, floatInputData);
 
-  expect(signal).toEqual(signals.NEUTRAL);
+  expect(intValues).toEqual(stringValues);
+  expect(stringValues).toEqual(floatValues);
+  expect(floatValues).toEqual(intValues);
 })

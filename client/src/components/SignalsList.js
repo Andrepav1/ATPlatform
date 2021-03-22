@@ -71,7 +71,7 @@ export default function SignalsList({ signals, setSignals, type, indicator: { co
             onChange={({ target: { value } }) => handleSignalChange(signal.id, "comparison", value)}
           >
             <MenuItem value={comparisons.LESS_THAN}>Less than</MenuItem>
-            <MenuItem value={comparisons.EQUALS}>Equals</MenuItem>
+            {/* <MenuItem value={comparisons.EQUALS}>Equals</MenuItem> */}
             <MenuItem value={comparisons.GREATER_THAN}>Greater than</MenuItem>
             <MenuItem value={comparisons.CROSS_DOWN}>Crosses below</MenuItem>
             <MenuItem value={comparisons.CROSS}>Crosses</MenuItem>
@@ -115,7 +115,7 @@ export default function SignalsList({ signals, setSignals, type, indicator: { co
         <Grid container justify="space-between">
           <Grid>
             <Typography className={styles.noSignals}>
-              <b style={{ backgroundColor: type==="BUY"?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{type}</b>{" Signals"}
+              <b style={{ backgroundColor: type==="BUY"?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{type}</b>{" Signal"}
             </Typography>
           </Grid>
           <Grid>
@@ -134,7 +134,7 @@ export default function SignalsList({ signals, setSignals, type, indicator: { co
       <Grid container justify="space-between">
         <Grid>
           <Typography className={styles.noSignals}>
-            <b style={{ backgroundColor: type==="BUY"?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{type}</b>{" Signals"}
+            <b style={{ backgroundColor: type==="BUY"?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>{type}</b>{" when:"}
           </Typography>
         </Grid>
         <Grid>
