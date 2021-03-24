@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const { getBots } = require('../util/bots');
+const { Signal } = require('../util/constants');
 const { getInstruments } = require('../util/instruments');
 const { calculateIndicatorValues, getIndicatorExpectedInput, getIndicatorSignal } = require('../util/technical-indicator')
 
@@ -34,11 +35,9 @@ const calculateIndicator = (indicator, candles) => {
 
 // Calculates a buy/sell/neutral signal for each of the indicators
 // and use them together to produce a single signal for the given instrument
-const calculateSignal = (strategy, candles) => {
+const getInstrumentTrigger = (strategy, candles) => {
 
-  let signals = [];
-
-  // console.log(candles.reverse());
+  let buyTriggers = 0, sellTriggers = 0;
 
   // prices from oldest to newest
   let prices = extractInputData(candles, ["values"]).values;
@@ -46,14 +45,30 @@ const calculateSignal = (strategy, candles) => {
   strategy.indicators.forEach(indicator => {
     let tiValues = calculateIndicator(indicator, candles);
     
-    let signal = getIndicatorSignal(indicator, tiValues, prices);
-    
-    signals.push(signal);
+    try {
+      let signal = getIndicatorSignal(indicator, tiValues, prices);
+
+      switch (signal) {
+        case Signal.BUY: buyTriggers++; break;
+        case Signal.SELL: sellTriggers++; break;
+        default: break;
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+
   });
 
-  // console.log(signals);
-
-  return signals;
+  if(buyTriggers >= strategy.minSignals.buy && sellTriggers < strategy.minSignals.sell) { 
+    return Signal.BUY;
+  }
+  else if(sellTriggers >= strategy.minSignals.sell && buyTriggers < strategy.minSignals.buy) {
+    return Signal.SELL;
+  }
+  else { // In the case that neither or both BUY and SELL reach the signal threshold.
+    Signal.NEUTRAL
+  }
 }
 
 const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
@@ -68,10 +83,24 @@ const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
         candles.pop();
       }
 
-      let signals = calculateSignal(activeStrategy, candles);
+      let trigger = getInstrumentTrigger(activeStrategy, candles);
 
-      console.log(instrument, "signals:", signals.join(", "));
+      console.log(instrument, (trigger===Signal.BUY)?"BUY SIGNAL!!!!! TO THE MOON!!!!!":(trigger===Signal.SELL)?"SELL SIGNAL!!!! BIG BEAR TODAY!!!":"NO SIGNAL");
 
+      switch (trigger) {
+        case Signal.BUY:
+          // BUY INSTRUMENT
+          break;
+        case Signal.SELL: 
+          // SELL INSTRUMENT
+          break;
+        case Signal.NEUTRAL:
+          // DEPENDS ON STRATEGY
+          break;
+        default: 
+          break;
+      }
+      
     });
 
   } catch (error) {
@@ -98,10 +127,11 @@ const calculateBots = async (chartPeriod) => {
 
 } 
 
-cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M15"));
+// cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M1"));
 
 // Schedule bots 5 seconds after the set time...
 // ...making sure that OANDA instruments data is updated
+cron.schedule('5  *  *   *   *   1-5', () => calculateBots("M1"));
 cron.schedule('5  */5  *   *   *   1-5', () => calculateBots("M5"));
 cron.schedule('5  */15 *   *   *   1-5', () => calculateBots("M15"));
 cron.schedule('5  */30 *   *   *   1-5', () => calculateBots("M30"));

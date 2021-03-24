@@ -18,7 +18,6 @@ router.get('/', (req, res, next) => {
 
   getOrders()
   .then((result) => {
-    console.log("res", result);
     res.json(result);
   }).catch((error) => {
     console.log(error);

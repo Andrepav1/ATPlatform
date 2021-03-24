@@ -41,43 +41,30 @@ function getMovingAverageObject(type) {
   }
 }
 
-class MovingAveragePriceCrossover {
+class MovingAverage {
   constructor() {
-    this.name = "MovingAveragePriceCrossover";
-    this.label = "Moving Average Price Crossover"
+    this.name = "MovingAverage";
+    this.label = "Moving Average"
   }
 
   calculate({ type, values, period, format }) {
-    return MovingAveragePriceCrossover.calculate({ type, values, period, format })
+    return MovingAverage.calculate({ type, values, period, format })
   }
   
   static calculate({ type, values, period, format = x => x }) {
     const maObj = getMovingAverageObject(type);
-    const maValues = maObj.calculate({ values, period, format }).reverse();
-    const priceValues = [...values].reverse();
-
-    const result = []
-
-    // getting shorter array
-    let arrLength = maValues.length;
-    for (let i = 0; i < arrLength; i++) {
-      let ma = maValues.shift();
-      let price = priceValues.shift();
-      result.unshift({ ma, price });
-    }
-
-    return result;
+    return maObj.calculate({ values, period, format });
   }
 } 
 
-class DoubleMovingAverageCrossover {
+class DoubleMovingAverage {
   constructor() {
-    this.name = "DoubleMovingAverageCrossover";
-    this.label = "Double Moving Average Crossover"
+    this.name = "DoubleMovingAverage";
+    this.label = "Double Moving Average"
   }
 
   calculate({ shortMethod, longMethod, values, shortPeriod, longPeriod, format }) {
-    return DoubleMovingAverageCrossover.calculate({ shortMethod, longMethod, values, shortPeriod, longPeriod, format })
+    return DoubleMovingAverage.calculate({ shortMethod, longMethod, values, shortPeriod, longPeriod, format })
   }
   
   static calculate({ shortMethod, longMethod, values, shortPeriod, longPeriod, format = x => x }) {
@@ -94,46 +81,46 @@ class DoubleMovingAverageCrossover {
     for (let i = 0; i < arrLength; i++) {
       let short = shortValues.shift();
       let long = longValues.shift();
-      result.unshift({ short, long });
+      result.unshift({ shortMA: short, longMA: long });
     }
 
     return result;
   }
 } 
 
-// class TripleMovingAverageCrossover {
-//   constructor() {
-//     this.name = "TripleMovingAverageCrossover";
-//     this.label = "Triple Moving Average Crossover"
-//   }
+class TripleMovingAverage {
+  constructor() {
+    this.name = "TripleMovingAverage";
+    this.label = "Triple Moving Average"
+  }
 
-//   calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format }) {
-//     return TripleMovingAverageCrossover.calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format })
-//   }
+  calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format }) {
+    return TripleMovingAverage.calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format })
+  }
 
-//   static calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format = x => x }) {
+  static calculate({ shortMethod, mediumMethod, longMethod, values, shortPeriod, mediumPeriod, longPeriod, format = x => x }) {
     
-//     const shortMA = getMovingAverageObject(shortMethod);
-//     const mediumMA = getMovingAverageObject(mediumMethod);
-//     const longMA = getMovingAverageObject(longMethod);
+    const shortMA = getMovingAverageObject(shortMethod);
+    const mediumMA = getMovingAverageObject(mediumMethod);
+    const longMA = getMovingAverageObject(longMethod);
 
-//     const shortValues = shortMA.calculate({ values, period: shortPeriod, format }).reverse();
-//     const mediumValues = mediumMA.calculate({ values, period: mediumPeriod, format }).reverse();
-//     const longValues = longMA.calculate({ values, period: longPeriod, format }).reverse();
+    const shortValues = shortMA.calculate({ values, period: shortPeriod, format }).reverse();
+    const mediumValues = mediumMA.calculate({ values, period: mediumPeriod, format }).reverse();
+    const longValues = longMA.calculate({ values, period: longPeriod, format }).reverse();
 
-//     const result = []
+    const result = []
 
-//     let arrLength = longValues.length;
-//     for (let i = 0; i < arrLength; i++) {
-//       let short = shortValues.shift();
-//       let medium = mediumValues.shift();
-//       let long = longValues.shift();
-//       result.unshift({ short, medium, long });
-//     }
+    let arrLength = longValues.length;
+    for (let i = 0; i < arrLength; i++) {
+      let short = shortValues.shift();
+      let medium = mediumValues.shift();
+      let long = longValues.shift();
+      result.unshift({ short, medium, long });
+    }
 
-//     return result;
-//   }
-// } 
+    return result;
+  }
+} 
 
 
 const technicalIndicators = {
@@ -156,8 +143,9 @@ const technicalIndicators = {
   WilliamsR,
   IchimokuCloud,
   // MOVING AVERAGE CROSSOVER INDICATORS
-  MovingAveragePriceCrossover,
-  DoubleMovingAverageCrossover,
+  MovingAverage,
+  DoubleMovingAverage,
+  TripleMovingAverage
 };
 
 // returns an array
@@ -170,10 +158,10 @@ const getCrossOver = (values, a, b) => {
     let currValues = values[i];
     let nextValues = values[i+1];
     
-    if(nextValues[a] > nextValues[b] && currValues[a] < currValues[b]) { // line A crossing above
+    if(nextValues[a] >= nextValues[b] && currValues[a] < currValues[b]) { // line A crossing above
       result[i] = Comparison.CROSS_UP;
     }
-    else if(nextValues[a] < nextValues[b] && currValues[a] > currValues[b]) { // line A crossing below
+    else if(nextValues[a] <= nextValues[b] && currValues[a] > currValues[b]) { // line A crossing below
       result[i] = Comparison.CROSS_DOWN;
     }
     else {
@@ -244,10 +232,12 @@ const getIndicatorComponents = (name) => {
       return ["WilliamsR", "price", "number"];
     case "IchimokuCloud":
       return ["conversion", "base", "spanA", "spanB"];
-    case "MovingAveragePriceCrossover":
+    case "MovingAverage":
       return ["MA", "price", "number"];
-    case "DoubleMovingAverageCrossover":
+    case "DoubleMovingAverage":
       return ["shortMA", "longMA", "price", "number"];
+    case "TripleMovingAverage":
+      return ["shortMA", "mediumMA", "longMA", "price", "number"];
     default:
       return ["price", "number"];
   }
@@ -299,11 +289,11 @@ const getIndicatorExpectedInput = (name) => {
       return ["high","low","close"];
     case "IchimokuCloud":
       return ["high","low"];
-    case "MovingAveragePriceCrossover":
+    case "MovingAverage":
       return ["values"];
-    case "DoubleMovingAverageCrossover":
+    case "DoubleMovingAverage":
       return ["values"];
-    case "TripleMovingAverageCrossover":
+    case "TripleMovingAverage":
       return ["values"];
     default:
       return [];
@@ -349,182 +339,93 @@ const calculateIndicatorValues = ({ name }, inputData) => {
       return WilliamsR.calculate(inputData);
     case "IchimokuCloud":
       return IchimokuCloud.calculate(inputData);
-    case "MovingAveragePriceCrossover":
-      return MovingAveragePriceCrossover.calculate(inputData);
-    case "DoubleMovingAverageCrossover":
-      return DoubleMovingAverageCrossover.calculate(inputData);
+    case "MovingAverage":
+      return MovingAverage.calculate(inputData);
+    case "DoubleMovingAverage":
+      return DoubleMovingAverage.calculate(inputData);
+    case "TripleMovingAverage":
+      return TripleMovingAverage.calculate(inputData);
     default:
       return [];
   }
 }
 
-const calculateSignal = () => {
+const signalTriggered = (signal, values) => {
 
+  // console.log(signal);
+
+  if(signal.b === "number") {
+    for (let i = 0; i < values.length; i++) {
+      values[i].bN = signal.bN;
+    }
+  }
+
+  switch (signal.comparison) {
+    case Comparison.LESS_THAN:
+    case Comparison.GREATER_THAN:
+      let comparisonValues = getComparison(values, signal.a, signal.b);
+      return (comparisonValues[1] === signal.comparison);
+    case Comparison.CROSS:
+    case Comparison.CROSS_DOWN:
+    case Comparison.CROSS_UP:
+      let crossOverValues = getCrossOver(values, signal.a, signal.b);
+      
+      if(signal.comparison === Comparison.CROSS) {
+        return (crossOverValues[0] === Comparison.CROSS_DOWN || crossOverValues[0] === Comparison.CROSS_UP);
+      }
+      else {
+        return (crossOverValues[0] === signal.comparison);
+      }
+    default:
+      return false;
+  }
 }
 
-const getIndicatorSignal = ({ name, config, signals }, values, prices) => {
-  
-  console.log(prices[prices.length-1]);
+const indicatorTriggered = (signals, values) => {
 
+  // console.log(signals.length, "signals");
+
+  let triggerSignal = true;
+
+  for (const signal of signals) {
+    let signalTrigger = signalTriggered(signal, values);
+
+    // To provide a BUY/SELL signal all signals configurations have to trigger
+    if(!signalTrigger) {
+      triggerSignal = false;
+    }
+
+  }
+
+  if(triggerSignal) {
+    // All signals triggered, on each indicator signal types are all the same
+    return signals[0].type==="BUY"?Signal.BUY:Signal.SELL;
+  }
+  else {
+    return Signal.NEUTRAL;    
+  }
+}
+
+const getIndicatorSignal = ({ config, signals }, values, prices) => {
+
+  // keepSignalFor temporarily removed (on front-end too): TO ADD LATER ON (maybe)
   // values and prices are oldest to newest (ASC order).
-  let latestValues = values.slice(values.length - config.keepSignalFor, values.length);
-  let latestPrices = prices.slice(prices.length - config.keepSignalFor, prices.length);
+  // keepSignalFor-1 as "Do not keep signal" (= 0) needs to only check the last value (= 1)
+  // let latestValues = values.slice(values.length - config.keepSignalFor-1, values.length);
+  // let latestPrices = prices.slice(prices.length - config.keepSignalFor-1, prices.length);
+  // for (let i = 0; i < latestValues.length; i++) {
+  //   latestValues[i].price = latestPrices[i];
+  // }
+  
+  let latestValues = values.slice(values.length-2, values.length);
+  let latestPrices = prices.slice(prices.length-2, prices.length);
   for (let i = 0; i < latestValues.length; i++) {
     latestValues[i].price = latestPrices[i];
   }
 
+  console.log(latestValues);
 
-  console.log(config, values.length, signals.length);
-
-  let buySignals = signals.filter((signal) => signal.type === "BUY");
-  let sellSignals = signals.filter((signal) => signal.type === "SELL");
-
-  console.log("BUY", buySignals.length, " SELL", sellSignals.length);
-
-  for (const signal of signals) {
-  
-    if(signal.a === "number" || signal.b === "number") {
-      for (let i = 0; i < latestValues.length; i++) {
-        latestValues[i].bN = signal.bN;
-      }
-    }
-    let signalGenerator;
-
-    // console.log(latestValues);
-    console.log(signal.comparison, signal.a, signal.b);
-    switch (signal.comparison) {
-      case Comparison.LESS_THAN:
-      case Comparison.GREATER_THAN:
-        let comparisonValues = getComparison(latestValues, signal.a, signal.b);
-        
-        signalGenerator = comparisonValues.map((comp) => comp===signal.comparison);
-        console.log(signalGenerator);
-
-        break;
-      case Comparison.CROSS:
-      case Comparison.CROSS_DOWN:
-      case Comparison.CROSS_UP:
-        let crossOverValues = getCrossOver(latestValues, signal.a, signal.b);
-
-        if(signal.comparison === comparison.CROSS) {
-          signalGenerator = crossValues.map((comp) => comp===Comparison.CROSS_DOWN || comp===Comparison.CROSS_UP);
-        }
-        else {
-          signalGenerator = crossOverValues.map((comp) => comp===signal.comparison);
-        }
-
-        break;
-      default:
-        break;
-    }
-  }
-
-
-  return Signal.NEUTRAL;
-
-  // let latestValues = values.slice(0,config.keepSignalFor);
-  
-  // // =======================================================
-  // // SWITCH
-  // switch (name) {
-  //   case"ADX":
-
-  //     // get all pdi and mdi values
-  //     // const pdiLine = latestValues.map(({pdi}) => parseFloat(parseFloat(pdi).toFixed(2)))
-  //     // const mdiLine = latestValues.map(({mdi}) => parseFloat(parseFloat(mdi).toFixed(2)))
-
-  //     // calculate crossUp and cross down reversing values so that most recent value is [0]
-  //     // let crossUpValues = crossUp({ values[a]: pdiLine, values[b]: mdiLine, reversedInput: true })
-  //     // let crossDownValues = crossDown({ values[a]: pdiLine, values[b]: mdiLine, reversedInput: true })
-      
-  //     return Signal.NEUTRAL;
-  //   case "ATR":
-  //     return Signal.NEUTRAL;
-  //   case "AwesomeOscillator":
-  //     return Signal.NEUTRAL;
-  //   case "BollingerBands":
-      
-  //     return Signal.NEUTRAL;
-  //   case "CCI":
-  //     return Signal.NEUTRAL;
-  //   case "ForceIndex":
-  //     return Signal.NEUTRAL;
-  //   case "MFI":
-  //     return Signal.NEUTRAL;
-  //   case "MACD":
-  //     return Signal.NEUTRAL;
-  //   case "OBV":
-  //     return Signal.NEUTRAL;
-  //   case "PSAR":
-  //     return Signal.NEUTRAL;
-  //   case "ROC":
-  //     return Signal.NEUTRAL;
-  //   case "RSI":
-  //     for (const value of latestValues) {
-        
-  //       if(value >= signalConfig.sellSignal) {
-  //         return Signal.SELL;
-  //       }
-  //       else if(value <= signalConfig.buySignal) {
-  //         return Signal.BUY;
-  //       }
-  //       else { } // Do Nothing
-  //     }
-  //     return Signal.NEUTRAL;
-  //   case "Stochastic":
-  //     return Signal.NEUTRAL;
-  //   case "StochasticRSI":
-  //     return Signal.NEUTRAL;
-  //   case "TRIX":
-  //     return Signal.NEUTRAL;
-  //   case "VWAP":
-  //     return Signal.NEUTRAL;
-  //   case "WilliamsR":
-  //     return Signal.NEUTRAL;
-  //   case "IchimokuCloud":
-  //     return Signal.NEUTRAL;
-  //   case "MovingAveragePriceCrossover":
-      
-  //     let mas = latestValues.map(({ma}) => parseFloat(ma));
-  //     let prices = latestValues.map(({price}) => parseFloat(price));
-
-  //     result = crossOver(mas.reverse(), prices.reverse()).reverse();
-      
-  //     for (const value of result) {
-  //       if(value === 1) {
-  //         return Signal.BUY;
-  //       }
-  //       else if(value === -1) {
-  //         return Signal.SELL;
-  //       }
-  //     }
-  //     return Signal.NEUTRAL;
-      
-  //   case "DoubleMovingAverageCrossover":
-      
-  //     let shortMA = latestValues.map(({short}) => parseFloat(short));
-  //     let longMA = latestValues.map(({long}) => parseFloat(long));
-      
-  //     // console.log(shortMA);
-  //     // console.log(longMA);
-
-  //     result = crossOver(shortMA.reverse(), longMA.reverse()).reverse();
-      
-  //     for (const value of result) {
-  //       if(value === 1) {
-  //         return Signal.SELL;
-  //       }
-  //       else if(value === -1) {
-  //         return Signal.BUY;
-  //       }
-  //     }
-  //     return Signal.NEUTRAL;
-      
-  //   default:
-  //     return Signal.NEUTRAL;
-  // }
-
-
+  return indicatorTriggered(signals, latestValues);
 }
 
 const getIndicatorConfig = (name) => {
@@ -800,7 +701,7 @@ const getIndicatorConfig = (name) => {
           defaultValue: 0
         }
       ];
-    case "MovingAveragePriceCrossover":
+    case "MovingAverage":
       return [
         {
           name: "period",
@@ -818,7 +719,7 @@ const getIndicatorConfig = (name) => {
           defaultValue: 0
         }
       ];
-    case "DoubleMovingAverageCrossover":
+    case "DoubleMovingAverage":
       return [
         {
           name: "shortPeriod",
@@ -847,42 +748,46 @@ const getIndicatorConfig = (name) => {
           defaultValue: 0
         }
       ];
-    // case "TripleMovingAverageCrossover":
-    //   return [
-    //     {
-    //       name: "shortPeriod",
-    //       type: "number",
-    //       defaultValue: 14
-    //     },
-    //     {
-    //       name: "mediumPeriod",
-    //       type: "number",
-    //       defaultValue: 50
-    //     },
-    //     {
-    //       name: "longPeriod",
-    //       type: "number",
-    //       defaultValue: 100
-    //     },
-    //     {
-    //       name: "shortMethod",
-    //       type: "enum",
-    //       enum: ["SMA","EMA","WEMA","WMA"],
-    //       defaultValue: "SMA"
-    //     },
-    //     {
-    //       name: "mediumMethod",
-    //       type: "enum",
-    //       enum: ["SMA","EMA","WEMA","WMA"],
-    //       defaultValue: "SMA"
-    //     },
-    //     {
-    //       name: "longMethod",
-    //       type: "enum",
-    //       enum: ["SMA","EMA","WEMA","WMA"],
-    //       defaultValue: "SMA"
-    //     },
-    //   ];
+    case "TripleMovingAverage":
+      return [
+        {
+          name: "shortPeriod",
+          type: "number",
+          defaultValue: 14
+        },
+        {
+          name: "mediumPeriod",
+          type: "number",
+          defaultValue: 50
+        },
+        {
+          name: "longPeriod",
+          type: "number",
+          defaultValue: 100
+        },
+        {
+          name: "shortMethod",
+          type: "enum",
+          enum: ["SMA","EMA","WEMA","WMA"],
+          defaultValue: "SMA"
+        },
+        {
+          name: "mediumMethod",
+          type: "enum",
+          enum: ["SMA","EMA","WEMA","WMA"],
+          defaultValue: "SMA"
+        },
+        {
+          name: "longMethod",
+          type: "enum",
+          enum: ["SMA","EMA","WEMA","WMA"],
+          defaultValue: "SMA"
+        },
+        {
+          name: "keepSignalFor",
+          defaultValue: 0
+        }
+      ];
     default:
       return [];
   }

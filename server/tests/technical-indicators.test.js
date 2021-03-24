@@ -58,3 +58,7 @@ test('Testing int, float, string values equivalence (on Stochastic)', () => {
   expect(stringValues).toEqual(floatValues);
   expect(floatValues).toEqual(intValues);
 })
+
+test('Testing crossover function', () => {
+  
+})

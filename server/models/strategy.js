@@ -19,6 +19,11 @@ const StrategySchema = new db.Schema({
   name: String,
   description: String,
   indicators: [IndicatorSchema],
+  minSignals: {
+    buy: Number,
+    sell: Number
+  },
+  RRR: String,
   userId: Schema.Types.ObjectId
 });
 

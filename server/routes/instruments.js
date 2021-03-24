@@ -8,9 +8,13 @@ router.get('/', async (req, res, next) => {
   try {
    
     const {instruments} = await fx.instruments(); 
+
+    instruments.sort((a,b) => a.name.localeCompare(b.name));
+
     res.json({ instruments });
 
   } catch (error) {
+    console.log(error);
     res.json({error});
   }
 
