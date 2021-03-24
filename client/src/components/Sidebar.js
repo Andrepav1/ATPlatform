@@ -15,8 +15,8 @@ function Sidebar() {
   return (
     <ProSidebar 
       collapsed={false} 
-      breakPoint="lg"
-      >
+      breakPoint="xl"
+    >
       <SidebarHeader>
         
       </SidebarHeader>

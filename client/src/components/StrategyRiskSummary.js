@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Checkbox, FormControl, FormControlLabel, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
 import Title from './Title';
 import uuid from 'react-uuid';
@@ -13,17 +13,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function StrategyRiskSummary() {
+export default function StrategyRiskSummary({ autoRiskManagement, setAutoRiskManagement, RRR, setRRR }) {
 
   const styles = useStyles();
-
-  const [autoRiskManagement, setAutoRiskManagement] = useState(true)
-  const [RRR, setRRR] = useState("")
 
   const setAutoRiskManagementHandler = (checked) => {
     setAutoRiskManagement(checked);
     if(checked) {
-      setRRR("");
+      setRRR("auto");
     }
   }
   
@@ -37,10 +34,12 @@ export default function StrategyRiskSummary() {
             key={uuid()}
             fullWidth
             value={RRR}
+            defaultValue={"auto"}
             onChange={({ target: { value } }) => setRRR(value)}
             variant="filled"
             disabled={autoRiskManagement}
           >
+            <MenuItem value={"auto"}>auto</MenuItem>
             <MenuItem value={"1"}>1:1</MenuItem>
             <MenuItem value={"1.5"}>1.5:1</MenuItem>
             <MenuItem value={"2"}>2:1</MenuItem>

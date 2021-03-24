@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import DeleteIcon  from '@material-ui/icons/Delete';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { Box, IconButton } from '@material-ui/core';
+import { BUY_GREEN, SELL_RED } from '../util/colors';
 
 const useStyles = makeStyles((theme) => ({
   noTransactionsText: {
@@ -27,16 +28,19 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
   }
 
   const getSignalsData = ({ signals }) => {
-    let buySignals = 0, sellSignals = 0;
-    for (let i = 0; i < signals.length; i++) {
-      if(signals[i].type === "BUY") { // BUY
-        buySignals++;
-      }
-      else { // SELL
-        sellSignals++;
-      }
+    if(signals.length === 0) {
+      return "None";
     }
-    return buySignals + " BUY, " + sellSignals + " SELL"
+    else if(signals[0].type === "BUY") {
+      return (
+        <b style={{ backgroundColor: BUY_GREEN, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>BUY</b>
+      );
+    }
+    else {
+      return (
+        <b style={{ backgroundColor: SELL_RED, padding: 6, borderRadius: 4, color: "white", fontSize: 14 }}>SELL</b>
+      );
+    }
   }
 
   const getIndicatorRow = (indicator) => {
@@ -68,7 +72,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
             <TableRow>
               <TableCell>Indicator</TableCell>
               <TableCell>Configuration</TableCell>
-              <TableCell>Signals</TableCell>
+              <TableCell>Signal</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -85,7 +89,7 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
           <TableRow>
             <TableCell>Indicator</TableCell>
             <TableCell>Configuration</TableCell>
-            <TableCell>Signals</TableCell>
+            <TableCell>Signal</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

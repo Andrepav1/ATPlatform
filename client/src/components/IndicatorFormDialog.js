@@ -87,6 +87,11 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
   }
 
   const handleConfirmIndicator = () => {
+
+    if(sellSignals.length === 0 && buySignals.length === 0) {
+      return alert("You need at least a signal.");
+    }
+
      setOpen(false);
 
      confirmIndicator({
@@ -160,37 +165,39 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                     <InputLabel style={{ backgroundColor: "white", paddingLeft: 6, paddingRight: 6 }}>{data.name}</InputLabel>
                     <Select
                       fullWidth
-                      defaultValue={data.defaultValue}
+                      defaultValue={currentConfig[data.name]?currentConfig[data.name]:data.defaultValue}
                       onChange={({ target: { value } }) => handleConfigChange(data.name, value)}
                     >
-                      { data.enum.map((value) => <MenuItem value={value}>{value}</MenuItem>)}
+                      { data.enum.map((value) => <MenuItem key={uuid()} value={value}>{value}</MenuItem>)}
                     </Select>
                   </FormControl>
                 )
               }
               else if(data.name === "keepSignalFor") {
-                return (
-                  <FormControl key={uuid()} variant="outlined" fullWidth className={styles.margin}>
-                    <InputLabel style={{ backgroundColor: "white", paddingLeft: 6, paddingRight: 6 }}>Keep Signal For</InputLabel>
-                    <Select
-                      fullWidth
-                      defaultValue={data.defaultValue}
-                      onChange={({ target: { value } }) => handleConfigChange(data.name, value)}
-                    >
-                      <MenuItem value={0}>Do not keep signal</MenuItem>
-                      <MenuItem value={1}>1 candle</MenuItem>
-                      <MenuItem value={2}>2 candles</MenuItem>
-                      <MenuItem value={3}>3 candles</MenuItem>
-                      <MenuItem value={4}>4 candles</MenuItem>
-                      <MenuItem value={5}>5 candles</MenuItem>
-                      <MenuItem value={6}>6 candles</MenuItem>
-                      <MenuItem value={7}>7 candles</MenuItem>
-                      <MenuItem value={8}>8 candles</MenuItem>
-                      <MenuItem value={9}>9 candles</MenuItem>
-                      <MenuItem value={10}>10 candles</MenuItem>
-                    </Select>
-                  </FormControl>
-                )
+                return null;
+                // TEMPORARILY REMOVED: TO ADD LATER ON
+                // return (
+                //   <FormControl key={uuid()} variant="outlined" fullWidth className={styles.margin}>
+                //     <InputLabel style={{ backgroundColor: "white", paddingLeft: 6, paddingRight: 6 }}>Keep Signal For</InputLabel>
+                //     <Select
+                //       fullWidth
+                //       defaultValue={data.defaultValue}
+                //       onChange={({ target: { value } }) => handleConfigChange(data.name, value)}
+                //     >
+                //       <MenuItem value={0}>Do not keep signal</MenuItem>
+                //       <MenuItem value={1}>1 candle</MenuItem>
+                //       <MenuItem value={2}>2 candles</MenuItem>
+                //       <MenuItem value={3}>3 candles</MenuItem>
+                //       <MenuItem value={4}>4 candles</MenuItem>
+                //       <MenuItem value={5}>5 candles</MenuItem>
+                //       <MenuItem value={6}>6 candles</MenuItem>
+                //       <MenuItem value={7}>7 candles</MenuItem>
+                //       <MenuItem value={8}>8 candles</MenuItem>
+                //       <MenuItem value={9}>9 candles</MenuItem>
+                //       <MenuItem value={10}>10 candles</MenuItem>
+                //     </Select>
+                //   </FormControl>
+                // )
               }
               else {
                 return (
@@ -203,7 +210,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
                     className={styles.margin}
                     onChange={({ target: { id, value }}) => handleConfigChange(id,value)}
                     variant="outlined"
-                    defaultValue={data.defaultValue.toString()}
+                    defaultValue={currentConfig[data.name]?currentConfig[data.name]:data.defaultValue.toString()}
                     InputLabelProps={{
                       shrink: true,
                     }}

@@ -15,6 +15,7 @@ import IndicatorsTable from '../components/IndicatorsTable';
 import { Grid, Paper } from '@material-ui/core';
 import StrategySummary from '../components/StrategySummary';
 import StrategyRiskSummary from '../components/StrategyRiskSummary';
+import SignalsAmount from '../components/SignalsAmount';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -37,7 +38,12 @@ function EditStrategyPage({ history }) {
 
   const [open, setOpen] = React.useState(false);
   const [indicatorsData, setIndicatorsData] = useState([]);
-  
+  const [minBuySignals, setMinBuySignals] = useState(0);
+  const [minSellSignals, setMinSellSignals] = useState(0);
+
+  const [autoRiskManagement, setAutoRiskManagement] = useState(true);
+  const [RRR, setRRR] = useState("auto");
+
   const [strategyIndicators, setStrategyIndicators] = useState([]);
 
   const [strategyName, setStrategyName] = useState("")
@@ -45,6 +51,16 @@ function EditStrategyPage({ history }) {
 
   // To edit an indicator
   const [editingIndicator, setEditingIndicator] = useState();
+
+  const getMaxSignals = (type) => {
+    let max = 0;
+    for (let i = 0; i < strategyIndicators.length; i++) {
+      if(strategyIndicators[i].signals[0].type === type) {
+        max++;
+      }
+    }
+    return max;
+  }
 
   const confirmIndicator = (indicator) => {
 
@@ -91,7 +107,9 @@ function EditStrategyPage({ history }) {
     let strategy = {
       name: strategyName,
       description: strategyDescription,
-      indicators: strategyIndicators
+      indicators: strategyIndicators,
+      minSignals: { buy: minBuySignals, sell: minSellSignals },
+      RRR
     }
 
     let save_strategy_url = createURL("/strategies");
@@ -159,7 +177,7 @@ function EditStrategyPage({ history }) {
               />
             </Paper>
             <Paper className={styles.paper}>
-              <StrategyRiskSummary />
+              <StrategyRiskSummary autoRiskManagement={autoRiskManagement} setAutoRiskManagement={setAutoRiskManagement} RRR={RRR} setRRR={setRRR} />
             </Paper>
           </Grid>
 
@@ -167,7 +185,25 @@ function EditStrategyPage({ history }) {
             <Paper className={styles.paper}>
               <IndicatorsTable indicators={strategyIndicators} editIndicator={editIndicator} removeIndicator={removeIndicator}/>
             </Paper>
+
+            <Grid container spacing={2}>
+
+              <Grid item xs={12} lg={6}>
+                <Paper>
+                  <SignalsAmount type={"BUY"} minSignals={minBuySignals} setMinSignals={setMinBuySignals} maxSignals={getMaxSignals("BUY")} />
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} lg={6}>
+                <Paper>
+                  <SignalsAmount type={"SELL"} minSignals={minSellSignals} setMinSignals={setMinSellSignals} maxSignals={getMaxSignals("SELL")} />
+                </Paper>
+              </Grid>
+
+            </Grid>
+
           </Grid>
+
         </Grid>
 
       </Container>

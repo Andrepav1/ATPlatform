@@ -148,6 +148,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
               onChange={({ target: { value } }) => setChartPeriod(value)}
               variant="filled"
             >
+              <MenuItem value={"M1"}>M1</MenuItem>
               <MenuItem value={"M5"}>M5</MenuItem>
               <MenuItem value={"M15"}>M15</MenuItem>
               <MenuItem value={"M30"}>M30</MenuItem>
