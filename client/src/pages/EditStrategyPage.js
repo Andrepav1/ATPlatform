@@ -14,7 +14,7 @@ import { fetchRequest, createURL } from '../util/network';
 import IndicatorsTable from '../components/IndicatorsTable';
 import { Grid, Paper } from '@material-ui/core';
 import StrategySummary from '../components/StrategySummary';
-import StrategyRiskSummary from '../components/StrategyRiskSummary';
+import StrategyManagementSummary from '../components/StrategyManagementSummary';
 import SignalsAmount from '../components/SignalsAmount';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +43,8 @@ function EditStrategyPage({ history }) {
 
   const [autoRiskManagement, setAutoRiskManagement] = useState(true);
   const [RRR, setRRR] = useState("auto");
+  const [lotSize, setLotSize] = useState("0.01");
+  const [signalCooldown, setSignalCooldown] = useState("10");
 
   const [strategyIndicators, setStrategyIndicators] = useState([]);
 
@@ -109,8 +111,10 @@ function EditStrategyPage({ history }) {
       description: strategyDescription,
       indicators: strategyIndicators,
       minSignals: { buy: minBuySignals, sell: minSellSignals },
-      RRR
-    }
+      RRR,
+      lotSize: parseFloat(lotSize),
+      signalCooldown: parseInt(signalCooldown)
+    } 
 
     let save_strategy_url = createURL("/strategies");
     fetchRequest({ 
@@ -177,7 +181,16 @@ function EditStrategyPage({ history }) {
               />
             </Paper>
             <Paper className={styles.paper}>
-              <StrategyRiskSummary autoRiskManagement={autoRiskManagement} setAutoRiskManagement={setAutoRiskManagement} RRR={RRR} setRRR={setRRR} />
+              <StrategyManagementSummary 
+                autoRiskManagement={autoRiskManagement} 
+                setAutoRiskManagement={setAutoRiskManagement} 
+                RRR={RRR} 
+                setRRR={setRRR} 
+                lotSize={lotSize} 
+                setLotSize={setLotSize}
+                signalCooldown={signalCooldown} 
+                setSignalCooldown={setSignalCooldown}
+              />
             </Paper>
           </Grid>
 

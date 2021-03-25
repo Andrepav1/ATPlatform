@@ -40,7 +40,7 @@ export default function BotCard({ data }) {
 
   return (
     <React.Fragment key={uuid()}>
-      <Grid item xs={12} sm={6} md={6}>
+      <Grid item xs={12} sm={6} md={4}>
         <Card>
           <Box display="flex" flexDirection="row-reverse" style={{ position: "relative" }}>
             <Brightness1Icon style={{ color: data.live?"#1bf723":"#de0000", position: "absolute", fontSize: 16, marginTop: 12, marginRight: 12 }} />

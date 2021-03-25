@@ -41,6 +41,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
   const [activeStrategy, setActiveStrategy] = useState();
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
+  const [maxOpenPositions, setMaxOpenPositions] = useState();
   const [activeInstruments, setActiveInstruments] = useState([]);
   const [alwaysOn, setAlwaysOn] = useState(true);
   const [chartPeriod, setChartPeriod] = useState("H1");
@@ -92,7 +93,6 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
         <DialogContent>
           <TextField
             autoFocus
-            key={uuid()}
             fullWidth
             label={"Name"}
             value={name}
@@ -139,6 +139,20 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
             }
             </Select>
           </FormControl>
+          <TextField
+            fullWidth
+            type="number"
+            label={"Maximum Concurrent Positions"}
+            value={maxOpenPositions}
+            defaultValue={2}
+            InputProps={{ inputProps: { min: 1, max: 99 }}}
+            className={styles.margin}
+            onChange={({ target: { value }}) => setMaxOpenPositions(value)}
+            variant="filled"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
           <FormControl key={uuid()} fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>Chart Period</InputLabel>
             <Select
