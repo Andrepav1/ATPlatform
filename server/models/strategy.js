@@ -24,6 +24,8 @@ const StrategySchema = new db.Schema({
     sell: Number
   },
   RRR: String,
+  lotSize: Number,
+  signalCooldown: Number,
   userId: Schema.Types.ObjectId
 });
 

@@ -422,10 +422,38 @@ const getIndicatorSignal = ({ config, signals }, values, prices) => {
   for (let i = 0; i < latestValues.length; i++) {
     latestValues[i].price = latestPrices[i];
   }
-
   console.log(latestValues);
-
+  
   return indicatorTriggered(signals, latestValues);
+}
+
+// extract the values needed by the indicator from the instrument candles
+const extractInputData = (candles, values) => {
+  let inputData = {}
+
+  values.forEach(value => {
+    switch (value) {
+      case "volume":
+        inputData.volume = candles.map(_ => _.volume);
+        break;
+      case "values": // use "close" as default value, could be changed in the future no problemo
+        inputData.values = candles.map(_ => parseFloat(_.mid.c));
+        break;
+      default: // open (o), close (c), high (h), low (l)
+        inputData[value] = candles.map(_ => parseFloat(_.mid[value.charAt(0)]));
+        break;
+    }
+  });
+  return inputData;
+}
+
+// returns an array of values using the indicator config and expected input
+const getIndicatorValues = (indicator, candles) => {
+  let expectedInput = getIndicatorExpectedInput(indicator.name);
+  let inputData = extractInputData(candles, expectedInput);
+  inputData = { ...indicator.config, ...inputData, format: (a) => a.toFixed(4) };
+
+  return calculateIndicatorValues(indicator, inputData);
 }
 
 const getIndicatorConfig = (name) => {
@@ -800,5 +828,7 @@ module.exports = {
   getIndicatorConfig,
   getIndicatorSignal,
   getIndicatorObject,
+  getIndicatorValues,
+  extractInputData,
   calculateIndicatorValues,
 }

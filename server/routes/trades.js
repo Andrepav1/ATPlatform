@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
 
   getTrades()
   .then((result) => {
-    console.log(result);
+    // console.log(result);
     res.json(result);
   }).catch((error) => {
     console.log(error);

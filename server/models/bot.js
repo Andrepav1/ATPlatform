@@ -9,7 +9,9 @@ const BotSchema = new db.Schema({
   chartPeriod: String,
   instruments: [String],
   userId: Schema.Types.ObjectId,
-  live: Boolean
+  live: Boolean,
+  maxPositions: Number,
+  openedPositions: [String]
 });
 
 const Bot = db.model('Bot', BotSchema);

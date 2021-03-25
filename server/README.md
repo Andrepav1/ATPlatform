@@ -54,5 +54,5 @@
 
 - Check candle alignment and call cron job immediately after candle completes
 - Set hours of operation
-- includeFirst when getting instrument data (not working only during weekend ?)
+- Check Crossover when curr and next values are the same
 - 
