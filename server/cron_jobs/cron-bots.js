@@ -1,5 +1,27 @@
 const cron = require('node-cron');
+const fx = require('simple-fxtrade');
 const { calculateBots } = require('../util/bots');
+
+
+const streamInstrument = async (instruments) => {
+
+  instruments = "AUD_USD";
+
+  const stream = await fx.pricing.stream({ instruments });
+ 
+  // Handle some data
+  stream.on('data', data => {
+    console.log(data); // PRICE or HEARTBEAT
+  });
+   
+  // Sometime later when done with the stream
+  stream.disconnect();
+}
+
+setTimeout(() => {
+  // streamInstrument();
+}, 2000);
+
 
 // cron.schedule('*/5  *  *   *   *   *', () => calculateBots("M1"));
 

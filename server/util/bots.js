@@ -41,8 +41,10 @@ const getInstrumentTrigger = (strategy, candles) => {
   }
 }
 
-const calculateBot = async ({ activeStrategy, chartPeriod, instruments }) => {
+const calculateBot = async (bot) => {
 
+  const { activeStrategy, chartPeriod, instruments } = bot;
+  
   try {
     let instrumentsData = await getInstruments(instruments, chartPeriod);
 

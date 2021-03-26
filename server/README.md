@@ -55,4 +55,5 @@
 - Check candle alignment and call cron job immediately after candle completes
 - Set hours of operation
 - Check Crossover when curr and next values are the same
+- Change cron jobs, and instead call functions when prices update on OANDA API as a callback
 - 
