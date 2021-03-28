@@ -21,3 +21,7 @@
   flex-direction: column;
 }
 
+/* Very weird issue where the charts are affected by the .App text-align: center ????????? making them not working properly, hours and hours were wasted here */
+.Chart {
+  text-align: left;
+}
