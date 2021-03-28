@@ -3664,7 +3664,7 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
 
 simple-fxtrade@Andrepav1/simple-fxtrade:
   version "1.1.7"
-  resolved "https://codeload.github.com/Andrepav1/simple-fxtrade/tar.gz/1d6c43fa3838eafe562414836b545ad264925098"
+  resolved "https://codeload.github.com/Andrepav1/simple-fxtrade/tar.gz/946b5beb8c9b5e570fb207a240c311010d0aade0"
   dependencies:
     axios "^0.16.2"
 
