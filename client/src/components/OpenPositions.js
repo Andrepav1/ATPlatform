@@ -35,20 +35,22 @@ export default function OpenPositions({ positions }) {
     })
     .then((result) => { // success
       console.log(result)
-      cancelClosePosition();
     })
-    .catch((error) => {
+    .catch(({error}) => {
       alert(error);
     })
     
+    cancelClosePosition();
+
   }
 
-  const cancelClosePosition = (id) => {
+  const cancelClosePosition = () => {
     setClosingPositionId(null);
     setOpen(false);
   }
 
   const closePosition = (id) => {
+    console.log("Closing position:", id);
     setClosingPositionId(id);
     setOpen(true);
   }
@@ -66,7 +68,7 @@ export default function OpenPositions({ positions }) {
       <TableRow key={uuid()}> 
         <TableCell>{ getBUYSELLText(parseInt(position.currentUnits)>0) }</TableCell>
         <TableCell>{position.instrument}</TableCell>
-        <TableCell>{position.currentUnits}</TableCell>
+        <TableCell>{position.lotSize}</TableCell>
         <TableCell>{position.price}</TableCell>
         <TableCell>
           <Typography style={{ marginLeft: 8, fontSize: 20 ,color: pl<0?"#de0000":"#0335fc" }}>{pl.toFixed(2)}</Typography>
@@ -91,7 +93,7 @@ export default function OpenPositions({ positions }) {
             <TableRow>
               <TableCell></TableCell>
               <TableCell>Instrument</TableCell>
-              <TableCell>Units</TableCell>
+              <TableCell>Lot Size</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Profit/Loss</TableCell>
               <TableCell></TableCell>
@@ -111,7 +113,7 @@ export default function OpenPositions({ positions }) {
           <TableRow>
             <TableCell></TableCell>
             <TableCell>Instrument</TableCell>
-            <TableCell>Units</TableCell>
+            <TableCell>Lot Size</TableCell>
             <TableCell>Price</TableCell>
             <TableCell>Profit/Loss</TableCell>
             <TableCell></TableCell>

@@ -16,12 +16,12 @@ import { createURL, fetchRequest } from '../util/network';
 
 export default function BotSummary({ bots, setBots }) {
 
-  const updateBot = (id, status) => {
+  const updateBot = (id, updateObj) => {
     let update_bot_url = createURL("/bots/update");
     fetchRequest({ 
       url: update_bot_url, 
       method: "PUT", 
-      body: { id, status },
+      body: { ...updateObj, id },
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       },
@@ -40,7 +40,7 @@ export default function BotSummary({ bots, setBots }) {
       return bot;
     }))
     
-    updateBot(id, status);
+    updateBot(id, { live: status });
     
   }
 
