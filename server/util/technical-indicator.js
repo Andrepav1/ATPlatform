@@ -359,6 +359,11 @@ const signalTriggered = (signal, values) => {
       values[i].bN = signal.bN;
     }
   }
+  
+  console.log("===============");
+  console.log(signal.a + " - " + signal.b);
+  console.log(values);
+  console.log("===============");
 
   switch (signal.comparison) {
     case Comparison.LESS_THAN:
@@ -422,7 +427,7 @@ const getIndicatorSignal = ({ config, signals }, values, prices) => {
   for (let i = 0; i < latestValues.length; i++) {
     latestValues[i].price = latestPrices[i];
   }
-  console.log(latestValues);
+  // console.log(latestValues);
   
   return indicatorTriggered(signals, latestValues);
 }

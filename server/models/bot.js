@@ -10,7 +10,6 @@ const BotSchema = new db.Schema({
   instruments: [String],
   userId: Schema.Types.ObjectId,
   live: Boolean,
-  maxPositions: Number,
   openedPositions: [String]
 });
 

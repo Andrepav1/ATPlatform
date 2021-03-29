@@ -1,7 +1,6 @@
-
-const CURRENCY_PAIR_UNIT = 1000;
-const METAL_UNIT = 50;
-const INDEX_UNIT = 1;
+const CURRENCY_UNIT = 100000; 
+const METAL_UNIT = 5000;
+const CFD_UNIT = 100;
 
 const Signal = {
 	STRONG_SELL: 0,
@@ -22,9 +21,9 @@ const Comparison = {
 }
 
 module.exports = {
-  CURRENCY_PAIR_UNIT,
+  CURRENCY_UNIT,
   METAL_UNIT,
-  INDEX_UNIT,
+  CFD_UNIT,
   Signal,
   Comparison,
 }

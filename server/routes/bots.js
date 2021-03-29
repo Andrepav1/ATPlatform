@@ -3,7 +3,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
 const fx = require('simple-fxtrade');
 const { Bot } = require('../models/bot');
-const { getBots } = require('../util/bots');
+const { getBots, updateBot } = require('../util/bots');
 
 // Get all bots
 router.get('/', (req, res, next) => {
@@ -46,13 +46,15 @@ router.post('/', (req, res, next) => {
 
 router.put('/update', (req, res, next) => {
 
-  const { id, status } = req.body;
+  const { id, live } = req.body;
 
-  Bot.findByIdAndUpdate(id, { $set: { live: status } }, null, (error, result) => {
-    if(error) return res.json({error});
-    res.json(result);
-  })
-
+  updateBot(id, { live })
+  .then((result) => {
+    res.json(result)
+  }).catch((error) => {
+    res.json({error})
+  });
 })
+
 
 module.exports = router;

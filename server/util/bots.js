@@ -1,7 +1,9 @@
 const { Bot } = require('../models/bot');
 const { Signal } = require('./constants');
-const { getInstruments } = require('./instruments');
+const { getInstruments, getInstrumentUnits } = require('./instruments');
+const { placeOrder } = require('./orders');
 const { extractInputData, getIndicatorValues, getIndicatorSignal } = require('./technical-indicator')
+
 
 // Calculates a buy/sell/neutral signal for each of the indicators
 // and use them together to produce a single signal for the given instrument
@@ -30,6 +32,8 @@ const getInstrumentTrigger = (strategy, candles) => {
 
   });
 
+  console.log("BuyTriggers", buyTriggers, " - sellTriggers", sellTriggers);
+
   if(buyTriggers >= strategy.minSignals.buy && sellTriggers < strategy.minSignals.sell) { 
     return Signal.BUY;
   }
@@ -57,16 +61,26 @@ const calculateBot = async (bot) => {
 
       let trigger = getInstrumentTrigger(activeStrategy, candles);
 
+      // ==================
+      // ==================
+      // ==================
+      // TEMPORARY
+      // trigger = Signal.SELL; // TO REMOVE
+      // ==================
+      // ==================
+      // ==================
+      
+      let units;
       switch (trigger) {
         case Signal.BUY:
           console.log("[" + instrument + "] BUY SIGNAL!!!!! TO THE MOON!!!!!");
-
-          // BUY INSTRUMENT
+          units = getInstrumentUnits(instrument, parseFloat(activeStrategy.lotSize)); // positive lotSize to get BUY order
+          placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.SELL: 
-        console.log("[" + instrument + "] SELL SIGNAL!!!! BIG BEAR TODAY!!!");
-
-          // SELL INSTRUMENT
+          console.log("[" + instrument + "] SELL SIGNAL!!!! BIG BEAR TODAY!!!");
+          units = getInstrumentUnits(instrument, -parseFloat(activeStrategy.lotSize)); // negative lotSize to get SELL order
+          placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.NEUTRAL:
           console.log("[" + instrument + "] NO SIGNAL");
@@ -104,6 +118,26 @@ const calculateBots = async (chartPeriod) => {
 
 } 
 
+const placeStrategyOrder = async (instrument, units, bot) => {
+
+  let positionId;
+  try {
+    const { lastTransactionID } = await placeOrder(instrument, units);
+    positionId = lastTransactionID;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+  
+  const { _id, openedPositions } = bot;
+
+  let newOpenedPositions = [...openedPositions];
+  newOpenedPositions.push(positionId);
+
+  updateBot(_id, { openedPositions: newOpenedPositions });
+
+}
+
 const getBots = (params = {}) => {
   return new Promise((resolve, reject) => {
     Bot.find(params)
@@ -115,6 +149,14 @@ const getBots = (params = {}) => {
   })
 }
 
+const updateBot = (id, updateObj) => {
+  return new Promise((resolve, reject) => {
+    Bot.findByIdAndUpdate(id, { $set: updateObj }, null, (error, result) => {
+      if(error) return reject(error);
+      resolve(result);
+    })
+  })
+}
 
 
 module.exports = {
@@ -122,4 +164,5 @@ module.exports = {
   getInstrumentTrigger,
   calculateBot,
   calculateBots,
+  updateBot
 }

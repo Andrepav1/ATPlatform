@@ -1,16 +1,19 @@
 const fx = require('simple-fxtrade');
 
-const placeOrder = (units, instrument) => {
+const placeOrder = (instrument, units, type = "MARKET", timeInForce = "FOK") => {
   return new Promise((resolve, reject) => {
     fx.orders.create({
       order: {
+        instrument, 
         units,
-        instrument
+        timeInForce,
+        type
       }
     })
     .then((result) => {
       resolve(result);
     }).catch((error) => {
+      console.log(error);
       reject(error);
     });
   })
