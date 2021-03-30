@@ -135,7 +135,6 @@ const placeStrategyOrder = async (instrument, units, bot) => {
   newOpenedPositions.push(positionId);
 
   updateBot(_id, { openedPositions: newOpenedPositions });
-
 }
 
 const getBots = (params = {}) => {

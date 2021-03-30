@@ -53,7 +53,8 @@ class MovingAverage {
   
   static calculate({ type, values, period, format = x => x }) {
     const maObj = getMovingAverageObject(type);
-    return maObj.calculate({ values, period, format });
+    let maValues = maObj.calculate({ values, period, format });
+    return maValues.map((MA) => { return { MA }})
   }
 } 
 
@@ -301,42 +302,55 @@ const getIndicatorExpectedInput = (name) => {
 }
 
 const calculateIndicatorValues = ({ name }, inputData) => {
-
+  let result;
   switch (name) {
     case "ADX":
       return ADX.calculate(inputData);
     case "ATR":
-      return ATR.calculate(inputData);
+      result = ATR.calculate(inputData);
+      return result.map((ATR) => { return { ATR }})
     case "AwesomeOscillator":
-      return AwesomeOscillator.calculate(inputData);
+      result = AwesomeOscillator.calculate(inputData);
+      return result.map((AwesomeOscillator) => { return { AwesomeOscillator }})
     case "BollingerBands":
       return BollingerBands.calculate(inputData);
     case "CCI":
-      return CCI.calculate(inputData);
+      result = CCI.calculate(inputData);
+      return result.map((CCI) => { return { CCI }})
     case "ForceIndex":
-      return ForceIndex.calculate(inputData);
+      result = ForceIndex.calculate(inputData);
+      return result.map((ForceIndex) => { return { ForceIndex }})
     case "MFI":
-      return MFI.calculate(inputData);
+      result = MFI.calculate(inputData);
+      return result.map((MFI) => { return { MFI }})
     case "MACD":
       return MACD.calculate(inputData);
     case "OBV":
-      return OBV.calculate(inputData);
+      result = OBV.calculate(inputData);
+      return result.map((OBV) => { return { OBV }})
     case "PSAR":
-      return PSAR.calculate(inputData);
+      result = PSAR.calculate(inputData);
+      return result.map((PSAR) => { return { PSAR }})
     case "ROC":
-      return ROC.calculate(inputData);
+      result = ROC.calculate(inputData);
+      return result.map((ROC) => { return { ROC }})
     case "RSI":
-      return RSI.calculate(inputData);
+      result = RSI.calculate(inputData);
+      return result.map((RSI) => { return { RSI }})
     case "Stochastic":
       return Stochastic.calculate(inputData);
     case "StochasticRSI":
-      return StochasticRSI.calculate(inputData);
+      result = StochasticRSI.calculate(inputData);
+      return result.map((StochasticRSI) => { return { StochasticRSI }})
     case "TRIX":
-      return TRIX.calculate(inputData);
+      result = TRIX.calculate(inputData);
+      return result.map((TRIX) => { return { TRIX }})
     case "VWAP":
-      return VWAP.calculate(inputData);
+      result = VWAP.calculate(inputData);
+      return result.map((VWAP) => { return { VWAP }})
     case "WilliamsR":
-      return WilliamsR.calculate(inputData);
+      result = WilliamsR.calculate(inputData);
+      return result.map((WilliamsR) => { return { WilliamsR }})
     case "IchimokuCloud":
       return IchimokuCloud.calculate(inputData);
     case "MovingAverage":
@@ -356,19 +370,19 @@ const signalTriggered = (signal, values) => {
 
   if(signal.b === "number") {
     for (let i = 0; i < values.length; i++) {
-      values[i].bN = signal.bN;
+      values[i].number = signal.bN;
     }
   }
-  
+
   console.log("===============");
-  console.log(signal.a + " - " + signal.b);
+  console.log(signal.a + " " + Object.keys(Comparison)[signal.comparison] + " " + signal.b);
   console.log(values);
-  console.log("===============");
 
   switch (signal.comparison) {
     case Comparison.LESS_THAN:
     case Comparison.GREATER_THAN:
       let comparisonValues = getComparison(values, signal.a, signal.b);
+
       return (comparisonValues[1] === signal.comparison);
     case Comparison.CROSS:
     case Comparison.CROSS_DOWN:

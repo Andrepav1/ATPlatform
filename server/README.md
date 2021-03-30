@@ -54,4 +54,5 @@
 - Add signal cooldown
 - Add keepSignalFor
 - Implement Strategy (if BUY close all SELL position and viceversa)
-- Implement Indicator Output Formatting, similar to MovingAverage, from an array of values to an array of objects containing the values. 
+- Implement Indicator Output Formatting, similar to MovingAverage, from an array of values to an array of objects containing the values. - DONE
+- 
