@@ -127,7 +127,7 @@ export default function OpenPositions({ positions }) {
         open &&
         <ConfirmDialog 
           title="Closing Position"
-          text="Are you sure you want to close this position?" 
+          text="Are you sure you want to close this position? If you select YES, this position will not be counted towards the calculation of the bot performance." 
           open={open} 
           setOpen={setOpen} 
           confirmAction={confirmClosePosition} 

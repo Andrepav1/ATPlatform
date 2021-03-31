@@ -15,6 +15,7 @@ import Activity from '../components/Activity';
 import { fetchRequest, createURL } from '../util/network'
 import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
 import OpenPositions from '../components/OpenPositions';
+import BotsSummary from '../components/BotsSummary';
 import BotSummary from '../components/BotSummary';
 
 const FIXED_HEIGHT = "320px";
@@ -112,6 +113,10 @@ function DashboardPage({ api_key, account_id }) {
       setPositionsData(data);
     });
 
+    // keep fetching open positions
+    socket.on("Bots", data => {
+      setBotsData(data);
+    });
 
     return () => socket.disconnect();
   }, [api_key, account_id]);
@@ -133,9 +138,19 @@ function DashboardPage({ api_key, account_id }) {
             </Paper>
           </Grid>
 
+          {
+            botsData.map((bot) => (
+              <Grid item xs={12} md={6} lg={4}>
+                <Paper className={styles.paperFixedHeight}>
+                  <BotSummary bot={bot} positions={positionsData} />
+                </Paper>
+              </Grid>
+            ))
+          }
+          
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
-              <BotSummary bots={botsData} setBots={setBotsData} />
+              <BotsSummary bots={botsData} setBots={setBotsData} />
             </Paper>
           </Grid>
           
@@ -146,8 +161,8 @@ function DashboardPage({ api_key, account_id }) {
           </Grid>
 
           <Grid item xs={12}>
-            <Paper className={styles.paper}>
-              
+            <Paper className={styles.paperFixedHeight}>
+
             </Paper>
           </Grid>
 

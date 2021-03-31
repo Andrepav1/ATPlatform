@@ -1,95 +1,82 @@
 import React from 'react';
 
-// import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import { Box, Switch, TableHead, Typography } from '@material-ui/core';
+import { Typography, Box, CardHeader, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import uuid from 'react-uuid';
 import Title from './Title';
-import { createURL, fetchRequest } from '../util/network';
+import Brightness1Icon from '@material-ui/icons/Brightness1';
+import { BUY_GREEN, SELL_RED } from '../util/colors';
 
-// const useStyles = makeStyles((theme) => ({
+export default function BotSummary({ bot, positions }) {
 
-// }));
-
-export default function BotSummary({ bots, setBots }) {
-
-  const updateBot = (id, updateObj) => {
-    let update_bot_url = createURL("/bots/update");
-    fetchRequest({ 
-      url: update_bot_url, 
-      method: "PUT", 
-      body: { ...updateObj, id },
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-    })
-    .then(() => {
-      console.log("success")
-    })
-    .catch((error) => {
-      console.log("fetch error", error);
-    })
+  console.log(positions, bot.openedPositions);
+  
+  const getBotPositions = () => {
+    return positions.filter(({ id }) => {
+      return bot.openedPositions.includes(id);
+    });
   }
   
-  const setBotStatus = (id, status) => {
-    setBots(bots.map((bot) => {
-      if(bot._id===id) bot.live = status;
-      return bot;
-    }))
-    
-    updateBot(id, { live: status });
-    
-  }
-
-  const getBotRow = (bot) => {
+  const getBUYSELLText = (isBuy) => {
     return (
-      <TableRow key={uuid()}> 
-        <TableCell align="left">
-          <Typography noWrap>{bot.name}</Typography>
-        </TableCell>
-        <TableCell size="small">
-          <Box display="flex" flexDirection="row-reverse">
-            <Switch
-              checked={bot.live}
-              onChange={() => setBotStatus(bot._id, !bot.live)}
-              color="primary"
-            />
-          </Box>
-        </TableCell>
-      </TableRow>
+      <b style={{ backgroundColor: isBuy?BUY_GREEN:SELL_RED, padding: 6, borderRadius: 4, color: "white" }}>{isBuy?"BUY":"SELL"}</b> 
     )
   }
 
-  if(!bots || bots.length === 0) {
+  if(!bot || !positions) {
     return (
       <React.Fragment>
-        <Title>Bot Summary</Title>
-        <Typography noWrap style={{ marginTop: 100, color: "#88888888" }}>Nothing here</Typography>
+        <Title>{bot.name}</Title>
       </React.Fragment>
     );
   }
 
   return (
     <React.Fragment>
-      <Title>Bot Summary</Title>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">
-              <Typography noWrap>Bot Name</Typography>
-            </TableCell>
-            <TableCell size="small" align="right">
-              <Typography noWrap style={{ marginRight: 16 }}>Live</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {bots.map((bot) => getBotRow(bot))}
-        </TableBody>
-      </Table>
+      <CardHeader
+        title={bot.name}
+        subheader={bot.activeStrategy.name + " (" + bot.chartPeriod + ")"}
+        titleTypographyProps={{ align: 'center' }}
+        subheaderTypographyProps={{ align: 'center' }}
+      />
+      <Box display="flex" flexDirection="row-reverse" style={{ position: "relative", bottom: 90 }}>
+        <Brightness1Icon style={{ color: bot.live?"#1bf723":"#de0000", position: "absolute", fontSize: 14 }} />
+      </Box>
+      <Typography> 
+        {"Performance since beginning: "}
+        <b style={{ fontSize: 18, color: parseFloat(bot.performance)<0?"#de0000":"#0335fc" }}>
+          {(bot.performance.toFixed(2)<0?"":"+") + bot.performance.toFixed(2)}
+        </b>
+      </Typography>
+      <Box>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              getBotPositions().map((position) => (
+                <TableRow key={uuid()}>
+                  <TableCell>{ getBUYSELLText(parseInt(position.currentUnits)>0) }</TableCell>
+                  <TableCell>{position.instrument}</TableCell>
+                  <TableCell>{position.lotSize}</TableCell>
+                  <TableCell>
+                    <Typography style={{ marginLeft: 8, fontSize: 16, color: parseFloat(position.unrealizedPL)<0?"#de0000":"#0335fc" }}>{parseFloat(position.unrealizedPL).toFixed(2)}</Typography>
+                  </TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
+        {
+          getBotPositions().length === 0  &&
+          <Typography noWrap style={{ marginTop: 70, color: "#88888888" }}>Nothing here</Typography>
+        }
+      </Box>
     </React.Fragment>
   );
 }
