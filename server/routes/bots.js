@@ -31,7 +31,7 @@ router.delete('/:id', (req, res, next) => {
 router.post('/', (req, res, next) => {
 
   const { bot } = req.body;
-  
+
   // Create an instance of model
   var bot_instance = new Bot(bot);
 

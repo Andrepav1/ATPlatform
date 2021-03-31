@@ -2,6 +2,7 @@ const cron = require('node-cron');
 var { getAccountSummary } = require('../util/accounts');
 const fx = require('simple-fxtrade');
 const { getInstrumentLotSize } = require('../util/instruments');
+const { getBots } = require('../util/bots');
 
 const activeSockets = new Set();
 
@@ -38,8 +39,27 @@ const emitOpenPositions = () => {
   })
 }
 
-cron.schedule('*/1 * * * * *', emitAccountSummary);
-cron.schedule('*/1 * * * * *', emitOpenPositions);
+const emitBots = () => {
+  activeSockets.forEach((socket) => {
+    const { handshake: { query: { accountId }}} = socket;
+    getBots()
+    .then((bots) => {
+      // console.log("emit positions");
+      socket.emit("Bots", bots);
+    }).catch((err) => {
+      console.log("error emitting summary", err);
+      // Error, don't emit anything
+    });
+  })
+}
+
+cron.schedule('*/3 * * * * *', 
+  () => { 
+    emitAccountSummary(); 
+    emitOpenPositions(); 
+    emitBots(); 
+  }
+);
 
 const addSocket = (socket) => {
   activeSockets.add(socket);

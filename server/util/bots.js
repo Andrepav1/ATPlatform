@@ -2,6 +2,7 @@ const { Bot } = require('../models/bot');
 const { Signal } = require('./constants');
 const { getInstruments, getInstrumentUnits } = require('./instruments');
 const { placeOrder } = require('./orders');
+const { getTrades, closeTrade } = require('./trades');
 const { extractInputData, getIndicatorValues, getIndicatorSignal } = require('./technical-indicator')
 
 
@@ -32,7 +33,7 @@ const getInstrumentTrigger = (strategy, candles) => {
 
   });
 
-  console.log("BuyTriggers", buyTriggers, " - sellTriggers", sellTriggers);
+  // console.log("BuyTriggers", buyTriggers, " - sellTriggers", sellTriggers);
 
   if(buyTriggers >= strategy.minSignals.buy && sellTriggers < strategy.minSignals.sell) { 
     return Signal.BUY;
@@ -118,23 +119,55 @@ const calculateBots = async (chartPeriod) => {
 
 } 
 
-const placeStrategyOrder = async (instrument, units, bot) => {
+const filterBotPositions = (trades, openedPositions, instrument) => {
+  return trades.filter(({ id, instrument: tradeInstrument }) => {
+    return openedPositions.includes(id) && tradeInstrument == instrument;
+  });
+}
 
-  let positionId;
-  try {
-    const { lastTransactionID } = await placeOrder(instrument, units);
-    positionId = lastTransactionID;
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-  
+const placeStrategyOrder = async (instrument, units, bot) => {
   const { _id, openedPositions } = bot;
 
-  let newOpenedPositions = [...openedPositions];
-  newOpenedPositions.push(positionId);
+  try {
 
-  updateBot(_id, { openedPositions: newOpenedPositions });
+    // Get BOT opened position
+    let { trades } = await getTrades();
+    let botPositions = filterBotPositions(trades, openedPositions, instrument);
+
+    let closedTrade;
+    let closedPositions = [];
+    for (let i = 0; i < botPositions.length; i++) {
+      if(botPositions[i].currentUnits >= 0 && units < 0) { // opened position is BUY, new order is SELL
+        closedTrade = await closeTrade(botPositions[i].id);        
+        closedPositions.push({ id: closedTrade.orderFillTransaction.id, performance: parseFloat(closedTrade.orderFillTransaction.pl) });
+      }
+      else if (botPositions[i].currentUnits < 0 && units >= 0) { // opened position is SELL, new order is BUY
+        closedTrade = await closeTrade(botPositions[i].id);        
+        closedPositions.push({ id: closedTrade.orderFillTransaction.id, performance: parseFloat(closedTrade.orderFillTransaction.pl) });
+      }
+      else {
+        // opened position and new order are of same type, what to do here depends on the strategy : TODO
+      }
+    }
+
+    // calculate new performance after having closed positions 
+    let newPerformance = 0;
+    for (let i = 0; i < closedPositions.length; i++) {
+      // newOpenedPositions.filter((pos) => pos !== closedPositions[i].id); // TODO MAYBE
+      newPerformance += closedPositions[i].performance;
+    }
+
+    // round to 2 decimal places
+    newPerformance = Math.round((newPerformance + Number.EPSILON) * 100) / 100;
+    updateBotPerformance(_id, newPerformance);
+
+    // Place new order and add ID into the bot openedPositions
+    const { lastTransactionID } = await placeOrder(instrument, units);
+    pushNewOpenedPosition(_id, lastTransactionID);
+
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const getBots = (params = {}) => {
@@ -144,6 +177,24 @@ const getBots = (params = {}) => {
     .exec((error, bots) => {
       if(error) return reject(error);
       resolve(bots)
+    })
+  })
+}
+
+const pushNewOpenedPosition = (botId, positionId) => {
+  return new Promise((resolve, reject) => {
+    Bot.findByIdAndUpdate(botId, { $push: { openedPositions: positionId }}, null, (error, result) => {
+      if(error) return reject(error);
+      resolve(result);
+    })
+  })
+}
+
+const updateBotPerformance = (botId, variance) => {
+  return new Promise((resolve, reject) => {
+    Bot.findByIdAndUpdate(botId, { $inc: { performance: variance }}, null, (error, result) => {
+      if(error) return reject(error);
+      resolve(result);
     })
   })
 }

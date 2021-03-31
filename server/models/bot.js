@@ -10,7 +10,8 @@ const BotSchema = new db.Schema({
   instruments: [String],
   userId: Schema.Types.ObjectId,
   live: Boolean,
-  openedPositions: [String]
+  openedPositions: { type: [String], default: [] },
+  performance: { type: Number, default: 0 }
 });
 
 const Bot = db.model('Bot', BotSchema);

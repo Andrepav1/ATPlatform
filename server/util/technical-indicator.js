@@ -374,9 +374,9 @@ const signalTriggered = (signal, values) => {
     }
   }
 
-  console.log("===============");
-  console.log(signal.a + " " + Object.keys(Comparison)[signal.comparison] + " " + signal.b);
-  console.log(values);
+  // console.log("===============");
+  // console.log(signal.a + " " + Object.keys(Comparison)[signal.comparison] + " " + signal.b);
+  // console.log(values);
 
   switch (signal.comparison) {
     case Comparison.LESS_THAN:

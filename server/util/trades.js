@@ -25,8 +25,7 @@ const closeTrade = (id) => {
   
 }
 
-
 module.exports = {
   getTrades,
-  closeTrade
+  closeTrade,
 }
