@@ -54,4 +54,6 @@
 - Add keepSignalFor
 - Implement Strategy (if BUY close all SELL position and viceversa) - Default DONE
 - Implement Indicator Output Formatting, similar to MovingAverage, from an array of values to an array of objects containing the values. - DONE
+- Front-end Implement Indicator Editing on strategy edit page
+- Bot editing implementation similar to strategy
 - 
