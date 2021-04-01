@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function StrategyCard({ data }) {
+export default function StrategyCard({ data, onEditStrategyPressed, onRemoveStrategyPressed }) {
 
   const styles = useStyles();
 
@@ -58,10 +58,10 @@ export default function StrategyCard({ data }) {
             </ul>
           </CardContent>
           <CardActions>
-            <Button fullWidth variant={"outlined"} color="secondary">
+            <Button onClick={() => onRemoveStrategyPressed(data._id)} fullWidth variant={"outlined"} color="secondary">
               {"Remove"}
             </Button>
-            <Button fullWidth variant={"contained"} color="primary">
+            <Button onClick={() => onEditStrategyPressed(data)} fullWidth variant={"contained"} color="primary">
               {"Edit"}
             </Button>
           </CardActions>

@@ -32,7 +32,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function EditStrategyPage({ history }) {
+function EditStrategyPage(props) {
+
+  if(!props.location.state || !props.location.state.id) {
+    props.history.goBack();
+  }
+
+  const strategyId = props.location.state.id;
   
   const styles = useStyles();
 
@@ -66,11 +72,11 @@ function EditStrategyPage({ history }) {
 
   const confirmIndicator = (indicator) => {
 
-    if(indicator.id) { // editing indicator
+    if(indicator._id) { // editing indicator
       editingIndicator(null);
       let newStrategyIndicators = [];
       for (let i = 0; i < strategyIndicators.length; i++) {
-        if(strategyIndicators[i].id === indicator.id) {
+        if(strategyIndicators[i]._id === indicator._id) {
           newStrategyIndicators.push(indicator)
         }
         else {
@@ -80,7 +86,7 @@ function EditStrategyPage({ history }) {
       }
     }
     else { // new indicator
-      indicator.id = uuid();
+      indicator._id = uuid();
       setStrategyIndicators([...strategyIndicators, indicator])  
     }
   }
@@ -97,7 +103,7 @@ function EditStrategyPage({ history }) {
   }
 
   const removeIndicator = (id) => {
-    setStrategyIndicators(strategyIndicators.filter((indicator) => indicator.id !== id))
+    setStrategyIndicators(strategyIndicators.filter((indicator) => indicator._id !== id))
   }
 
   const saveStrategy = () => {
@@ -107,6 +113,7 @@ function EditStrategyPage({ history }) {
     }
     
     let strategy = {
+      _id: strategyId,
       name: strategyName,
       description: strategyDescription,
       indicators: strategyIndicators,
@@ -116,18 +123,19 @@ function EditStrategyPage({ history }) {
       signalCooldown: parseInt(signalCooldown)
     } 
 
-    let save_strategy_url = createURL("/strategies");
+    let update_strategy_url = createURL("/strategies");
     fetchRequest({ 
-      url: save_strategy_url, 
+      url: update_strategy_url, 
       body: { strategy }, 
-      method: "POST", 
+      method: "PATCH", 
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       } 
     })
     .then((result) => {
-      // console.log(result);
-      history.push("/strategies");
+      console.log(result);
+      alert("Strategy Saved!");
+      // history.push("/strategies");
     })
     .catch((error) => {
       console.log("error", error);
@@ -145,7 +153,30 @@ function EditStrategyPage({ history }) {
     .catch((error) => {
       console.log("fetch error", error);
     })
-  },[]);
+
+    let strategy_url = createURL("/strategies", { id: strategyId });
+    fetchRequest({ url: strategy_url })
+    .then(({strategy}) => {
+      
+      console.log("edit", strategy);
+      setStrategyName(strategy.name);
+      setStrategyDescription(strategy.description);
+      setSignalCooldown(strategy.signalCooldown);
+      setLotSize(strategy.lotSize);
+      setRRR(strategy.RRR);
+      setAutoRiskManagement(strategy.RRR==="auto");
+      setMinSellSignals(strategy.minSignals.sell);
+      setMinBuySignals(strategy.minSignals.buy);
+
+      console.log(strategy.indicators);
+
+      // setStrategyIndicators()
+    })
+    .catch((error) => {
+      console.log("fetch error", error);
+    })
+
+  },[strategyId]);
 
   return (
     <div className="Main">

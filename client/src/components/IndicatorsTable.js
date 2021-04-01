@@ -52,10 +52,10 @@ export default function IndicatorsTable({ indicators, editIndicator, removeIndic
         <TableCell>{getSignalsData(indicator)}</TableCell>
         <TableCell size="small">
           <Box display="flex" flexDirection="row-reverse">
-            <IconButton color="default" onClick={() => editIndicator(indicator.id)}>
+            <IconButton color="default" onClick={() => editIndicator(indicator._id)}>
               <SettingsIcon />
             </IconButton>
-            <IconButton color="secondary" onClick={() => removeIndicator(indicator.id)}>
+            <IconButton color="secondary" onClick={() => removeIndicator(indicator._id)}>
               <DeleteIcon />
             </IconButton>
           </Box>
