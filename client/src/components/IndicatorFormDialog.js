@@ -30,9 +30,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function IndicatorFormDialog({ indicators, open, setOpen, confirmIndicator, editingIndicator, setEditingIndicator }) {
+export default function IndicatorFormDialog(props) {
 
+  const { 
+    indicators, 
+    open, 
+    setOpen, 
+    confirmIndicator, 
+    editingIndicator, 
+    setEditingIndicator 
+  } = props;
+  
   const styles = useStyles();
+  
+  // state
   const [currentIndicator, setCurrentIndicator] = useState()
   const [currentConfig, setCurrentConfig] = useState()
   const [buySignals, setBuySignals] = useState([]);
@@ -57,12 +68,23 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
       let newIndicator = indicators.find((element) => element.name === editingIndicator.name);
       setCurrentIndicator(newIndicator);
       setCurrentConfig(editingIndicator.config);
+
+      // Adding signals 
+      for (let i = 0; i < editingIndicator.signals.length; i++) {
+        if(editingIndicator.signals[i].type === "BUY") {
+          setBuySignals(prevSignals => [...prevSignals, editingIndicator.signals[i]]);
+        }
+        else {
+          setSellSignals(prevSignals => [...prevSignals, editingIndicator.signals[i]]);
+        }
+      }
     }
-  }, [editingIndicator, indicators])
+    
+  }, [editingIndicator, indicators, setBuySignals, setSellSignals])
 
   const handleCancel = () => {
-    setEditingIndicator(null);
     setOpen(false);
+    setEditingIndicator(null);
   }
 
   const setCurrentIndicatorHandler = (indicator) => {
@@ -99,6 +121,7 @@ export default function IndicatorFormDialog({ indicators, open, setOpen, confirm
        config: currentConfig,
        signals: [...sellSignals, ...buySignals]
      })
+
   }
 
   const isSelected = (indicator) => {

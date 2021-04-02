@@ -72,34 +72,36 @@ function EditStrategyPage(props) {
 
   const confirmIndicator = (indicator) => {
 
-    if(indicator._id) { // editing indicator
-      editingIndicator(null);
-      let newStrategyIndicators = [];
-      for (let i = 0; i < strategyIndicators.length; i++) {
-        if(strategyIndicators[i]._id === indicator._id) {
-          newStrategyIndicators.push(indicator)
-        }
-        else {
-          newStrategyIndicators.push(strategyIndicators[i])
-        }
-        setStrategyIndicators(newStrategyIndicators);
-      }
+    console.log("new", indicator);
+    console.log("editing", editingIndicator);
+    console.log("indicators", strategyIndicators);
+
+    if(editingIndicator) {
+      indicator._id = editingIndicator._id;
+      let newStrategyIndicators = strategyIndicators.filter(({ _id }) => indicator._id !== _id);
+      setStrategyIndicators([...newStrategyIndicators, indicator]);
     }
-    else { // new indicator
+    else {
       indicator._id = uuid();
-      setStrategyIndicators([...strategyIndicators, indicator])  
+      setStrategyIndicators([...strategyIndicators, indicator]);
     }
+
   }
 
-  const editIndicator = (id) => { // Editing Indicator TODO
+  const newIndicator = () => {
+    setEditingIndicator(null);
+    setOpen(true);
+  }
+  
+  const editIndicator = (indicatorId) => { // Editing Indicator TODO
 
-    alert("Edit indicator: " + id);
+    console.log("Edit indicator: " + indicatorId);
 
-    // let indicator = strategyIndicators.find((indicator) => id === indicator.id);
-    // setEditingIndicator(indicator);
+    let indicator = strategyIndicators.find((indicator) => indicator._id = indicatorId);
+    setEditingIndicator(indicator);
     // console.log("edit", indicator);
     
-    // setOpen(true);
+    setOpen(true);
   }
 
   const removeIndicator = (id) => {
@@ -167,10 +169,8 @@ function EditStrategyPage(props) {
       setAutoRiskManagement(strategy.RRR==="auto");
       setMinSellSignals(strategy.minSignals.sell);
       setMinBuySignals(strategy.minSignals.buy);
-
-      console.log(strategy.indicators);
-
-      // setStrategyIndicators()
+      setStrategyIndicators(strategy.indicators);
+      
     })
     .catch((error) => {
       console.log("fetch error", error);
@@ -182,10 +182,10 @@ function EditStrategyPage(props) {
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
         <Box display="flex" flexDirection="row" className={styles.subheader}>
-          <Button className={styles.horizontalMargin} variant="outlined" color="primary" onClick={() => setOpen(true)}>
+          <Button className={styles.horizontalMargin} variant="outlined" color="primary" onClick={() => newIndicator()}>
             {"New Technical Indicator"}
           </Button>
-          <Button className={styles.horizontalMargin} variant={"contained"} color="primary" onClick={saveStrategy}>
+          <Button className={styles.horizontalMargin} variant={"contained"} color="primary" onClick={() => saveStrategy()}>
             {"Save"}
           </Button>
         </Box>

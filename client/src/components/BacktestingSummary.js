@@ -109,7 +109,6 @@ export default function BacktestingSummary({ strategies, instruments, strategySt
         onClick={() => handleRunBacktesting()} 
         color="primary" 
         variant="contained" 
-        className={styles.confirmButton}
       >
         Run Backtesting
       </Button>
