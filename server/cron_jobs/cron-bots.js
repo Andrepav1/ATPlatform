@@ -1,5 +1,4 @@
 const cron = require('node-cron');
-const fx = require('simple-fxtrade');
 const { calculateBots } = require('../util/bots');
 
 

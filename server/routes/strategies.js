@@ -1,15 +1,8 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express'); 
+var router = express.Router(); 
 const { Strategy } = require('../models/strategy');
+const { updateStrategy, pushNewIndicator } = require('../util/strategies');
 
-const updateStrategy = (strategy) => {
-  return new Promise((resolve, reject) => {
-    Strategy.findByIdAndUpdate(strategy._id, strategy, null, (error) => {
-      if(error) return reject(error);
-      resolve();
-    })
-  })
-}
 
 // Get all strategies
 router.get('/', (req, res, next) => {
@@ -42,7 +35,7 @@ router.delete('/', (req, res, next) => {
 router.post('/', (req, res, next) => {
 
   const { strategy } = req.body;
-  
+
   // Create an instance of model
   var strategy_instance = new Strategy(strategy);
 
@@ -58,6 +51,10 @@ router.post('/', (req, res, next) => {
 router.patch('/', (req, res, next) => {
   const { strategy } = req.body;
   console.log(strategy._id);
+  
+  // Quick fix, to remove in the future
+  strategy.indicators.forEach(indicator => delete indicator._id)
+
   updateStrategy(strategy)
   .then(() => {
     res.json({ message: "Strategy updated successfully" });

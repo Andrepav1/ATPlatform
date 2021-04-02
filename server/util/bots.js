@@ -3,7 +3,8 @@ const { Signal } = require('./constants');
 const { getInstruments, getInstrumentUnits } = require('./instruments');
 const { placeOrder } = require('./orders');
 const { getTrades, closeTrade } = require('./trades');
-const { extractInputData, getIndicatorValues, getIndicatorSignal } = require('./technical-indicator')
+const { extractInputData, getIndicatorValues, getIndicatorSignal } = require('./technical-indicator');
+const { sendMail } = require('../mailer');
 
 
 // Calculates a buy/sell/neutral signal for each of the indicators
@@ -76,11 +77,13 @@ const calculateBot = async (bot) => {
         case Signal.BUY:
           console.log("[" + instrument + "] BUY SIGNAL!!!!! TO THE MOON!!!!!");
           units = getInstrumentUnits(instrument, parseFloat(activeStrategy.lotSize)); // positive lotSize to get BUY order
+          sendMail("API_KEY", { instrument, units, bot });
           placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.SELL: 
           console.log("[" + instrument + "] SELL SIGNAL!!!! BIG BEAR TODAY!!!");
           units = getInstrumentUnits(instrument, -parseFloat(activeStrategy.lotSize)); // negative lotSize to get SELL order
+          sendMail("API_KEY", { instrument, units, bot });
           placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.NEUTRAL:

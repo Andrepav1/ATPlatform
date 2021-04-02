@@ -56,4 +56,5 @@
 - Implement Indicator Output Formatting, similar to MovingAverage, from an array of values to an array of objects containing the values. - DONE
 - Front-end Implement Indicator Editing on strategy edit page
 - Bot editing implementation similar to strategy
+- Need to add userId on all requests 
 - 
