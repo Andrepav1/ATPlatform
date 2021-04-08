@@ -1,6 +1,6 @@
-import React from 'react';
-import { makeStyles, TextField } from '@material-ui/core';
-import Title from './Title';
+import React from "react";
+import { makeStyles, TextField } from "@material-ui/core";
+import Title from "./Title";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -9,21 +9,25 @@ const useStyles = makeStyles((theme) => ({
   },
   padding: {
     padding: theme.spacing(2),
-  }
+  },
 }));
 
-export default function StrategySummary({ strategyName, setStrategyName, strategyDescription, setStrategyDescription }) {
-
+export default function StrategySummary({
+  strategyName,
+  setStrategyName,
+  strategyDescription,
+  setStrategyDescription,
+}) {
   const styles = useStyles();
 
   const onNameChangeHandler = ({ target: { value } }) => {
-    setStrategyName(value)
-  }
-  
+    setStrategyName(value);
+  };
+
   const onDescriptionChangeHandler = ({ target: { value } }) => {
-    setStrategyDescription(value)
-  }
-  
+    setStrategyDescription(value);
+  };
+
   return (
     <React.Fragment>
       <div className={styles.padding}>

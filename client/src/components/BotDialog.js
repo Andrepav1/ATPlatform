@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
-import uuid from 'react-uuid';
+import React, { useState } from "react";
+import uuid from "react-uuid";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import { Checkbox, FormControl, FormControlLabel, InputLabel, makeStyles } from '@material-ui/core';
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  makeStyles,
+} from "@material-ui/core";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+} from "@material-ui/pickers";
 
-import DateFnsUtils from '@date-io/date-fns';
+import DateFnsUtils from "@date-io/date-fns";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -20,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   labelPadding: {
     paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(1),
   },
   button: {
     marginBottom: theme.spacing(2),
@@ -31,11 +40,17 @@ const useStyles = makeStyles((theme) => ({
   },
   timePicker: {
     margin: theme.spacing(2),
-  }
+  },
 }));
 
-export default function BotDialog({ strategies, instruments, open, setOpen, confirmBot, editStrategy }) {
-
+export default function BotDialog({
+  strategies,
+  instruments,
+  open,
+  setOpen,
+  confirmBot,
+  editStrategy,
+}) {
   const styles = useStyles();
   const [name, setName] = useState();
   const [activeStrategy, setActiveStrategy] = useState();
@@ -45,26 +60,25 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
   const [activeInstruments, setActiveInstruments] = useState([]);
   const [alwaysOn, setAlwaysOn] = useState(true);
   const [chartPeriod, setChartPeriod] = useState("H1");
-  
+
   const setStrategyHandler = (strategy) => {
     setActiveStrategy(strategy);
-  }
+  };
 
   const handleConfirmBot = () => {
-
-    if(!activeStrategy) {
+    if (!activeStrategy) {
       return alert("You need to select a strategy first");
     }
-    
-    if(activeInstruments.length === 0) {
+
+    if (activeInstruments.length === 0) {
       return alert("You need to select at least an instrument");
     }
 
-    if(!name) {
+    if (!name) {
       return alert("You need to select a name");
     }
 
-    if(alwaysOn) {
+    if (alwaysOn) {
       setEndTime(null);
       setStartTime(null);
     }
@@ -76,15 +90,15 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
       endTime,
       instruments: activeInstruments,
       chartPeriod,
-      live: false
-    }
-    
+      live: false,
+    };
+
     confirmBot(bot);
-  }
-  
-  const handleSelectInstrument = ({ target: { value }}) => {
+  };
+
+  const handleSelectInstrument = ({ target: { value } }) => {
     setActiveInstruments(value);
-  }
+  };
 
   return (
     <div>
@@ -97,46 +111,54 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
             label={"Name"}
             value={name}
             className={styles.margin}
-            onChange={({ target: { value }}) => setName(value)}
+            onChange={({ target: { value } }) => setName(value)}
             variant="filled"
             InputLabelProps={{
               shrink: true,
             }}
           />
           <FormControl fullWidth className={styles.margin}>
-            <InputLabel className={styles.labelPadding}>Active Strategy</InputLabel>
-            <Select 
-              variant="filled" 
-              fullWidth 
-              value={activeStrategy?activeStrategy.name:""}
+            <InputLabel className={styles.labelPadding}>
+              Active Strategy
+            </InputLabel>
+            <Select
+              variant="filled"
+              fullWidth
+              value={activeStrategy ? activeStrategy.name : ""}
             >
-              {
-                strategies && 
+              {strategies &&
                 strategies.map((strategy) => (
-                  <MenuItem key={uuid()} value={strategy.name} onClick={() => setStrategyHandler(strategy)} >{strategy.name}</MenuItem>
-                ))
-              }
+                  <MenuItem
+                    key={uuid()}
+                    value={strategy.name}
+                    onClick={() => setStrategyHandler(strategy)}
+                  >
+                    {strategy.name}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           <FormControl fullWidth className={styles.margin}>
-            <InputLabel className={styles.labelPadding}>Active Instruments</InputLabel>
+            <InputLabel className={styles.labelPadding}>
+              Active Instruments
+            </InputLabel>
             <Select
-              fullWidth 
+              fullWidth
               multiple
               id="activeInstruments"
               variant="filled"
               value={activeInstruments}
               onChange={handleSelectInstrument}
               MenuProps={{
-                getContentAnchorEl: null
+                getContentAnchorEl: null,
               }}
             >
-            {
-              instruments && 
-              instruments.map((instrument) => (
-                <MenuItem key={uuid()} value={instrument.name}>{instrument.displayName}</MenuItem>
-              ))
-            }
+              {instruments &&
+                instruments.map((instrument) => (
+                  <MenuItem key={uuid()} value={instrument.name}>
+                    {instrument.displayName}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           {/* <TextField
@@ -154,7 +176,9 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
             }}
           /> */}
           <FormControl key={uuid()} fullWidth className={styles.margin}>
-            <InputLabel className={styles.labelPadding}>Chart Period</InputLabel>
+            <InputLabel className={styles.labelPadding}>
+              Chart Period
+            </InputLabel>
             <Select
               fullWidth
               value={chartPeriod}
@@ -173,11 +197,12 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
           </FormControl>
           <FormControlLabel
             control={
-              <Checkbox 
-                checked={alwaysOn} 
-                onChange={({ target: {checked} }) => setAlwaysOn(checked)} 
-                color="primary" 
-              />}
+              <Checkbox
+                checked={alwaysOn}
+                onChange={({ target: { checked } }) => setAlwaysOn(checked)}
+                color="primary"
+              />
+            }
             label="Always On"
           />
           <div>
@@ -190,7 +215,7 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
                 value={startTime}
                 onChange={(time) => setStartTime(time)}
                 KeyboardButtonProps={{
-                  'aria-label': 'change time',
+                  "aria-label": "change time",
                 }}
               />
               <KeyboardTimePicker
@@ -201,17 +226,27 @@ export default function BotDialog({ strategies, instruments, open, setOpen, conf
                 value={endTime}
                 onChange={(time) => setEndTime(time)}
                 KeyboardButtonProps={{
-                  'aria-label': 'change time',
+                  "aria-label": "change time",
                 }}
               />
             </MuiPickersUtilsProvider>
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary" variant="outlined" className={styles.button}>
+          <Button
+            onClick={() => setOpen(false)}
+            color="primary"
+            variant="outlined"
+            className={styles.button}
+          >
             Cancel
           </Button>
-          <Button onClick={() => handleConfirmBot()} color="primary" variant="contained" className={styles.confirmButton}>
+          <Button
+            onClick={() => handleConfirmBot()}
+            color="primary"
+            variant="contained"
+            className={styles.confirmButton}
+          >
             Confirm
           </Button>
         </DialogActions>

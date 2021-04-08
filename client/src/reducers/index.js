@@ -4,11 +4,10 @@ const INITIAL_STATE = {
   authenticated: false,
   api_key: null,
   account_id: null,
-  live: false
-}
+  live: false,
+};
 
 const Auth = (state = INITIAL_STATE, action) => {
-
   switch (action.type) {
     case "LOGIN":
       state.authenticated = true;
@@ -17,17 +16,17 @@ const Auth = (state = INITIAL_STATE, action) => {
       state.live = action.payload.live;
       console.log("LOGIN", state);
       break;
-      case "LOGOUT":
-        state = INITIAL_STATE
-        break;
-      case "INCREMENT":
-        state.counter++;
-        break;
-  default:
+    case "LOGOUT":
+      state = INITIAL_STATE;
+      break;
+    case "INCREMENT":
+      state.counter++;
+      break;
+    default:
       break;
   }
-  
+
   return Object.assign({}, state);
-}
+};
 
 export default Auth;

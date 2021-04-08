@@ -1,9 +1,15 @@
-import React from 'react';
-import { Button, FormControl, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
-import uuid from 'react-uuid';
+import React from "react";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
+import uuid from "react-uuid";
 
-import Title from './Title';
-
+import Title from "./Title";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -11,12 +17,17 @@ const useStyles = makeStyles((theme) => ({
   },
   labelPadding: {
     paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1)
-  }
+    paddingTop: theme.spacing(1),
+  },
 }));
 
-export default function BacktestingSummary({ strategies, instruments, strategyState, chartPeriodState, instrumentState }) {
-
+export default function BacktestingSummary({
+  strategies,
+  instruments,
+  strategyState,
+  chartPeriodState,
+  instrumentState,
+}) {
   const styles = useStyles();
 
   const [activeStrategy, setActiveStrategy] = strategyState;
@@ -25,16 +36,20 @@ export default function BacktestingSummary({ strategies, instruments, strategySt
 
   const handleRunBacktesting = () => {
     console.log("run backtesting");
-  }
+  };
 
   const getCurrencySymbol = (currency) => {
     switch (currency) {
-      case "EUR": return "€";
-      case "GBP": return "£";
-      case "USD": return "$"; 
-      default: return "";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      case "USD":
+        return "$";
+      default:
+        return "";
     }
-  }
+  };
 
   return (
     <div>
@@ -42,17 +57,21 @@ export default function BacktestingSummary({ strategies, instruments, strategySt
 
       <FormControl fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Strategy</InputLabel>
-        <Select 
-          variant="filled" 
-          fullWidth 
-          value={activeStrategy?activeStrategy.name:""}
+        <Select
+          variant="filled"
+          fullWidth
+          value={activeStrategy ? activeStrategy.name : ""}
         >
-          {
-            strategies && 
+          {strategies &&
             strategies.map((strategy) => (
-              <MenuItem key={uuid()} value={strategy.name} onClick={() => setActiveStrategy(strategy)} >{strategy.name}</MenuItem>
-            ))
-          }
+              <MenuItem
+                key={uuid()}
+                value={strategy.name}
+                onClick={() => setActiveStrategy(strategy)}
+              >
+                {strategy.name}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
 
@@ -65,12 +84,12 @@ export default function BacktestingSummary({ strategies, instruments, strategySt
           value={activeInstrument}
           onChange={({ target: { value } }) => setActiveInstrument(value)}
         >
-        {
-          instruments && 
-          instruments.map((instrument) => (
-            <MenuItem key={uuid()} value={instrument.name}>{instrument.displayName}</MenuItem>
-          ))
-        }
+          {instruments &&
+            instruments.map((instrument) => (
+              <MenuItem key={uuid()} value={instrument.name}>
+                {instrument.displayName}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
 
@@ -95,20 +114,16 @@ export default function BacktestingSummary({ strategies, instruments, strategySt
 
       <FormControl key={uuid()} fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Candles amount</InputLabel>
-        <Select
-          fullWidth
-          defaultValue={"5000"}
-          variant="filled"
-        >
+        <Select fullWidth defaultValue={"5000"} variant="filled">
           <MenuItem value={"5000"}>5000 Candles</MenuItem>
         </Select>
       </FormControl>
 
-      <Button 
+      <Button
         fullWidth
-        onClick={() => handleRunBacktesting()} 
-        color="primary" 
-        variant="contained" 
+        onClick={() => handleRunBacktesting()}
+        color="primary"
+        variant="contained"
       >
         Run Backtesting
       </Button>

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, makeStyles, TextField } from '@material-ui/core';
-import Title from './Title';
+import React from "react";
+import { Button, makeStyles, TextField } from "@material-ui/core";
+import Title from "./Title";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -9,18 +9,15 @@ const useStyles = makeStyles((theme) => ({
   },
   padding: {
     padding: theme.spacing(2),
-  }
+  },
 }));
 
 export default function SettingsForm({ emailState }) {
-
   const styles = useStyles();
 
   const [email, setEmail] = emailState;
 
-  const updateSettings = () => {
-
-  }
+  const updateSettings = () => {};
 
   return (
     <React.Fragment>
@@ -34,17 +31,16 @@ export default function SettingsForm({ emailState }) {
           onChange={({ target: { value } }) => setEmail(value)}
           variant="filled"
         />
-        
-        <Button 
+
+        <Button
           fullWidth
-          onClick={() => updateSettings()} 
-          color="primary" 
-          variant="contained" 
+          onClick={() => updateSettings()}
+          color="primary"
+          variant="contained"
           className={styles.margin}
         >
           Update
         </Button>
-
       </div>
     </React.Fragment>
   );

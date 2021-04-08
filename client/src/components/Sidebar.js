@@ -1,25 +1,27 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 // sidebar components
-import { ProSidebar, Menu, MenuItem, SidebarContent, SidebarFooter, SidebarHeader } from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css';
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "react-pro-sidebar";
+import "react-pro-sidebar/dist/css/styles.css";
 
-// icons 
+// icons
 import { FaGem, FaHistory, FaRobot } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import { BiTestTube } from "react-icons/bi";
-import { VscGraph } from 'react-icons/vsc'
+import { VscGraph } from "react-icons/vsc";
 
 function Sidebar() {
   return (
-    <ProSidebar 
-      collapsed={false} 
-      breakPoint="xl"
-    >
-      <SidebarHeader>
-        
-      </SidebarHeader>
+    <ProSidebar collapsed={false} breakPoint="xl">
+      <SidebarHeader></SidebarHeader>
 
       <SidebarContent>
         <Menu iconShape="circle">
@@ -50,13 +52,9 @@ function Sidebar() {
         </Menu>
       </SidebarContent>
 
-      <SidebarFooter>
-
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
     </ProSidebar>
   );
 }
 
 export default Sidebar;
-
-

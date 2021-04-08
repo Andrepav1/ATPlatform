@@ -1,22 +1,22 @@
-import '../App.css';
-import React, { useEffect, useState } from 'react';
+import "../App.css";
+import React, { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
 import { connect } from "react-redux";
 
 // materia UI import
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Summary from '../components/Summary';
-import Activity from '../components/Activity';
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Summary from "../components/Summary";
+import Activity from "../components/Activity";
 
 // util
-import { fetchRequest, createURL } from '../util/network'
-import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
-import OpenPositions from '../components/OpenPositions';
-import BotsSummary from '../components/BotsSummary';
-import BotSummary from '../components/BotSummary';
+import { fetchRequest, createURL } from "../util/network";
+import { SOCKET_IO_ENDPOINT } from "../util/apiConstants";
+import OpenPositions from "../components/OpenPositions";
+import BotsSummary from "../components/BotsSummary";
+import BotSummary from "../components/BotSummary";
 
 const FIXED_HEIGHT = "320px";
 
@@ -27,94 +27,106 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
   },
   paperFixedHeight: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    height: FIXED_HEIGHT
-  }
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+    height: FIXED_HEIGHT,
+  },
 }));
 
 function DashboardPage({ api_key, account_id }) {
-
   const styles = useStyles();
 
   const [summaryData, setSummaryData] = useState();
-  const [activityData, setActivityData] = useState()
-  const [positionsData, setPositionsData] = useState()
+  const [activityData, setActivityData] = useState();
+  const [positionsData, setPositionsData] = useState();
   const [botsData, setBotsData] = useState([]);
 
   useEffect(() => {
-
     // =================================================
-    // fetching summary once when visiting page 
-    let summary_url = createURL("/accounts/summary", { apiKey: api_key, accountId: account_id })
+    // fetching summary once when visiting page
+    let summary_url = createURL("/accounts/summary", {
+      apiKey: api_key,
+      accountId: account_id,
+    });
     fetchRequest({ url: summary_url })
-    .then((result) => {
-      // console.log(result);
-      setSummaryData(result);
-    })
-    .catch((error) => {
-      console.log("fetch error", error);
-    })
+      .then((result) => {
+        // console.log(result);
+        setSummaryData(result);
+      })
+      .catch((error) => {
+        console.log("fetch error", error);
+      });
 
     // =================================================
-    // fetching summary once when visiting page 
-    let positions_url = createURL("/trades", { apiKey: api_key, accountId: account_id })
+    // fetching summary once when visiting page
+    let positions_url = createURL("/trades", {
+      apiKey: api_key,
+      accountId: account_id,
+    });
     fetchRequest({ url: positions_url })
-    .then(({trades}) => {
-      // console.log(trades);
-      setPositionsData(trades);
-    })
-    .catch((error) => {
-      console.log("fetch error", error);
-    })
+      .then(({ trades }) => {
+        // console.log(trades);
+        setPositionsData(trades);
+      })
+      .catch((error) => {
+        console.log("fetch error", error);
+      });
 
     // =================================================
-    // fetching transactions once when visiting page 
-    let transactions_url = createURL("/transactions", { apiKey: api_key, accountId: account_id });
+    // fetching transactions once when visiting page
+    let transactions_url = createURL("/transactions", {
+      apiKey: api_key,
+      accountId: account_id,
+    });
     fetchRequest({ url: transactions_url })
-    .then((result) => {
-      // console.log(result);
-      let transactionCount = 5;
-      setActivityData(result.reverse().slice(0,transactionCount));
-    })
-    .catch((error) => {
-      console.log("fetch error", error);
-    })
+      .then((result) => {
+        // console.log(result);
+        let transactionCount = 5;
+        setActivityData(result.reverse().slice(0, transactionCount));
+      })
+      .catch((error) => {
+        console.log("fetch error", error);
+      });
 
     // =================================================
-    // fetching bots once when visiting page 
-    let bots_url = createURL("/bots", { apiKey: api_key, accountId: account_id });
+    // fetching bots once when visiting page
+    let bots_url = createURL("/bots", {
+      apiKey: api_key,
+      accountId: account_id,
+    });
     fetchRequest({ url: bots_url })
-    .then(({bots}) => {
-      setBotsData(bots);
-    })
-    .catch((error) => {
-      console.log("fetch error", error);
-    })
+      .then(({ bots }) => {
+        setBotsData(bots);
+      })
+      .catch((error) => {
+        console.log("fetch error", error);
+      });
 
     // =================================================
     // socket.io data
-    const socket = socketIOClient(SOCKET_IO_ENDPOINT, { query: { apiKey: api_key, accountId: account_id }});
-    
+    const socket = socketIOClient(SOCKET_IO_ENDPOINT, {
+      query: { apiKey: api_key, accountId: account_id },
+    });
+
     // keep fetching summary
-    socket.on("Summary", data => {
+    socket.on("Summary", (data) => {
       setSummaryData(data);
     });
 
     // keep fetching open positions
-    socket.on("OpenPositions", data => {
+    socket.on("OpenPositions", (data) => {
       setPositionsData(data);
     });
 
     // keep fetching open positions
-    socket.on("Bots", data => {
+    socket.on("Bots", (data) => {
       setBotsData(data);
     });
 
@@ -125,35 +137,32 @@ function DashboardPage({ api_key, account_id }) {
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
         <Grid container spacing={2}>
-          
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
               <OpenPositions positions={positionsData} />
             </Paper>
           </Grid>
-          
+
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
               <Summary data={summaryData} />
             </Paper>
           </Grid>
 
-          {
-            botsData.map((bot) => (
-              <Grid item xs={12} md={6} lg={4}>
-                <Paper className={styles.paperFixedHeight}>
-                  <BotSummary bot={bot} positions={positionsData} />
-                </Paper>
-              </Grid>
-            ))
-          }
-          
+          {botsData.map((bot) => (
+            <Grid item xs={12} md={6} lg={4}>
+              <Paper className={styles.paperFixedHeight}>
+                <BotSummary bot={bot} positions={positionsData} />
+              </Paper>
+            </Grid>
+          ))}
+
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
               <BotsSummary bots={botsData} setBots={setBotsData} />
             </Paper>
           </Grid>
-          
+
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
               <Activity data={activityData} title="Recent Activity" />
@@ -161,11 +170,8 @@ function DashboardPage({ api_key, account_id }) {
           </Grid>
 
           <Grid item xs={12}>
-            <Paper className={styles.paperFixedHeight}>
-
-            </Paper>
+            <Paper className={styles.paperFixedHeight}></Paper>
           </Grid>
-
         </Grid>
       </Container>
     </div>
@@ -174,6 +180,6 @@ function DashboardPage({ api_key, account_id }) {
 
 const mapStateToProps = (state) => {
   return state;
-}
+};
 
 export default connect(mapStateToProps)(DashboardPage);

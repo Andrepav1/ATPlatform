@@ -1,31 +1,35 @@
-import './App.css';
-import React from 'react'
-import { connect } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import "./App.css";
+import React from "react";
+import { connect } from "react-redux";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
-import Sidebar from './components/Sidebar'
-import Header from './components/Header'
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
 
-import LandingPage from './pages/LandingPage'
-import DashboardPage from './pages/DashboardPage'
-import BacktestingPage from './pages/BacktestingPage'
-import TradeHistoryPage from './pages/TradeHistoryPage'
-import StrategiesPage from './pages/StrategiesPage'
-import SettingsPage from './pages/SettingsPage'
-import NotFoundPage from './pages/NotFoundPage'
-import EditStrategyPage from './pages/EditStrategyPage';
-import BotsPage from './pages/BotsPage';
+import LandingPage from "./pages/LandingPage";
+import DashboardPage from "./pages/DashboardPage";
+import BacktestingPage from "./pages/BacktestingPage";
+import TradeHistoryPage from "./pages/TradeHistoryPage";
+import StrategiesPage from "./pages/StrategiesPage";
+import SettingsPage from "./pages/SettingsPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import EditStrategyPage from "./pages/EditStrategyPage";
+import BotsPage from "./pages/BotsPage";
 
 function App({ authenticated }) {
-
-  if(authenticated) {
+  if (authenticated) {
     return (
       <Router>
         <div className="App">
           <Header />
           <Sidebar />
           <Switch>
-            <Redirect exact from='/landing' to='/'/>
+            <Redirect exact from="/landing" to="/" />
             <Route path="/" exact component={DashboardPage} />
             <Route path="/bots" exact component={BotsPage} />
             <Route exact path="/strategies" component={StrategiesPage} />
@@ -38,8 +42,7 @@ function App({ authenticated }) {
         </div>
       </Router>
     );
-  }
-  else {
+  } else {
     return (
       <Router>
         <div className="Landing">
@@ -53,8 +56,8 @@ function App({ authenticated }) {
 
 const mapStateToProps = (state) => {
   return {
-    authenticated: state.authenticated
-  }
-}
+    authenticated: state.authenticated,
+  };
+};
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(App);

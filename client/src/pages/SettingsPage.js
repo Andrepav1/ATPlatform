@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Container, Grid, makeStyles, Paper } from '@material-ui/core';
-import SettingsForm from '../components/SettingsForm';
+import React, { useState } from "react";
+import { Container, Grid, makeStyles, Paper } from "@material-ui/core";
+import SettingsForm from "../components/SettingsForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -10,16 +10,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SettingsPage() {
-  
   const styles = useStyles();
-  const emailState = useState("")
+  const emailState = useState("");
 
   return (
     <div className="Main">
-      
       <Container maxWidth="xl" className={styles.container}>
         <Grid container spacing={2}>
-          
           <Grid item xs={3}></Grid>
 
           <Grid item xs={6}>
@@ -27,9 +24,8 @@ function SettingsPage() {
               <SettingsForm emailState={emailState} />
             </Paper>
           </Grid>
-          
+
           <Grid item xs={3}></Grid>
-          
         </Grid>
       </Container>
     </div>
