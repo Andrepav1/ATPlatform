@@ -1,39 +1,35 @@
-var express = require('express'); 
-var router = express.Router(); 
-const { Strategy } = require('../models/strategy');
-const { updateStrategy, pushNewIndicator } = require('../util/strategies');
-
+var express = require("express");
+var router = express.Router();
+const { Strategy } = require("../models/strategy");
+const { updateStrategy, pushNewIndicator } = require("../util/strategies");
 
 // Get all strategies
-router.get('/', (req, res, next) => {
-
-  if(req.query.id) {
+router.get("/", (req, res, next) => {
+  if (req.query.id) {
     const _id = req.query.id;
     Strategy.findOne({ _id }, (error, strategy) => {
-      if(error) return res.json({error});
-      res.json({strategy});
-    })
-  }
-  else {
+      if (error) return res.json({ error });
+      res.json({ strategy });
+    });
+  } else {
     Strategy.find({}, (error, strategies) => {
-      if(error) return res.json({error});
-      res.json({strategies});
-    })
+      if (error) return res.json({ error });
+      res.json({ strategies });
+    });
   }
-})
+});
 
 // delete strategy
-router.delete('/', (req, res, next) => {
+router.delete("/", (req, res, next) => {
   const strategyId = req.query.id;
   Strategy.findByIdAndRemove(strategyId, (error, strategy) => {
-    if(error) return res.json({ error })
-      res.json({strategy});
+    if (error) return res.json({ error });
+    res.json({ strategy });
   });
-})
+});
 
 // create strategy
-router.post('/', (req, res, next) => {
-
+router.post("/", (req, res, next) => {
   const { strategy } = req.body;
 
   // Create an instance of model
@@ -41,27 +37,27 @@ router.post('/', (req, res, next) => {
 
   // Save the new model instance, passing a callback
   strategy_instance.save((error, strategy) => {
-    if (error) return res.json({ error })
+    if (error) return res.json({ error });
     console.log("strategy saved");
-    res.json({strategy});
+    res.json({ strategy });
   });
+});
 
-})
-
-router.patch('/', (req, res, next) => {
+router.patch("/", (req, res, next) => {
   const { strategy } = req.body;
   console.log(strategy._id);
-  
+
   // Quick fix, to remove in the future
-  strategy.indicators.forEach(indicator => delete indicator._id)
+  strategy.indicators.forEach((indicator) => delete indicator._id);
 
   updateStrategy(strategy)
-  .then(() => {
-    res.json({ message: "Strategy updated successfully" });
-  }).catch((error) => {
-    console.log(error);
-    res.json({error});
-  });
-})
+    .then(() => {
+      res.json({ message: "Strategy updated successfully" });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.json({ error });
+    });
+});
 
 module.exports = router;

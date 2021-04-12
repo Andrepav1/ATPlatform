@@ -1,36 +1,36 @@
-const fx = require('simple-fxtrade');
-const { CURRENCY_UNIT, CFD_UNIT, METAL_UNIT } = require('./constants');
+const fx = require("simple-fxtrade");
+const { CURRENCY_UNIT, CFD_UNIT, METAL_UNIT } = require("./constants");
 
-// Do not include first as candles are requested 5 seconds after the period, 
+// Do not include first as candles are requested 5 seconds after the period,
 // Avoiding an incomplete candle of 5 seconds
-const getInstrument = ({id, granularity, from, to, count, price }) => { 
+const getInstrument = ({ id, granularity, from, to, count, price }) => {
   return new Promise((resolve, reject) => {
     fx.candles({ id, granularity, from, to, count, price })
-    .then((result) => {
-      resolve(result)
-    }).catch((error) => {
-      reject(error);
-    })
-  })
-}
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
 
 const getInstruments = (instruments, granularity) => {
   return new Promise((resolve, reject) => {
-  
     let promises = [];
-    instruments.forEach(id => {
-      promises.push(getInstrument({id, granularity}));
-    });
-    
-    Promise.all(promises)
-    .then((result) => {
-      resolve(result);
-    }).catch((error) => {
-      reject(error);
+    instruments.forEach((id) => {
+      promises.push(getInstrument({ id, granularity }));
     });
 
+    Promise.all(promises)
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
-}
+};
 
 const InstrumentType = {
   AU200_AUD: "CFD",
@@ -159,30 +159,38 @@ const InstrumentType = {
 
 const getInstrumentType = (instrument) => {
   return InstrumentType[instrument];
-}
+};
 
 const getInstrumentUnits = (instrument, lotSize) => {
   switch (getInstrumentType(instrument)) {
-    case "CFD": return lotSize*CFD_UNIT;
-    case "METAL": return lotSize*METAL_UNIT;
-    case "CURRENCY": return lotSize*CURRENCY_UNIT;
-    default: return lotSize*CURRENCY_UNIT; // Currency by default
+    case "CFD":
+      return lotSize * CFD_UNIT;
+    case "METAL":
+      return lotSize * METAL_UNIT;
+    case "CURRENCY":
+      return lotSize * CURRENCY_UNIT;
+    default:
+      return lotSize * CURRENCY_UNIT; // Currency by default
   }
-}
+};
 
 const getInstrumentLotSize = (instrument, units) => {
   switch (getInstrumentType(instrument)) {
-    case "CFD": return Math.abs(units/CFD_UNIT);
-    case "METAL": return Math.abs(units/METAL_UNIT);
-    case "CURRENCY": return Math.abs(units/CURRENCY_UNIT);
-    default: return Math.abs(units/CURRENCY_UNIT); // Currency by default
+    case "CFD":
+      return Math.abs(units / CFD_UNIT);
+    case "METAL":
+      return Math.abs(units / METAL_UNIT);
+    case "CURRENCY":
+      return Math.abs(units / CURRENCY_UNIT);
+    default:
+      return Math.abs(units / CURRENCY_UNIT); // Currency by default
   }
-}
+};
 
 module.exports = {
   getInstrument,
   getInstruments,
   getInstrumentType,
   getInstrumentUnits,
-  getInstrumentLotSize
-}
+  getInstrumentLotSize,
+};

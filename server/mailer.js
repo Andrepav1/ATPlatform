@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { getUser } = require("./util/users");
+const { getUserByApiKey } = require("./util/users");
 
 const sendMail = async(api_key, { bot, instrument, units }) => {
 
@@ -18,20 +18,20 @@ const sendMail = async(api_key, { bot, instrument, units }) => {
   }
   });
 
-  // const { email } = await getUser(api_key);
+  // const { email } = await getUserByApiKey(api_key);
   const email = "pavanandrea97@icloud.com";
 
   // send mail with defined transport object
-  let info = await transporter.sendMail({
+  transporter.sendMail({
     from: "atsp.hwu@gmail.com", 
     to: email,
-    subject: "New Signal by [" + bot.name + "]",
+    subject: `New Signal by [${bot.name}]`,
     text: 
-      "Your bot [" + bot.name + "] using strategy [" + bot.activeStrategy.name + "] has placed a new " + 
-      (units>=0?"BUY":"SELL") + " order of " + Math.abs(units) + " units, on instrument [" + instrument + "]."
+      `Your bot [${bot.name}] using strategy [${bot.activeStrategy.name}] 
+      has placed a new ${units>=0?'BUY':'SELL'} order of ${Math.abs(units)} units, 
+      on instrument [${instrument}].`
   });
   
-  console.log("mail INFO", info);
 }
 
 module.exports = {

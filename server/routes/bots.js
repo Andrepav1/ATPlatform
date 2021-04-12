@@ -1,35 +1,31 @@
-var express = require('express');
-const ObjectId = require('mongoose').Types.ObjectId; 
+var express = require("express");
+const ObjectId = require("mongoose").Types.ObjectId;
 var router = express.Router();
-const fx = require('simple-fxtrade');
-const { Bot } = require('../models/bot');
-const { getBots, updateBot } = require('../util/bots');
+const fx = require("simple-fxtrade");
+const { Bot } = require("../models/bot");
+const { getBots, updateBot } = require("../util/bots");
 
 // Get all bots
-router.get('/', (req, res, next) => {
+router.get("/", (req, res, next) => {
   getBots()
-  .then((bots) => {
-    // console.log(bots);
-    res.json({ bots });
-  }).catch((error) => {
-    // console.log(error);
-    res.json({ error });
-  });
-})
+    .then((bots) => {
+      // console.log(bots);
+      res.json({ bots });
+    })
+    .catch((error) => {
+      // console.log(error);
+      res.json({ error });
+    });
+});
 
 // get single bot
-router.get('/:id', (req, res, next) => {
-
-})
+router.get("/:id", (req, res, next) => {});
 
 // delete bot
-router.delete('/:id', (req, res, next) => {
-
-})
+router.delete("/:id", (req, res, next) => {});
 
 // create bot
-router.post('/', (req, res, next) => {
-
+router.post("/", (req, res, next) => {
   const { bot } = req.body;
 
   // Create an instance of model
@@ -37,24 +33,23 @@ router.post('/', (req, res, next) => {
 
   // Save the new model instance, passing a callback
   bot_instance.save((error) => {
-    if (error) return res.json({ error })
+    if (error) return res.json({ error });
     console.log("bot saved");
   });
 
-  res.json({bot});
-})
+  res.json({ bot });
+});
 
-router.put('/update', (req, res, next) => {
-
+router.put("/update", (req, res, next) => {
   const { id, live } = req.body;
 
   updateBot(id, { live })
-  .then((result) => {
-    res.json(result)
-  }).catch((error) => {
-    res.json({error})
-  });
-})
-
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.json({ error });
+    });
+});
 
 module.exports = router;
