@@ -8,7 +8,7 @@ const BotSchema = new db.Schema({
   endTime: Date,
   chartPeriod: String,
   instruments: [String],
-  userId: Schema.Types.ObjectId,
+  userAPIkey: String,
   live: Boolean,
   openedPositions: { type: [String], default: [] },
   performance: { type: Number, default: 0 },

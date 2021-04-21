@@ -71,7 +71,7 @@ const emitBots = () => {
   });
 };
 
-cron.schedule("*/3 * * * * *", () => {
+cron.schedule("*/1 * * * * *", () => {
   emitAccountSummary();
   emitOpenPositions();
   emitBots();

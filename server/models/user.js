@@ -2,7 +2,7 @@ const db = require("../db");
 
 const userSchema = new db.Schema({
   api_key: String,
-  username: String,
+  primary_account: String,
   email: String,
 });
 

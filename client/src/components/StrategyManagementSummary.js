@@ -68,7 +68,7 @@ export default function StrategyManagementSummary({
 
         <FormControl fullWidth className={styles.margin}>
           <InputLabel className={styles.labelPadding}>
-            Trading Strategy
+            Trading Policy
           </InputLabel>
           <Select fullWidth defaultValue={"0"} variant="filled">
             <MenuItem value={"0"}>

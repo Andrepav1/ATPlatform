@@ -5,7 +5,7 @@ const { getTrades, closeTrade } = require("../util/trades");
 router.get("/", (req, res, next) => {
   getTrades()
     .then((result) => {
-      // console.log(result);
+      console.log(result);
       res.json(result);
     })
     .catch((error) => {

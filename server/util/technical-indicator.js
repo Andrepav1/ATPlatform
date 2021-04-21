@@ -485,46 +485,31 @@ const signalTriggered = (signal, values) => {
   }
 };
 
-const indicatorTriggered = (signals, values) => {
-  // console.log(signals.length, "signals");
-
-  let triggerSignal = true;
-
-  for (const signal of signals) {
-    let signalTrigger = signalTriggered(signal, values);
-
-    // To provide a BUY/SELL signal all signals configurations have to trigger
-    if (!signalTrigger) {
-      triggerSignal = false;
-    }
-  }
-
-  if (triggerSignal) {
-    // All signals triggered, on each indicator signal types are all the same
-    return signals[0].type === "BUY" ? Signal.BUY : Signal.SELL;
-  } else {
-    return Signal.NEUTRAL;
-  }
-};
-
 const getIndicatorSignal = ({ config, signals }, values, prices) => {
-  // keepSignalFor temporarily removed (on front-end too): TO ADD LATER ON (maybe)
-  // values and prices are oldest to newest (ASC order).
-  // keepSignalFor-1 as "Do not keep signal" (= 0) needs to only check the last value (= 1)
-  // let latestValues = values.slice(values.length - config.keepSignalFor-1, values.length);
-  // let latestPrices = prices.slice(prices.length - config.keepSignalFor-1, prices.length);
-  // for (let i = 0; i < latestValues.length; i++) {
-  //   latestValues[i].price = latestPrices[i];
-  // }
+  let finalSignal = true;
 
+  // Getting the two latest TI values and prices
   let latestValues = values.slice(values.length - 2, values.length);
   let latestPrices = prices.slice(prices.length - 2, prices.length);
   for (let i = 0; i < latestValues.length; i++) {
     latestValues[i].price = latestPrices[i];
   }
-  // console.log(latestValues);
 
-  return indicatorTriggered(signals, latestValues);
+  for (const signal of signals) {
+    let signalTrigger = signalTriggered(signal, latestValues);
+
+    // All signals configurations have to trigger
+    if (!signalTrigger) {
+      finalSignal = false;
+    }
+  }
+
+  if (finalSignal) {
+    // All signals triggered, get type and return final signal
+    return signals[0].type === "BUY" ? Signal.BUY : Signal.SELL;
+  } else {
+    return Signal.NEUTRAL;
+  }
 };
 
 // extract the values needed by the indicator from the instrument candles

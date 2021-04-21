@@ -51,17 +51,50 @@ export default function Activity({
   };
 
   const getActivityRow = (data) => {
-    // if(data.type === "TRADE_CLIENT_EXTENSIONS_MODIFY") return;
+    switch (data.type) {
+      case "TRADE_CLIENT_EXTENSIONS_MODIFY":
+      case "MARKET_ORDER":
+      case "MARGIN_CALL_EXIT":
+      case "MARGIN_CALL_ENTER":
+        return null;
+      case "ORDER_FILL":
+        if (data.reason === "MARKET_ORDER") {
+          return (
+            <TableRow key={uuid()}>
+              <TableCell>{data.id}</TableCell>
+              <TableCell>{data.time.substring(0, 10)}</TableCell>
+              <TableCell>{data.instrument}</TableCell>
+              <TableCell>{"Order Placed"}</TableCell>
+              <TableCell align="right">{"-"}</TableCell>
+            </TableRow>
+          );
+        } else {
+          return (
+            <TableRow key={uuid()}>
+              <TableCell>{data.id}</TableCell>
+              <TableCell>{data.time.substring(0, 10)}</TableCell>
+              <TableCell>{data.instrument}</TableCell>
+              <TableCell>{"Position Closed"}</TableCell>
+              <TableCell align="right">
+                {parseFloat(data.pl).toFixed(2)}
+              </TableCell>
+            </TableRow>
+          );
+        }
 
-    return (
-      <TableRow key={uuid()}>
-        <TableCell>{data.id}</TableCell>
-        <TableCell>{data.time.substring(0, 10)}</TableCell>
-        <TableCell>{data.instrument}</TableCell>
-        <TableCell>{getType(data.type)}</TableCell>
-        <TableCell align="right">{data.financing}</TableCell>
-      </TableRow>
-    );
+      default:
+        return (
+          <TableRow key={uuid()}>
+            <TableCell>{data.id}</TableCell>
+            <TableCell>{data.time.substring(0, 10)}</TableCell>
+            <TableCell>{data.instrument}</TableCell>
+            <TableCell>{getType(data.type)}</TableCell>
+            <TableCell align="right">
+              {data.financing ? parseFloat(data.financing).toFixed(2) : "-"}
+            </TableCell>
+          </TableRow>
+        );
+    }
   };
 
   if (!data) {

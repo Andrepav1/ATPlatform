@@ -1,7 +1,5 @@
 var express = require("express");
-const ObjectId = require("mongoose").Types.ObjectId;
 var router = express.Router();
-const fx = require("simple-fxtrade");
 const { Bot } = require("../models/bot");
 const { getBots, updateBot } = require("../util/bots");
 
@@ -19,10 +17,10 @@ router.get("/", (req, res, next) => {
 });
 
 // get single bot
-router.get("/:id", (req, res, next) => {});
+router.get("/", (req, res, next) => {});
 
 // delete bot
-router.delete("/:id", (req, res, next) => {});
+router.delete("/", (req, res, next) => {});
 
 // create bot
 router.post("/", (req, res, next) => {
@@ -35,9 +33,9 @@ router.post("/", (req, res, next) => {
   bot_instance.save((error) => {
     if (error) return res.json({ error });
     console.log("bot saved");
-  });
 
-  res.json({ bot });
+    res.json({ bot });
+  });
 });
 
 router.put("/update", (req, res, next) => {

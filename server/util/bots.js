@@ -13,8 +13,8 @@ const { sendMail } = require("../mailer");
 // Calculates a buy/sell/neutral signal for each of the indicators
 // and use them together to produce a single signal for the given instrument
 const getInstrumentSignal = (strategy, candles) => {
-  let buyTriggers = 0,
-    sellTriggers = 0;
+  let buyTriggers = 0;
+  let sellTriggers = 0;
 
   // prices from oldest to newest
   let prices = extractInputData(candles, ["values"]).values;
@@ -59,7 +59,7 @@ const getInstrumentSignal = (strategy, candles) => {
 };
 
 const calculateBot = async (bot) => {
-  const { activeStrategy, chartPeriod, instruments } = bot;
+  const { activeStrategy, chartPeriod, instruments, userAPIkey } = bot;
 
   try {
     let instrumentsData = await getInstruments(instruments, chartPeriod);
@@ -70,47 +70,39 @@ const calculateBot = async (bot) => {
         candles.pop();
       }
 
+      // Get instrument signal
       let instrumentSignal = getInstrumentSignal(activeStrategy, candles);
-
-      // ==================
-      // ==================
-      // ==================
-      // TEMPORARY
-      // instrumentSignal = Signal.SELL; // TO REMOVE
-      // ==================
-      // ==================
-      // ==================
 
       let units;
       switch (instrumentSignal) {
         case Signal.BUY:
-          console.log("[" + instrument + "] BUY SIGNAL!!!!! TO THE MOON!!!!!");
+          console.log("[" + instrument + "] BUY SIGNAL!! TO THE MOON!!!");
           units = getInstrumentUnits(
             instrument,
             parseFloat(activeStrategy.lotSize)
           ); // positive lotSize to get BUY order
-          sendMail("API_KEY", { instrument, units, bot });
-          placeStrategyOrder(instrument, units, bot);
+          sendMail(userAPIkey, { instrument, units, bot });
+          placeStrategyOrder(instrument, units, bot); // place order, following trading policy
           break;
         case Signal.SELL:
-          console.log("[" + instrument + "] SELL SIGNAL!!!! BIG BEAR TODAY!!!");
+          console.log("[" + instrument + "] SELL SIGNAL!!");
           units = getInstrumentUnits(
             instrument,
             -parseFloat(activeStrategy.lotSize)
           ); // negative lotSize to get SELL order
-          sendMail("API_KEY", { instrument, units, bot });
+          sendMail(userAPIkey, { instrument, units, bot });
           placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.NEUTRAL:
           console.log("[" + instrument + "] NO SIGNAL");
-          // WHAT TO DO HERE DEPENDS ON THE STRATEGY: TODO
+          // WHAT TO DO HERE DEPENDS ON THE POLICY
           break;
         default:
           break;
       }
     });
   } catch (error) {
-    console.log(error.errorMessage);
+    console.log(error);
   }
 };
 

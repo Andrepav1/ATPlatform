@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // get all instruments
-router.get("/candles", async (req, res, next) => {
+router.get("/candles/", async (req, res, next) => {
   const { id, granularity, count } = req.body;
 
   getInstrument({ id, granularity, count })

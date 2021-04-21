@@ -49,7 +49,7 @@ export default function BotDialog({
   open,
   setOpen,
   confirmBot,
-  editStrategy,
+  api_key,
 }) {
   const styles = useStyles();
   const [name, setName] = useState();
@@ -91,6 +91,7 @@ export default function BotDialog({
       instruments: activeInstruments,
       chartPeriod,
       live: false,
+      userAPIkey: api_key,
     };
 
     confirmBot(bot);

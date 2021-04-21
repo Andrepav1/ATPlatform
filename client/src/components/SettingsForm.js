@@ -12,12 +12,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SettingsForm({ emailState }) {
+export default function SettingsForm({ emailState, updateSettings }) {
   const styles = useStyles();
 
   const [email, setEmail] = emailState;
-
-  const updateSettings = () => {};
 
   return (
     <React.Fragment>

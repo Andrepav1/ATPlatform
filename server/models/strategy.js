@@ -27,6 +27,7 @@ const StrategySchema = new db.Schema({
   lotSize: Number,
   signalCooldown: Number,
   userId: Schema.Types.ObjectId,
+  tradingPolicy: String,
 });
 
 const Strategy = db.model("Strategy", StrategySchema);

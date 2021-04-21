@@ -40,7 +40,7 @@ const getTransactionsPage = (page, accountId) => {
   });
 };
 
-/* GET home page. */
+/*Gets n transaction pages. */
 router.get("/", (req, res, next) => {
   const { page, accountId } = req.query;
   let tPage = page ? parseInt(page) : 1;
@@ -66,7 +66,7 @@ router.get("/idrange", (req, res, next) => {
     });
 });
 
-router.get("/sinceid", (req, res, next) => {
+router.get("/sinceid/", (req, res, next) => {
   const { id } = req.query;
 
   getTransactionSinceId(id)

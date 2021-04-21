@@ -124,6 +124,7 @@ function BotsPage({ api_key, account_id }) {
             open={open}
             setOpen={setOpen}
             confirmBot={confirmBot}
+            api_key={api_key}
           />
         )}
         <Grid container spacing={2}>

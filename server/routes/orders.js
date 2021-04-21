@@ -14,7 +14,7 @@ const getOrders = () => {
   });
 };
 
-/* GET home page. */
+/* GET orders. */
 router.get("/", (req, res, next) => {
   getOrders()
     .then((result) => {
