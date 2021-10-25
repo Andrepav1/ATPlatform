@@ -168,10 +168,6 @@ function DashboardPage({ api_key, account_id }) {
               <Activity data={activityData} title="Recent Activity" />
             </Paper>
           </Grid>
-
-          <Grid item xs={12}>
-            <Paper className={styles.paperFixedHeight}></Paper>
-          </Grid>
         </Grid>
       </Container>
     </div>

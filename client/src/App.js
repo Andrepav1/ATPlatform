@@ -21,8 +21,16 @@ import NotFoundPage from "./pages/NotFoundPage";
 import EditStrategyPage from "./pages/EditStrategyPage";
 import BotsPage from "./pages/BotsPage";
 
-function App({ authenticated }) {
-  if (authenticated) {
+import { useAuth0 } from "@auth0/auth0-react";
+
+function App() {
+  const { isAuthenticated, isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (isAuthenticated) {
     return (
       <Router>
         <div className="App">

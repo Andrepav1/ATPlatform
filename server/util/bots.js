@@ -81,7 +81,7 @@ const calculateBot = async (bot) => {
             instrument,
             parseFloat(activeStrategy.lotSize)
           ); // positive lotSize to get BUY order
-          sendMail(userAPIkey, { instrument, units, bot });
+          // sendMail(userAPIkey, { instrument, units, bot });
           placeStrategyOrder(instrument, units, bot); // place order, following trading policy
           break;
         case Signal.SELL:
@@ -90,7 +90,7 @@ const calculateBot = async (bot) => {
             instrument,
             -parseFloat(activeStrategy.lotSize)
           ); // negative lotSize to get SELL order
-          sendMail(userAPIkey, { instrument, units, bot });
+          // sendMail(userAPIkey, { instrument, units, bot });
           placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.NEUTRAL:

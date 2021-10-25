@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { useAuth0 } from "@auth0/auth0-react";
+
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -21,8 +23,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Header({ logout }) {
+function Header() {
   const styles = useStyles();
+
+  const { logout } = useAuth0();
 
   return (
     <div className={styles.root}>
@@ -38,7 +42,10 @@ function Header({ logout }) {
           >
             ATS
           </Typography>
-          <IconButton color="inherit" onClick={logout}>
+          <IconButton
+            color="inherit"
+            onClick={() => logout({ returnTo: window.location.origin })}
+          >
             <ExitToAppIcon />
           </IconButton>
         </Toolbar>
@@ -47,13 +54,8 @@ function Header({ logout }) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    logout: () =>
-      dispatch({
-        type: "LOGOUT",
-      }),
-  };
+const mapDispatchToProps = () => {
+  return {};
 };
 
 export default connect(null, mapDispatchToProps)(Header);
