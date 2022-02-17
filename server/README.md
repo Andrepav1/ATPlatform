@@ -2,7 +2,7 @@
 # AT Platform
 
 
-## Technical Indicators To Implement:
+## Implemented Technical Indicators
 
 
 ### Trending Indicators:
@@ -43,7 +43,7 @@
 - IchimokuCloud
 
 
-## TODO 
+## Improvements to be made
 
 - Check candle alignment and call cron job immediately after candle completes -> Calling Cron job after a few more seconds of the minute
 - Set hours of operation
@@ -57,4 +57,3 @@
 - Front-end Implement Indicator Editing on strategy edit page
 - Bot editing implementation similar to strategy
 - Need to add userId on all requests 
-- 
