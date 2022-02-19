@@ -4,12 +4,12 @@ const { getUserByApiKey } = require("./util/users");
 const sendMail = async (api_key, { bot, instrument, units }) => {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: process.env.E_MAIL_HOST,
     port: 465,
     secure: true,
     auth: {
-      user: "atsp.hwu@gmail.com",
-      pass: "atsplatform",
+      user: process.env.E_MAIL_USER,
+      pass: process.env.E_MAIL_PASSWORD,
     },
     tls: {
       rejectUnauthorized: false,
@@ -21,7 +21,7 @@ const sendMail = async (api_key, { bot, instrument, units }) => {
 
     // send mail with defined transport object
     transporter.sendMail({
-      from: "atsp.hwu@gmail.com",
+      from: process.env.E_MAIL_USER,
       to: email,
       subject: `New Signal by [${bot.name}]`,
       text: `Your bot [${bot.name}] using strategy [${
