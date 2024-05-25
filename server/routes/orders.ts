@@ -1,6 +1,7 @@
-var express = require("express");
-var router = express.Router();
-const fx = require("simple-fxtrade");
+import express from 'express';
+import fx from 'simple-fxtrade';
+
+const router = express.Router();
 
 const getOrders = () => {
   return new Promise(function (resolve, reject) {
@@ -15,7 +16,7 @@ const getOrders = () => {
 };
 
 /* GET orders. */
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   getOrders()
     .then((result) => {
       res.json(result);
@@ -26,11 +27,11 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/place", (req, res, next) => {
+router.post('/place', (req, res, next) => {
   const query = req.query;
   const params = req.params;
 
   console.log(query, params);
 });
 
-module.exports = router;
+export default router;

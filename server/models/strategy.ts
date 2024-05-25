@@ -1,35 +1,33 @@
-const { Schema } = require("mongoose");
-const db = require("../db");
+import { Schema } from 'mongoose';
+import db from '../db';
 
 const SignalSchema = new db.Schema({
   type: String,
   comparison: Number,
   a: String,
   b: String,
-  bN: Number,
+  bN: Number
 });
 
 const IndicatorSchema = new db.Schema({
   name: String,
   config: Object,
-  signals: [SignalSchema],
+  signals: [SignalSchema]
 });
 
-const StrategySchema = new db.Schema({
+export const StrategySchema = new db.Schema({
   name: String,
   description: String,
   indicators: [IndicatorSchema],
   minSignals: {
     buy: Number,
-    sell: Number,
+    sell: Number
   },
   RRR: String,
   lotSize: Number,
   signalCooldown: Number,
   userId: Schema.Types.ObjectId,
-  tradingPolicy: String,
+  tradingPolicy: String
 });
 
-const Strategy = db.model("Strategy", StrategySchema);
-
-module.exports = { Strategy, StrategySchema };
+export const Strategy = db.model('Strategy', StrategySchema);

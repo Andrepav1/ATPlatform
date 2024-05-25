@@ -1,4 +1,18 @@
-const latestValues = [
+type PricesData = {
+  o: string;
+  h: string;
+  l: string;
+  c: string;
+};
+
+type TickData = {
+  complete: boolean;
+  volume: number;
+  time: string;
+  mid: PricesData;
+};
+
+export const latestValues: TickData[] = [
   {
     complete: true,
     volume: 1075,
@@ -601,15 +615,17 @@ const latestValues = [
   },
 ];
 
-const extractInputData = (candles, values) => {
+export const extractInputData = (candles, values) => {
   let inputData = {};
 
   values.forEach((value) => {
     switch (value) {
       case "volume":
+        // @ts-expect-error TS(2339): Property 'volume' does not exist on type '{}'.
         inputData.volume = candles.map((_) => _.volume);
         break;
       case "values": // use "close" as default value, could be changed in the future no problemo
+        // @ts-expect-error TS(2339): Property 'values' does not exist on type '{}'.
         inputData.values = candles.map((_) => parseFloat(_.mid.c));
         break;
       default:
@@ -621,9 +637,4 @@ const extractInputData = (candles, values) => {
     }
   });
   return inputData;
-};
-
-module.exports = {
-  latestValues: [...latestValues], // exports a copy
-  extractInputData,
 };

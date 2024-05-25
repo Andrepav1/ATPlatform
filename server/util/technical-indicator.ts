@@ -1,4 +1,4 @@
-const {
+import {
   ADX,
   ATR,
   AwesomeOscillator,
@@ -20,10 +20,10 @@ const {
   WMA,
   WEMA,
   WilliamsR,
-  IchimokuCloud,
-} = require("technicalindicators");
+  IchimokuCloud
+} from "technicalindicators";
 
-const { Comparison, Signal } = require("../util/constants");
+import { Comparison, Signal } from "../util/constants";
 
 function getMovingAverageObject(type) {
   switch (type) {
@@ -41,6 +41,8 @@ function getMovingAverageObject(type) {
 }
 
 class MovingAverage {
+  label: any;
+  name: any;
   constructor() {
     this.name = "MovingAverage";
     this.label = "Moving Average";
@@ -60,6 +62,8 @@ class MovingAverage {
 }
 
 class DoubleMovingAverage {
+  label: any;
+  name: any;
   constructor() {
     this.name = "DoubleMovingAverage";
     this.label = "Double Moving Average";
@@ -71,7 +75,7 @@ class DoubleMovingAverage {
     values,
     shortPeriod,
     longPeriod,
-    format,
+    format
   }) {
     return DoubleMovingAverage.calculate({
       shortMethod,
@@ -79,7 +83,7 @@ class DoubleMovingAverage {
       values,
       shortPeriod,
       longPeriod,
-      format,
+      format
     });
   }
 
@@ -89,7 +93,7 @@ class DoubleMovingAverage {
     values,
     shortPeriod,
     longPeriod,
-    format = (x) => x,
+    format = (x) => x
   }) {
     const shortMA = getMovingAverageObject(shortMethod);
     const longMA = getMovingAverageObject(longMethod);
@@ -115,6 +119,8 @@ class DoubleMovingAverage {
 }
 
 class TripleMovingAverage {
+  label: any;
+  name: any;
   constructor() {
     this.name = "TripleMovingAverage";
     this.label = "Triple Moving Average";
@@ -128,7 +134,7 @@ class TripleMovingAverage {
     shortPeriod,
     mediumPeriod,
     longPeriod,
-    format,
+    format
   }) {
     return TripleMovingAverage.calculate({
       shortMethod,
@@ -138,7 +144,7 @@ class TripleMovingAverage {
       shortPeriod,
       mediumPeriod,
       longPeriod,
-      format,
+      format
     });
   }
 
@@ -150,7 +156,7 @@ class TripleMovingAverage {
     shortPeriod,
     mediumPeriod,
     longPeriod,
-    format = (x) => x,
+    format = (x) => x
   }) {
     const shortMA = getMovingAverageObject(shortMethod);
     const mediumMA = getMovingAverageObject(mediumMethod);
@@ -180,7 +186,7 @@ class TripleMovingAverage {
   }
 }
 
-const technicalIndicators = {
+export const technicalIndicators = {
   ADX,
   ATR,
   AwesomeOscillator,
@@ -202,7 +208,7 @@ const technicalIndicators = {
   // MOVING AVERAGE CROSSOVER INDICATORS
   MovingAverage,
   DoubleMovingAverage,
-  TripleMovingAverage,
+  TripleMovingAverage
 };
 
 // returns an array
@@ -247,11 +253,11 @@ const getComparison = (values, a, b) => {
   return result;
 };
 
-const getIndicatorObject = (name) => {
+export const getIndicatorObject = (name) => {
   return technicalIndicators[name];
 };
 
-const getIndicatorComponents = (name) => {
+export const getIndicatorComponents = (name) => {
   switch (name) {
     case "ADL":
       return ["ADL", "price", "number"];
@@ -302,7 +308,7 @@ const getIndicatorComponents = (name) => {
   }
 };
 
-const getIndicatorExpectedInput = (name) => {
+export const getIndicatorExpectedInput = (name) => {
   switch (name) {
     case "ADL":
       return ["volume", "high", "low", "close"];
@@ -359,7 +365,7 @@ const getIndicatorExpectedInput = (name) => {
   }
 };
 
-const calculateIndicatorValues = ({ name }, inputData) => {
+export const calculateIndicatorValues = ({ name }, inputData) => {
   let result;
   switch (name) {
     case "ADX":
@@ -448,7 +454,7 @@ const calculateIndicatorValues = ({ name }, inputData) => {
   }
 };
 
-const signalTriggered = (signal, values) => {
+export const signalTriggered = (signal, values) => {
   // console.log(signal);
 
   if (signal.b === "number") {
@@ -485,7 +491,7 @@ const signalTriggered = (signal, values) => {
   }
 };
 
-const getIndicatorSignal = ({ config, signals }, values, prices) => {
+export const getIndicatorSignal = ({ config, signals }, values, prices) => {
   let finalSignal = true;
 
   // Getting the two latest TI values and prices
@@ -513,15 +519,17 @@ const getIndicatorSignal = ({ config, signals }, values, prices) => {
 };
 
 // extract the values needed by the indicator from the instrument candles
-const extractInputData = (candles, values) => {
+export const extractInputData = (candles, values): any => {
   let inputData = {};
 
   values.forEach((value) => {
     switch (value) {
       case "volume":
+        // @ts-expect-error TS(2339): Property 'volume' does not exist on type '{}'.
         inputData.volume = candles.map((_) => _.volume);
         break;
       case "values": // use "close" as default value, could be changed in the future no problemo
+        // @ts-expect-error TS(2339): Property 'values' does not exist on type '{}'.
         inputData.values = candles.map((_) => parseFloat(_.mid.c));
         break;
       default:
@@ -536,19 +544,19 @@ const extractInputData = (candles, values) => {
 };
 
 // returns an array of values using the indicator config and expected input
-const getIndicatorValues = (indicator, candles) => {
+export const getIndicatorValues = (indicator, candles) => {
   let expectedInput = getIndicatorExpectedInput(indicator.name);
   let inputData = extractInputData(candles, expectedInput);
   inputData = {
     ...indicator.config,
     ...inputData,
-    format: (a) => a.toFixed(4),
+    format: (a) => a.toFixed(4)
   };
 
   return calculateIndicatorValues(indicator, inputData);
 };
 
-const getIndicatorConfig = (name) => {
+export const getIndicatorConfig = (name) => {
   switch (name) {
     case "ADL":
       return [];
@@ -557,116 +565,116 @@ const getIndicatorConfig = (name) => {
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "ATR":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "AwesomeOscillator":
       return [
         {
           name: "fastPeriod",
           type: "number",
-          defaultValue: 5,
+          defaultValue: 5
         },
         {
           name: "slowPeriod",
           type: "number",
-          defaultValue: 34,
+          defaultValue: 34
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "BollingerBands":
       return [
         {
           name: "stdDev",
           type: "number",
-          defaultValue: 2,
+          defaultValue: 2
         },
         {
           name: "period",
           type: "number",
-          defaultValue: 20,
+          defaultValue: 20
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "CCI":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 20,
+          defaultValue: 20
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "ForceIndex":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 13,
+          defaultValue: 13
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "MFI":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "MACD":
       return [
         {
           name: "fastPeriod",
           type: "number",
-          defaultValue: 12,
+          defaultValue: 12
         },
         {
           name: "slowPeriod",
           type: "number",
-          defaultValue: 26,
+          defaultValue: 26
         },
         {
           name: "signalPeriod",
           type: "number",
-          defaultValue: 9,
+          defaultValue: 9
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
         // Boolean: SimpleMAOscillator TODO
         // Boolean: SimpleMASignal TODO
       ];
@@ -674,252 +682,240 @@ const getIndicatorConfig = (name) => {
       return [
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "PSAR":
       return [
         {
           name: "step",
           type: "float",
-          defaultValue: 0.02,
+          defaultValue: 0.02
         },
         {
           name: "max",
           type: "float",
-          defaultValue: 0.2,
+          defaultValue: 0.2
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "ROC":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 9,
+          defaultValue: 9
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "RSI":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 10,
+          defaultValue: 10
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "Stochastic":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "signalPeriod",
           type: "number",
-          defaultValue: 3,
+          defaultValue: 3
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "StochasticRSI":
       return [
         {
           name: "dPeriod",
           type: "number",
-          defaultValue: 3,
+          defaultValue: 3
         },
         {
           name: "kPeriod",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "rsiPeriod",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "stochasticPeriod",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "TRIX":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 15,
+          defaultValue: 15
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "VWAP":
       return [
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "WilliamsR":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "IchimokuCloud":
       return [
         {
           name: "conversionPeriod",
           type: "number",
-          defaultValue: 9,
+          defaultValue: 9
         },
         {
           name: "spanPeriod",
           type: "number",
-          defaultValue: 52,
+          defaultValue: 52
         },
         {
           name: "basePeriod",
           type: "number",
-          defaultValue: 26,
+          defaultValue: 26
         },
         {
           name: "displacement",
           type: "number",
-          defaultValue: 26,
+          defaultValue: 26
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "MovingAverage":
       return [
         {
           name: "period",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "method",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "DoubleMovingAverage":
       return [
         {
           name: "shortPeriod",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "longPeriod",
           type: "number",
-          defaultValue: 50,
+          defaultValue: 50
         },
         {
           name: "shortMethod",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "longMethod",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     case "TripleMovingAverage":
       return [
         {
           name: "shortPeriod",
           type: "number",
-          defaultValue: 14,
+          defaultValue: 14
         },
         {
           name: "mediumPeriod",
           type: "number",
-          defaultValue: 50,
+          defaultValue: 50
         },
         {
           name: "longPeriod",
           type: "number",
-          defaultValue: 100,
+          defaultValue: 100
         },
         {
           name: "shortMethod",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "mediumMethod",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "longMethod",
           type: "enum",
           enum: ["SMA", "EMA", "WEMA", "WMA"],
-          defaultValue: "SMA",
+          defaultValue: "SMA"
         },
         {
           name: "keepSignalFor",
-          defaultValue: 0,
-        },
+          defaultValue: 0
+        }
       ];
     default:
       return [];
   }
-};
-
-module.exports = {
-  technicalIndicators,
-  getIndicatorComponents,
-  getIndicatorExpectedInput,
-  getIndicatorConfig,
-  getIndicatorSignal,
-  getIndicatorObject,
-  getIndicatorValues,
-  extractInputData,
-  calculateIndicatorValues,
 };

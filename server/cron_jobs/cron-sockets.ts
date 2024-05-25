@@ -1,21 +1,24 @@
-const cron = require("node-cron");
-var { getAccountSummary } = require("../util/accounts");
-const fx = require("simple-fxtrade");
-const { getInstrumentLotSize } = require("../util/instruments");
-const { getBots } = require("../util/bots");
+import cron from "node-cron";
+import fx from "simple-fxtrade";
+
+import { getAccountSummary } from "../util/accounts";
+import { getInstrumentLotSize } from "../util/instruments";
+import { getBots } from "../util/bots";
 
 const activeSockets = new Set();
 
 const emitAccountSummary = () => {
   activeSockets.forEach((socket) => {
     const {
+      // @ts-expect-error TS(2339): Property 'handshake' does not exist on type '{}'.
       handshake: {
-        query: { accountId },
-      },
+        query: { accountId }
+      }
     } = socket;
     getAccountSummary(accountId)
       .then((result) => {
         // console.log("emit summary");
+        // @ts-expect-error TS(2339): Property 'emit' does not exist on type 'unknown'.
         socket.emit("Summary", result);
       })
       .catch((err) => {
@@ -28,9 +31,10 @@ const emitAccountSummary = () => {
 const emitOpenPositions = () => {
   activeSockets.forEach((socket) => {
     const {
+      // @ts-expect-error TS(2339): Property 'handshake' does not exist on type '{}'.
       handshake: {
-        query: { accountId },
-      },
+        query: { accountId }
+      }
     } = socket;
     fx.trades()
       .then(({ trades }) => {
@@ -43,6 +47,7 @@ const emitOpenPositions = () => {
           return trade;
         });
 
+        // @ts-expect-error TS(2339): Property 'emit' does not exist on type 'unknown'.
         socket.emit("OpenPositions", trades);
       })
       .catch((err) => {
@@ -55,13 +60,15 @@ const emitOpenPositions = () => {
 const emitBots = () => {
   activeSockets.forEach((socket) => {
     const {
+      // @ts-expect-error TS(2339): Property 'handshake' does not exist on type '{}'.
       handshake: {
-        query: { accountId },
-      },
+        query: { accountId }
+      }
     } = socket;
     getBots()
       .then((bots) => {
         // console.log("emit positions");
+        // @ts-expect-error TS(2339): Property 'emit' does not exist on type 'unknown'.
         socket.emit("Bots", bots);
       })
       .catch((err) => {
@@ -77,15 +84,10 @@ cron.schedule("*/1 * * * * *", () => {
   emitBots();
 });
 
-const addSocket = (socket) => {
+export const addSocket = (socket) => {
   activeSockets.add(socket);
 };
 
-const removeSocket = (socket) => {
+export const removeSocket = (socket) => {
   activeSockets.delete(socket);
-};
-
-module.exports = {
-  addSocket,
-  removeSocket,
 };

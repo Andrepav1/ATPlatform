@@ -1,31 +1,17 @@
-const fx = require("simple-fxtrade");
+import fx from "simple-fxtrade";
 
-const placeOrder = (
-  instrument,
-  units,
+export const placeOrder = async (
+  instrument: string,
+  units: number, // ?
   type = "MARKET",
   timeInForce = "FOK"
 ) => {
-  return new Promise((resolve, reject) => {
-    fx.orders
-      .create({
-        order: {
-          instrument,
-          units,
-          timeInForce,
-          type,
-        },
-      })
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+  return await fx.orders.create({
+    order: {
+      instrument,
+      units,
+      timeInForce,
+      type
+    }
   });
-};
-
-module.exports = {
-  placeOrder,
 };

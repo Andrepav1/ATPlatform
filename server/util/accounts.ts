@@ -1,31 +1,9 @@
-const fx = require("simple-fxtrade");
+import fx from 'simple-fxtrade';
 
-const getAccounts = () => {
-  return new Promise(function (resolve, reject) {
-    fx.accounts()
-      .then((accounts) => {
-        resolve(accounts);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+export const getAccounts = async () => {
+  return await fx.accounts();
 };
 
-const getAccountSummary = (accountId) => {
-  return new Promise(function (resolve, reject) {
-    fx.accounts({ id: accountId })
-      .then(({ account }) => {
-        resolve(account);
-      })
-      .catch((error) => {
-        console.log("reject", error);
-        reject(error);
-      });
-  });
-};
-
-module.exports = {
-  getAccounts,
-  getAccountSummary,
+export const getAccountSummary = async (accountId) => {
+  return await fx.accounts({ id: accountId });
 };

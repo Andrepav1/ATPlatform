@@ -1,7 +1,11 @@
-const { Schema } = require("mongoose");
-const db = require("../db");
+import { Schema } from "mongoose";
+import db from "../db";
 
-const BotSchema = new db.Schema({
+interface IBot {
+  name: string;
+}
+
+export const BotSchema = new db.Schema({
   name: String,
   activeStrategy: { type: Schema.Types.ObjectId, ref: "Strategy" },
   startTime: Date,
@@ -11,9 +15,7 @@ const BotSchema = new db.Schema({
   userAPIkey: String,
   live: Boolean,
   openedPositions: { type: [String], default: [] },
-  performance: { type: Number, default: 0 },
+  performance: { type: Number, default: 0 }
 });
 
-const Bot = db.model("Bot", BotSchema);
-
-module.exports = { Bot, BotSchema };
+export const Bot = db.model("Bot", BotSchema);

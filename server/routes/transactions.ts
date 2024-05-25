@@ -1,49 +1,29 @@
-var express = require("express");
-var router = express.Router();
-const fx = require("simple-fxtrade");
+import express from 'express';
+import fx from 'simple-fxtrade';
+import { getAccountSummary } from '../util/accounts';
 
-var { getAccountSummary } = require("../util/accounts");
+const router = express.Router();
 
 const TRANSACTION_PER_PAGE = 20;
 
-const getTransactionSinceId = (id) => {
-  return new Promise((resolve, reject) => {
-    fx.transactions
-      .sinceid({ id })
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+const getTransactionSinceId = async (id) => {
+  return await fx.transactions.sinceid({ id });
 };
 
-const getTransactionsPage = (page, accountId) => {
-  return new Promise(function (resolve, reject) {
-    getAccountSummary(accountId)
-      .then(({ lastTransactionID }) => {
-        const sinceId =
-          parseInt(lastTransactionID) - page * TRANSACTION_PER_PAGE;
+const getTransactionsPage = async (page, accountId) => {
+  const accountSummary = await getAccountSummary(accountId);
 
-        getTransactionSinceId(sinceId)
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+  const sinceId =
+    parseInt(accountSummary.lastTransactionID) - page * TRANSACTION_PER_PAGE;
+
+  return await getTransactionSinceId(sinceId);
 };
 
 /*Gets n transaction pages. */
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   const { page, accountId } = req.query;
-  let tPage = page ? parseInt(page) : 1;
+
+  let tPage = page ? parseInt(String(page)) : 1;
 
   getTransactionsPage(tPage, accountId)
     .then(({ transactions }) => {
@@ -54,7 +34,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.get("/idrange", (req, res, next) => {
+router.get('/idrange', (req, res, next) => {
   const { from, to } = req.query;
   fx.transactions
     .idrange({ from, to })
@@ -66,12 +46,12 @@ router.get("/idrange", (req, res, next) => {
     });
 });
 
-router.get("/sinceid/", (req, res, next) => {
+router.get('/sinceid/', (req, res, next) => {
   const { id } = req.query;
 
   getTransactionSinceId(id)
     .then((result) => {
-      console.log("res", result);
+      console.log('res', result);
       res.json(result);
     })
     .catch((error) => {
@@ -80,4 +60,4 @@ router.get("/sinceid/", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

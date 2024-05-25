@@ -1,6 +1,6 @@
-const User = require("../models/user");
+import { User } from "../models/user";
 
-const getUserByApiKey = (api_key) => {
+export const getUserByApiKey = (api_key): any => {
   return new Promise((resolve, reject) => {
     User.findOne({ api_key }, (error, result) => {
       if (error) return reject(error);
@@ -9,16 +9,11 @@ const getUserByApiKey = (api_key) => {
   });
 };
 
-const updateUser = (api_key, updateObj) => {
+export const updateUser = (api_key, updateObj) => {
   return new Promise((resolve, reject) => {
-    User.updateOne({ api_key }, updateObj, (error, result) => {
+    User.updateOne({ api_key }, updateObj, {}, (error, result) => {
       if (error) return reject(error);
       resolve(result);
     });
   });
-};
-
-module.exports = {
-  getUserByApiKey,
-  updateUser,
 };

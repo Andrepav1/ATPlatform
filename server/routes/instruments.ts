@@ -1,10 +1,11 @@
-var express = require("express");
-var router = express.Router();
-const fx = require("simple-fxtrade");
-const { getInstrument } = require("../util/instruments");
+import express from 'express';
+import fx from 'simple-fxtrade';
+import { getInstrument } from '../util/instruments';
+
+const router = express.Router();
 
 // get all instruments
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const { instruments } = await fx.instruments();
 
@@ -18,7 +19,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // get all instruments
-router.get("/candles/", async (req, res, next) => {
+router.get('/candles/', async (req, res, next) => {
   const { id, granularity, count } = req.body;
 
   getInstrument({ id, granularity, count })
@@ -30,4 +31,4 @@ router.get("/candles/", async (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

@@ -1,10 +1,11 @@
-var express = require("express");
-var router = express.Router();
-const { Strategy } = require("../models/strategy");
-const { updateStrategy, pushNewIndicator } = require("../util/strategies");
+import express from 'express';
+import { Strategy } from '../models/strategy';
+import { updateStrategy } from '../util/strategies';
+
+const router = express.Router();
 
 // Get all strategies
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   if (req.query.id) {
     const _id = req.query.id;
     Strategy.findOne({ _id }, (error, strategy) => {
@@ -20,16 +21,16 @@ router.get("/", (req, res, next) => {
 });
 
 // delete strategy
-router.delete("/", (req, res, next) => {
+router.delete('/', (req, res, next) => {
   const strategyId = req.query.id;
-  Strategy.findByIdAndRemove(strategyId, (error, strategy) => {
+  Strategy.findByIdAndRemove(strategyId, {}, (error, strategy) => {
     if (error) return res.json({ error });
     res.json({ strategy });
   });
 });
 
 // create strategy
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   const { strategy } = req.body;
 
   // Create an instance of model
@@ -38,12 +39,12 @@ router.post("/", (req, res, next) => {
   // Save the new model instance, passing a callback
   strategy_instance.save((error, strategy) => {
     if (error) return res.json({ error });
-    console.log("strategy saved");
+    console.log('strategy saved');
     res.json({ strategy });
   });
 });
 
-router.patch("/", (req, res, next) => {
+router.patch('/', (req, res, next) => {
   const { strategy } = req.body;
   console.log(strategy._id);
 
@@ -52,7 +53,7 @@ router.patch("/", (req, res, next) => {
 
   updateStrategy(strategy)
     .then(() => {
-      res.json({ message: "Strategy updated successfully" });
+      res.json({ message: 'Strategy updated successfully' });
     })
     .catch((error) => {
       console.log(error);
@@ -60,4 +61,4 @@ router.patch("/", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

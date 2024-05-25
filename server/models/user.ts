@@ -1,11 +1,9 @@
-const db = require("../db");
+import db from "../db";
 
-const userSchema = new db.Schema({
+export const userSchema = new db.Schema({
   api_key: String,
   primary_account: String,
-  email: String,
+  email: String
 });
 
-const User = db.model("User", userSchema);
-
-module.exports = User;
+export const User = db.model("User", userSchema);

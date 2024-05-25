@@ -1,9 +1,25 @@
-const fx = require("simple-fxtrade");
-const { CURRENCY_UNIT, CFD_UNIT, METAL_UNIT } = require("./constants");
+import fx from "simple-fxtrade";
+import { CURRENCY_UNIT, CFD_UNIT, METAL_UNIT } from "./constants";
+
+type CandlesArgs = {
+  id: string;
+  granularity: any;
+  from?: any;
+  to?: any;
+  count?: number;
+  price?: number;
+};
 
 // Do not include first as candles are requested 5 seconds after the period,
 // Avoiding an incomplete candle of 5 seconds
-const getInstrument = ({ id, granularity, from, to, count, price }) => {
+export const getInstrument = ({
+  id,
+  granularity,
+  from,
+  to,
+  count,
+  price
+}: CandlesArgs) => {
   return new Promise((resolve, reject) => {
     fx.candles({ id, granularity, from, to, count, price })
       .then((result) => {
@@ -15,24 +31,13 @@ const getInstrument = ({ id, granularity, from, to, count, price }) => {
   });
 };
 
-const getInstruments = (instruments, granularity) => {
-  return new Promise((resolve, reject) => {
-    let promises = [];
-    instruments.forEach((id) => {
-      promises.push(getInstrument({ id, granularity }));
-    });
-
-    Promise.all(promises)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+export const getInstruments = async (instruments, granularity) => {
+  return await Promise.all(
+    instruments.map((id) => getInstrument({ id, granularity }))
+  );
 };
 
-const InstrumentType = {
+export const InstrumentType = {
   AU200_AUD: "CFD",
   AUD_CAD: "CURRENCY",
   AUD_CHF: "CURRENCY",
@@ -154,14 +159,14 @@ const InstrumentType = {
   XCU_USD: "CFD",
   XPD_USD: "METAL",
   XPT_USD: "METAL",
-  ZAR_JPY: "CURRENCY",
+  ZAR_JPY: "CURRENCY"
 };
 
-const getInstrumentType = (instrument) => {
+export const getInstrumentType = (instrument) => {
   return InstrumentType[instrument];
 };
 
-const getInstrumentUnits = (instrument, lotSize) => {
+export const getInstrumentUnits = (instrument, lotSize) => {
   switch (getInstrumentType(instrument)) {
     case "CFD":
       return lotSize * CFD_UNIT;
@@ -174,7 +179,7 @@ const getInstrumentUnits = (instrument, lotSize) => {
   }
 };
 
-const getInstrumentLotSize = (instrument, units) => {
+export const getInstrumentLotSize = (instrument, units) => {
   switch (getInstrumentType(instrument)) {
     case "CFD":
       return Math.abs(units / CFD_UNIT);
@@ -185,12 +190,4 @@ const getInstrumentLotSize = (instrument, units) => {
     default:
       return Math.abs(units / CURRENCY_UNIT); // Currency by default
   }
-};
-
-module.exports = {
-  getInstrument,
-  getInstruments,
-  getInstrumentType,
-  getInstrumentUnits,
-  getInstrumentLotSize,
 };

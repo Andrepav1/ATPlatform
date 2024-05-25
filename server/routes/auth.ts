@@ -1,11 +1,11 @@
-var express = require("express");
-var router = express.Router();
+import express from 'express';
+import fx from 'simple-fxtrade';
+import { User } from '../models/user';
 
-const fx = require("simple-fxtrade");
-const User = require("../models/user");
+const router = express.Router();
 
 // login only sets the API key and the account ID for the next calls and saves the user object
-router.post("/login", function (req, res, next) {
+router.post('/login', function (req, res, next) {
   const { apiKey, accountId, live } = req.body;
 
   try {
@@ -13,12 +13,12 @@ router.post("/login", function (req, res, next) {
 
     var user_instance = new User({
       api_key: apiKey,
-      primary_account: accountId,
+      primary_account: accountId
     });
 
     user_instance.save((error) => {
       if (error) {
-        console.log("Error while saving user");
+        console.log('Error while saving user');
       }
     });
   } catch (error) {
@@ -28,4 +28,4 @@ router.post("/login", function (req, res, next) {
   res.json({ apiKey, accountId });
 });
 
-module.exports = router;
+export default router;

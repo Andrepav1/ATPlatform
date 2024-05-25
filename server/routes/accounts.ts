@@ -1,14 +1,14 @@
-var express = require("express");
-var router = express.Router();
-const fx = require("simple-fxtrade");
+import express from 'express';
+import fx from 'simple-fxtrade';
+import { getAccountSummary, getAccounts } from '../util/accounts';
 
-var { getAccountSummary, getAccounts } = require("../util/accounts");
+const router = express.Router();
 
-router.get("/", function (req, res, next) {
+router.get('/', function (req, res, next) {
   const { apiKey, live } = req.query;
 
   // live is turned to string, need to turn it back to boolean
-  let isLive = live == "true";
+  let isLive = live == 'true';
 
   fx.configure({ apiKey, live: isLive });
 
@@ -34,7 +34,7 @@ router.get("/", function (req, res, next) {
     });
 });
 
-router.get("/summary", function (req, res, next) {
+router.get('/summary', function (req, res, next) {
   const { accountId } = req.query;
 
   getAccountSummary(accountId)
@@ -47,4 +47,4 @@ router.get("/summary", function (req, res, next) {
     });
 });
 
-module.exports = router;
+export default router;

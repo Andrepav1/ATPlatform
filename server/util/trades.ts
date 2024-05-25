@@ -1,18 +1,10 @@
-const fx = require("simple-fxtrade");
+import fx from "simple-fxtrade";
 
-const getTrades = () => {
-  return new Promise(function (resolve, reject) {
-    fx.trades()
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+export const getTrades = async () => {
+  return await fx.trades();
 };
 
-const closeTrade = (id) => {
+export const closeTrade = (id: string) => {
   return new Promise((resolve, reject) => {
     fx.trades
       .close({ id })
@@ -25,9 +17,4 @@ const closeTrade = (id) => {
         reject(error);
       });
   });
-};
-
-module.exports = {
-  getTrades,
-  closeTrade,
 };

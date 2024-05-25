@@ -1,12 +1,12 @@
 const socketIo = require("socket.io");
 
-const { addSocket, removeSocket } = require("./cron_jobs/cron-sockets");
+import { addSocket, removeSocket } from "./cron_jobs/cron-sockets";
 
-const initSocket = (server) => {
+export const initSocket = (server) => {
   const io = socketIo(server, {
     cors: {
-      origin: "*",
-    },
+      origin: "*"
+    }
   });
 
   io.on("connection", (socket) => {
@@ -19,5 +19,3 @@ const initSocket = (server) => {
     });
   });
 };
-
-module.exports = initSocket;

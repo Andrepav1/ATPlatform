@@ -1,10 +1,11 @@
-var express = require("express");
-var router = express.Router();
-const { Bot } = require("../models/bot");
-const { getBots, updateBot } = require("../util/bots");
+import express from 'express';
+import { getBots, updateBot } from '../util/bots';
+import { Bot } from '../models/bot';
+
+const router = express.Router();
 
 // Get all bots
-router.get("/", (req, res, next) => {
+router.get('/', (req, res, next) => {
   getBots()
     .then((bots) => {
       // console.log(bots);
@@ -17,13 +18,13 @@ router.get("/", (req, res, next) => {
 });
 
 // get single bot
-router.get("/", (req, res, next) => {});
+router.get('/', (req, res, next) => {});
 
 // delete bot
-router.delete("/", (req, res, next) => {});
+router.delete('/', (req, res, next) => {});
 
 // create bot
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   const { bot } = req.body;
 
   // Create an instance of model
@@ -32,13 +33,13 @@ router.post("/", (req, res, next) => {
   // Save the new model instance, passing a callback
   bot_instance.save((error) => {
     if (error) return res.json({ error });
-    console.log("bot saved");
+    console.log('bot saved');
 
     res.json({ bot });
   });
 });
 
-router.put("/update", (req, res, next) => {
+router.put('/update', (req, res, next) => {
   const { id, live } = req.body;
 
   updateBot(id, { live })
@@ -50,4 +51,4 @@ router.put("/update", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

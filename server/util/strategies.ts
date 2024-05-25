@@ -1,6 +1,6 @@
-const { Strategy } = require("../models/strategy");
+import { Strategy } from '../models/strategy';
 
-const pushNewIndicator = (strategyId, indicator) => {
+export const pushNewIndicator = (strategyId, indicator) => {
   return new Promise((resolve, reject) => {
     Strategy.findByIdAndUpdate(
       strategyId,
@@ -14,16 +14,11 @@ const pushNewIndicator = (strategyId, indicator) => {
   });
 };
 
-const updateStrategy = (strategy) => {
+export const updateStrategy = (strategy) => {
   return new Promise((resolve, reject) => {
     Strategy.findByIdAndUpdate(strategy._id, strategy, null, (error) => {
       if (error) return reject(error);
-      resolve();
+      resolve(null);
     });
   });
-};
-
-module.exports = {
-  pushNewIndicator,
-  updateStrategy,
 };

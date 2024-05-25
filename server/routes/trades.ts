@@ -1,8 +1,9 @@
-var express = require("express");
-var router = express.Router();
-const { getTrades, closeTrade } = require("../util/trades");
+import express from 'express';
+import { closeTrade, getTrades } from '../util/trades';
 
-router.get("/", (req, res, next) => {
+const router = express.Router();
+
+router.get('/', (req, res, next) => {
   getTrades()
     .then((result) => {
       console.log(result);
@@ -14,7 +15,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/close", (req, res, next) => {
+router.post('/close', (req, res, next) => {
   const { id } = req.body;
   console.log(id);
 
@@ -28,4 +29,4 @@ router.post("/close", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

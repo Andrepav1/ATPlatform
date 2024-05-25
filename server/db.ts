@@ -1,5 +1,5 @@
 // #1 Import mongoose
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // #2 Create a query string to connect to MongoDB server
 
@@ -9,7 +9,7 @@ const DB_URI = "mongodb://localhost:27017/atsdb";
 mongoose.connect(DB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
+  useFindAndModify: false
 });
 
 // #4 Add basic event listeners on the mongoose.connection object
@@ -19,4 +19,4 @@ mongoose.connection.once("open", () =>
 mongoose.connection.on("error", (error) => console.error(error));
 
 // #5 Export mongoose.
-module.exports = mongoose;
+export default mongoose;

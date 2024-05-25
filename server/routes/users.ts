@@ -1,6 +1,7 @@
-var express = require("express");
-const { updateUser } = require("../util/users");
-var router = express.Router();
+import express from "express";
+import { updateUser } from "../util/users";
+
+const router = express.Router();
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -18,4 +19,4 @@ router.put("/update", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

@@ -1,18 +1,19 @@
-const { Bot } = require("../models/bot");
-const { Signal } = require("./constants");
-const { getInstruments, getInstrumentUnits } = require("./instruments");
-const { placeOrder } = require("./orders");
-const { getTrades, closeTrade } = require("./trades");
-const {
+import { Bot } from "../models/bot";
+import { Signal } from "./constants";
+import { getInstruments, getInstrumentUnits } from "./instruments";
+import { placeOrder } from "./orders";
+import { getTrades, closeTrade } from "./trades";
+import {
   extractInputData,
   getIndicatorValues,
-  getIndicatorSignal,
-} = require("./technical-indicator");
-const { sendMail } = require("../mailer");
+  getIndicatorSignal
+} from "./technical-indicator";
+
+import { sendMail } from "../mailer";
 
 // Calculates a buy/sell/neutral signal for each of the indicators
 // and use them together to produce a single signal for the given instrument
-const getInstrumentSignal = (strategy, candles) => {
+export const getInstrumentSignal = (strategy, candles) => {
   let buyTriggers = 0;
   let sellTriggers = 0;
 
@@ -58,7 +59,7 @@ const getInstrumentSignal = (strategy, candles) => {
   }
 };
 
-const calculateBot = async (bot) => {
+export const calculateBot = async (bot) => {
   const { activeStrategy, chartPeriod, instruments, userAPIkey } = bot;
 
   try {
@@ -106,7 +107,7 @@ const calculateBot = async (bot) => {
   }
 };
 
-const calculateBots = async (chartPeriod) => {
+export const calculateBots = async (chartPeriod) => {
   let now = new Date(Date.now());
   console.log(
     "[" + now.getHours() + ":" + now.getMinutes() + "] " + chartPeriod + " Bots"
@@ -147,14 +148,14 @@ const placeStrategyOrder = async (instrument, units, bot) => {
         closedTrade = await closeTrade(botPositions[i].id);
         closedPositions.push({
           id: closedTrade.orderFillTransaction.id,
-          performance: parseFloat(closedTrade.orderFillTransaction.pl),
+          performance: parseFloat(closedTrade.orderFillTransaction.pl)
         });
       } else if (botPositions[i].currentUnits < 0 && units >= 0) {
         // opened position is SELL, new order is BUY
         closedTrade = await closeTrade(botPositions[i].id);
         closedPositions.push({
           id: closedTrade.orderFillTransaction.id,
-          performance: parseFloat(closedTrade.orderFillTransaction.pl),
+          performance: parseFloat(closedTrade.orderFillTransaction.pl)
         });
       } else {
         // opened position and new order are of same type, what to do here depends on the strategy : TODO
@@ -184,15 +185,8 @@ const placeStrategyOrder = async (instrument, units, bot) => {
   }
 };
 
-const getBots = (params = {}) => {
-  return new Promise((resolve, reject) => {
-    Bot.find(params)
-      .populate("activeStrategy")
-      .exec((error, bots) => {
-        if (error) return reject(error);
-        resolve(bots);
-      });
-  });
+export const getBots = async (params = {}): Promise<any[]> => {
+  return await Bot.find(params).populate("activeStrategy");
 };
 
 const pushNewOpenedPosition = (botId, positionId) => {
@@ -223,19 +217,11 @@ const updateBotPerformance = (botId, variance) => {
   });
 };
 
-const updateBot = (id, updateObj) => {
+export const updateBot = (id, updateObj) => {
   return new Promise((resolve, reject) => {
     Bot.findByIdAndUpdate(id, { $set: updateObj }, null, (error, result) => {
       if (error) return reject(error);
       resolve(result);
     });
   });
-};
-
-module.exports = {
-  getBots,
-  getInstrumentSignal,
-  calculateBot,
-  calculateBots,
-  updateBot,
 };
