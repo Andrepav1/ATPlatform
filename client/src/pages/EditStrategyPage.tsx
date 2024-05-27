@@ -75,6 +75,7 @@ function EditStrategyPage(props) {
     console.log("indicators", strategyIndicators);
 
     if (editingIndicator) {
+      // @ts-expect-error TS(2339): Property '_id' does not exist on type 'never'.
       indicator._id = editingIndicator._id;
       let newStrategyIndicators = strategyIndicators.filter(
         ({ _id }) => indicator._id !== _id
@@ -127,6 +128,7 @@ function EditStrategyPage(props) {
       signalCooldown: parseInt(signalCooldown),
     };
 
+    // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
     let update_strategy_url = createURL("/strategies");
     fetchRequest({
       url: update_strategy_url,
@@ -147,11 +149,14 @@ function EditStrategyPage(props) {
   };
 
   useEffect(() => {
+    // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
     let indicators_url = createURL("/indicators");
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: indicators_url })
       .then((result) => {
         // console.log(result);
 
+        // @ts-expect-error TS(2345): Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         setIndicatorsData(result);
       })
       .catch((error) => {
@@ -159,6 +164,7 @@ function EditStrategyPage(props) {
       });
 
     let strategy_url = createURL("/strategies", { id: strategyId });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: strategy_url })
       .then(({ strategy }) => {
         console.log("edit", strategy);
@@ -179,7 +185,9 @@ function EditStrategyPage(props) {
 
   return (
     <div className="Main">
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Container maxWidth="xl" className={styles.container}>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <Box display="flex" flexDirection="row" className={styles.subheader}>
           <Button
             className={styles.horizontalMargin}
@@ -211,6 +219,7 @@ function EditStrategyPage(props) {
         <Grid container spacing={2}>
           <Grid item xs={12} md={5} lg={4}>
             <Paper className={styles.paper}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <StrategySummary
                 strategyName={strategyName}
                 setStrategyName={setStrategyName}
@@ -219,6 +228,7 @@ function EditStrategyPage(props) {
               />
             </Paper>
             <Paper className={styles.paper}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <StrategyManagementSummary
                 autoRiskManagement={autoRiskManagement}
                 setAutoRiskManagement={setAutoRiskManagement}
@@ -234,6 +244,7 @@ function EditStrategyPage(props) {
 
           <Grid item xs={12} md={7} lg={8}>
             <Paper className={styles.paper}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <IndicatorsTable
                 indicators={strategyIndicators}
                 editIndicator={editIndicator}
@@ -244,6 +255,7 @@ function EditStrategyPage(props) {
             <Grid container spacing={2}>
               <Grid item xs={12} lg={6}>
                 <Paper>
+                  // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
                   <SignalsAmount
                     type={"BUY"}
                     minSignals={minBuySignals}
@@ -255,6 +267,7 @@ function EditStrategyPage(props) {
 
               <Grid item xs={12} lg={6}>
                 <Paper>
+                  // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
                   <SignalsAmount
                     type={"SELL"}
                     minSignals={minSellSignals}

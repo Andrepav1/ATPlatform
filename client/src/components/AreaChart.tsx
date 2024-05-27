@@ -27,6 +27,7 @@ const canvasGradient = createVerticalLinearGradient([
 
 class AreaChart extends React.Component {
   render() {
+    // @ts-expect-error TS(2339): Property 'data' does not exist on type 'Readonly<{... Remove this comment to see the full error message
     const { data, width, ratio } = this.props;
 
     const type = "svg";
@@ -66,11 +67,13 @@ class AreaChart extends React.Component {
   }
 }
 
+// @ts-expect-error TS(2339): Property 'propTypes' does not exist on type 'typeo... Remove this comment to see the full error message
 AreaChart.propTypes = {
   width: PropTypes.number.isRequired,
   ratio: PropTypes.number.isRequired,
 };
 
+// @ts-expect-error TS(2629): Cannot assign to 'AreaChart' because it is a class... Remove this comment to see the full error message
 AreaChart = fitWidth(AreaChart);
 
 export default AreaChart;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// @ts-expect-error TS(2307): Cannot find module 'react-beautiful-dnd' or its co... Remove this comment to see the full error message
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 // fake data generator
@@ -45,6 +46,7 @@ function App(props) {
       return;
     }
     const newItems = reorder(items, source.index, destination.index);
+    // @ts-expect-error TS(2345): Argument of type 'unknown[]' is not assignable to ... Remove this comment to see the full error message
     setItems(newItems);
   };
 

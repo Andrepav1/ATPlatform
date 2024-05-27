@@ -31,12 +31,14 @@ export default function SignalsAmount({
 
   return (
     <React.Fragment>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <Box
         display="flex"
         flexDirection="row"
         justifyItems="space"
         className={styles.padding}
       >
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <Typography className={styles.text} noWrap>
           <b
             style={{

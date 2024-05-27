@@ -110,11 +110,13 @@ export default function IndicatorFormDialog(props) {
 
     // set current data
     setCurrentIndicator(indicator);
+    // @ts-expect-error TS(2345): Argument of type '{}' is not assignable to paramet... Remove this comment to see the full error message
     setCurrentConfig(config);
   };
 
   const handleConfigChange = (key, value) => {
     const newConfig = currentConfig;
+    // @ts-expect-error TS(2532): Object is possibly 'undefined'.
     newConfig[key] = value;
     setCurrentConfig(newConfig);
   };
@@ -127,6 +129,7 @@ export default function IndicatorFormDialog(props) {
     setOpen(false);
 
     confirmIndicator({
+      // @ts-expect-error TS(2532): Object is possibly 'undefined'.
       name: currentIndicator.name,
       config: currentConfig,
       signals: [...sellSignals, ...buySignals],
@@ -135,17 +138,21 @@ export default function IndicatorFormDialog(props) {
 
   const isSelected = (indicator) => {
     if (!currentIndicator) return false;
+    // @ts-expect-error TS(2339): Property 'name' does not exist on type 'never'.
     return currentIndicator.name === indicator.name;
   };
 
   return (
     <div>
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
         <DialogTitle id="form-dialog-title">
           New Technical Indicator
         </DialogTitle>
 
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <DialogContent>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <FormControl fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>
               Technical Indicator
@@ -154,6 +161,7 @@ export default function IndicatorFormDialog(props) {
               variant="filled"
               autoFocus
               fullWidth
+              // @ts-expect-error TS(2339): Property 'name' does not exist on type 'never'.
               value={currentIndicator ? currentIndicator.name : ""}
             >
               {indicators &&
@@ -170,7 +178,9 @@ export default function IndicatorFormDialog(props) {
             </Select>
           </FormControl>
 
+          // @ts-expect-error TS(2339): Property 'config' does not exist on type 'never'.
           {currentIndicator && currentIndicator.config.length !== 0 && (
+            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <React.Fragment>
               <Divider
                 variant="fullWidth"
@@ -188,6 +198,7 @@ export default function IndicatorFormDialog(props) {
           )}
 
           {currentIndicator &&
+            // @ts-expect-error TS(2339): Property 'config' does not exist on type 'never'.
             currentIndicator.config.map((data) => {
               if (data.type === "boolean") {
                 return (
@@ -200,6 +211,7 @@ export default function IndicatorFormDialog(props) {
                 );
               } else if (data.type === "enum") {
                 return (
+                  // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
                   <FormControl
                     key={uuid()}
                     variant="outlined"
@@ -218,7 +230,9 @@ export default function IndicatorFormDialog(props) {
                     <Select
                       fullWidth
                       defaultValue={
+                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                         currentConfig[data.name]
+                          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                           ? currentConfig[data.name]
                           : data.defaultValue
                       }
@@ -273,7 +287,9 @@ export default function IndicatorFormDialog(props) {
                     }
                     variant="outlined"
                     defaultValue={
+                      // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                       currentConfig[data.name]
+                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                         ? currentConfig[data.name]
                         : data.defaultValue.toString()
                     }
@@ -286,6 +302,7 @@ export default function IndicatorFormDialog(props) {
             })}
 
           {currentIndicator && (
+            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <React.Fragment>
               <Divider
                 variant="fullWidth"
@@ -326,6 +343,7 @@ export default function IndicatorFormDialog(props) {
             </React.Fragment>
           )}
         </DialogContent>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <DialogActions>
           <Button
             onClick={() => handleCancel()}

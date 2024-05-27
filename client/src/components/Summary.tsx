@@ -46,60 +46,73 @@ export default function Summary({ data }) {
   };
 
   return (
+    // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
     <React.Fragment>
       <Title>{"Summary for " + (data && data.alias ? data.alias : "\t")}</Title>
       <Table size="small">
         <TableBody>
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Balance"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{getDataValue("balance")}</Typography>
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Equity"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{getDataValue("NAV")}</Typography>
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Margin used"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{getDataValue("marginUsed")}</Typography>
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Free margin"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{getDataValue("marginAvailable")}</Typography>
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Unrealized P/L"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{getDataValue("unrealizedPL")}</Typography>
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="left">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>{"Margin used (%)"}</Typography>
             </TableCell>
             <TableCell align="right">
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>
                 {getDataValue("marginCallPercent", true)}
               </Typography>

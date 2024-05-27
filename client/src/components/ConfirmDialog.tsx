@@ -16,6 +16,7 @@ export default function ConfirmDialog({
 }) {
   return (
     <div>
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Dialog
         open={open}
         onClose={setOpen}
@@ -24,10 +25,12 @@ export default function ConfirmDialog({
       >
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <DialogContentText id="alert-dialog-description">
             {text}
           </DialogContentText>
         </DialogContent>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <DialogActions>
           <Button onClick={() => cancelAction()} color="primary">
             No

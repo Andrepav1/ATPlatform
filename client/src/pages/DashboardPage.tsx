@@ -55,9 +55,11 @@ function DashboardPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: summary_url })
       .then((result) => {
         // console.log(result);
+        // @ts-expect-error TS(2345): Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
         setSummaryData(result);
       })
       .catch((error) => {
@@ -70,6 +72,7 @@ function DashboardPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: positions_url })
       .then(({ trades }) => {
         // console.log(trades);
@@ -85,10 +88,12 @@ function DashboardPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: transactions_url })
       .then((result) => {
         // console.log(result);
         let transactionCount = 5;
+        // @ts-expect-error TS(2339): Property 'reverse' does not exist on type 'unknown... Remove this comment to see the full error message
         setActivityData(result.reverse().slice(0, transactionCount));
       })
       .catch((error) => {
@@ -101,6 +106,7 @@ function DashboardPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: bots_url })
       .then(({ bots }) => {
         setBotsData(bots);
@@ -111,6 +117,7 @@ function DashboardPage({ api_key, account_id }) {
 
     // =================================================
     // socket.io data
+    // @ts-expect-error TS(2349): This expression is not callable.
     const socket = socketIOClient(SOCKET_IO_ENDPOINT, {
       query: { apiKey: api_key, accountId: account_id },
     });
@@ -136,15 +143,18 @@ function DashboardPage({ api_key, account_id }) {
   return (
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
+        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <OpenPositions positions={positionsData} />
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Summary data={summaryData} />
             </Paper>
           </Grid>
@@ -152,6 +162,7 @@ function DashboardPage({ api_key, account_id }) {
           {botsData.map((bot) => (
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={styles.paperFixedHeight}>
+                // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
                 <BotSummary bot={bot} positions={positionsData} />
               </Paper>
             </Grid>
@@ -159,12 +170,14 @@ function DashboardPage({ api_key, account_id }) {
 
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <BotsSummary bots={botsData} setBots={setBotsData} />
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Activity data={activityData} title="Recent Activity" />
             </Paper>
           </Grid>

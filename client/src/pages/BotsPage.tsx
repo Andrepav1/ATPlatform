@@ -40,6 +40,7 @@ function BotsPage({ api_key, account_id }) {
   const confirmBot = (bot) => {
     setOpen(false);
 
+    // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
     let save_bot_url = createURL("/bots");
     fetchRequest({
       url: save_bot_url,
@@ -62,6 +63,7 @@ function BotsPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: bots_url })
       .then(({ bots }) => {
         setBotsData(bots);
@@ -76,6 +78,7 @@ function BotsPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: strategies_url })
       .then(({ strategies }) => {
         setStrategiesData(strategies);
@@ -88,6 +91,7 @@ function BotsPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: instruments_url })
       .then(({ instruments }) => {
         setInstrumentsData(instruments);
@@ -100,6 +104,7 @@ function BotsPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: bots_url })
       .then(({ bots }) => {
         setBotsData(bots);
@@ -111,8 +116,10 @@ function BotsPage({ api_key, account_id }) {
 
   return (
     <div className="Main">
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Container maxWidth="xl" className={styles.container}>
         <Box display="flex" flexDirection="row" className={styles.subheader}>
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Button variant={"contained"} color="primary" onClick={newBotHandler}>
             {"New Bot"}
           </Button>

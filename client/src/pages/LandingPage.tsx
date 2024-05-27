@@ -102,11 +102,13 @@ function LandingPage({ login }) {
 
   const requestAccounts = () => {
     var acc_url = new URL(ACCOUNTS_URL);
+    // @ts-expect-error TS(2322): Type 'URLSearchParams' is not assignable to type '... Remove this comment to see the full error message
     acc_url.search = new URLSearchParams({
       apiKey: api_key,
       live: !demoAccountChecked,
     });
 
+    // @ts-expect-error TS(2345): Argument of type '{ url: string; }' is not assigna... Remove this comment to see the full error message
     fetchRequest({ url: acc_url.toString() })
       .then(({ accounts }) => {
         if (accounts.lenght === 0) {
@@ -136,9 +138,11 @@ function LandingPage({ login }) {
     <Grid container component="main" className={styles.root}>
       <CssBaseline />
       <Grid item xs={false} sm={5} md={7} className={styles.image} />
+      // @ts-expect-error TS(2769): No overload matches this call.
       <Grid item xs={12} sm={7} md={5} component={Paper} elevation={6} square>
         <div className={styles.paper}>
           <Avatar className={styles.avatar}>
+            // @ts-expect-error TS(2769): No overload matches this call.
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -157,6 +161,7 @@ function LandingPage({ login }) {
               onChange={(event) => setApi_key(event.target.value)}
             />
             <FormControlLabel
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactEle... Remove this comment to see the full error message
               control={
                 <Checkbox
                   disabled={textFieldDisabled}
@@ -198,6 +203,7 @@ function LandingPage({ login }) {
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                 >
+                  // @ts-expect-error TS(2322): Type 'Element[]' is not assignable to type 'ReactN... Remove this comment to see the full error message
                   {accounts.map((account) => (
                     <MenuItem onClick={() => handleSelect(account)}>
                       {account.id + " (" + account.alias + ")"}

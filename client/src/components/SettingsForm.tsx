@@ -19,6 +19,7 @@ export default function SettingsForm({ emailState, updateSettings }) {
 
   return (
     <React.Fragment>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <div className={styles.padding}>
         <Title>Settings</Title>
         <TextField

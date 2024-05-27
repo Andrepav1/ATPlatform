@@ -37,7 +37,9 @@ export default function StrategyCard({
 
   return (
     <React.Fragment key={uuid()}>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <Grid item xs={12} sm={6} md={6}>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <Card>
           <CardHeader
             title={data.name}
@@ -49,6 +51,7 @@ export default function StrategyCard({
             }}
             className={styles.cardHeader}
           />
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <CardContent>
             <div className={styles.cardPricing}>
               <Typography
@@ -74,6 +77,7 @@ export default function StrategyCard({
               ))}
             </ul>
           </CardContent>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <CardActions>
             <Button
               onClick={() => onRemoveStrategyPressed(data._id)}

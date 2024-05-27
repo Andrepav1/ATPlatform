@@ -85,6 +85,7 @@ export default function BotDialog({
 
     let bot = {
       name,
+      // @ts-expect-error TS(2339): Property '_id' does not exist on type 'never'.
       activeStrategy: activeStrategy._id,
       startTime,
       endTime,
@@ -103,8 +104,12 @@ export default function BotDialog({
 
   return (
     <div>
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+      single ch... Remove this comment to see the full error message
       <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
         <DialogTitle id="form-dialog-title">New Bot</DialogTitle>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+        single ch... Remove this comment to see the full error message
         <DialogContent>
           <TextField
             autoFocus
@@ -112,12 +117,15 @@ export default function BotDialog({
             label={"Name"}
             value={name}
             className={styles.margin}
+            // @ts-expect-error TS(2345): Argument of type 'string' is not assignable to par... Remove this comment to see the full error message
             onChange={({ target: { value } }) => setName(value)}
             variant="filled"
             InputLabelProps={{
               shrink: true,
             }}
           />
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+          single ch... Remove this comment to see the full error message
           <FormControl fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>
               Active Strategy
@@ -125,6 +133,7 @@ export default function BotDialog({
             <Select
               variant="filled"
               fullWidth
+              // @ts-expect-error TS(2339): Property 'name' does not exist on type 'never'.
               value={activeStrategy ? activeStrategy.name : ""}
             >
               {strategies &&
@@ -139,6 +148,8 @@ export default function BotDialog({
                 ))}
             </Select>
           </FormControl>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+          single ch... Remove this comment to see the full error message
           <FormControl fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>
               Active Instruments
@@ -176,14 +187,19 @@ export default function BotDialog({
               shrink: true,
             }}
           /> */}
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+          single ch... Remove this comment to see the full error message
           <FormControl key={uuid()} fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>
               Chart Period
             </InputLabel>
+            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects
+            a single ch... Remove this comment to see the full error message
             <Select
               fullWidth
               value={chartPeriod}
               defaultValue={"H1"}
+              // @ts-expect-error TS(2345): Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
               onChange={({ target: { value } }) => setChartPeriod(value)}
               variant="filled"
             >
@@ -214,6 +230,7 @@ export default function BotDialog({
                 id="time-picker"
                 label="Start Time"
                 value={startTime}
+                // @ts-expect-error TS(2345): Argument of type 'Date' is not assignable to param... Remove this comment to see the full error message
                 onChange={(time) => setStartTime(time)}
                 KeyboardButtonProps={{
                   "aria-label": "change time",
@@ -225,6 +242,7 @@ export default function BotDialog({
                 id="time-picker"
                 label="End Time"
                 value={endTime}
+                // @ts-expect-error TS(2345): Argument of type 'Date' is not assignable to param... Remove this comment to see the full error message
                 onChange={(time) => setEndTime(time)}
                 KeyboardButtonProps={{
                   "aria-label": "change time",
@@ -233,6 +251,8 @@ export default function BotDialog({
             </MuiPickersUtilsProvider>
           </div>
         </DialogContent>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a
+        single ch... Remove this comment to see the full error message
         <DialogActions>
           <Button
             onClick={() => setOpen(false)}

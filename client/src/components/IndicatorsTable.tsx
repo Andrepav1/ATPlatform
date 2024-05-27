@@ -70,19 +70,23 @@ export default function IndicatorsTable({
       <TableRow key={uuid()}>
         <TableCell>{indicator.name}</TableCell>
         <TableCell>{getConfigData(indicator)}</TableCell>
+        // @ts-expect-error TS(2322): Type 'string | Element' is not assignable to type ... Remove this comment to see the full error message
         <TableCell>{getSignalsData(indicator)}</TableCell>
         <TableCell size="small">
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Box display="flex" flexDirection="row-reverse">
             <IconButton
               color="default"
               onClick={() => editIndicator(indicator._id)}
             >
+              // @ts-expect-error TS(2769): No overload matches this call.
               <SettingsIcon />
             </IconButton>
             <IconButton
               color="secondary"
               onClick={() => removeIndicator(indicator._id)}
             >
+              // @ts-expect-error TS(2769): No overload matches this call.
               <DeleteIcon />
             </IconButton>
           </Box>
@@ -93,6 +97,7 @@ export default function IndicatorsTable({
 
   if (!indicators || indicators.length === 0) {
     return (
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <React.Fragment>
         <Table size="small">
           <TableHead>
@@ -113,6 +118,7 @@ export default function IndicatorsTable({
 
   return (
     <React.Fragment>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <Table size="small">
         <TableHead>
           <TableRow>

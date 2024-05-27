@@ -60,17 +60,20 @@ export default function StrategyManagementSummary({
 
   return (
     <React.Fragment>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <div className={styles.padding}>
         <Title>Strategy Management</Title>
 
         {/* <b style={{ backgroundColor: BUY_GREEN, padding: 4, borderRadius: 4, color: "white", marginLeft: 8 }}>{"BUY"}</b>
         <b style={{ backgroundColor: SELL_RED, padding: 4, borderRadius: 4, color: "white", marginLeft: 8 }}>{"SELL"}</b> */}
 
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <FormControl fullWidth className={styles.margin}>
           <InputLabel className={styles.labelPadding}>
             Trading Policy
           </InputLabel>
           <Select fullWidth defaultValue={"0"} variant="filled">
+            // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
             <MenuItem value={"0"}>
               Open a new position anytime a signal occurs and close all open
               positions of inverse direction
@@ -82,6 +85,7 @@ export default function StrategyManagementSummary({
         </FormControl>
 
         <FormControl fullWidth className={styles.margin}>
+          // @ts-expect-error TS(2769): No overload matches this call.
           <TextField
             label="Tradable Lot Size"
             fullWidth
@@ -91,10 +95,12 @@ export default function StrategyManagementSummary({
           />
         </FormControl>
 
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <FormControl fullWidth className={styles.margin}>
           <InputLabel className={styles.labelPadding}>
             Signal Cooldown
           </InputLabel>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <Select
             fullWidth
             value={signalCooldown}
@@ -108,10 +114,12 @@ export default function StrategyManagementSummary({
           </Select>
         </FormControl>
 
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <FormControl fullWidth className={styles.margin}>
           <InputLabel className={styles.labelPadding}>
             Risk-reward Ratio
           </InputLabel>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <Select
             fullWidth
             value={RRR}
@@ -131,6 +139,7 @@ export default function StrategyManagementSummary({
           </Select>
         </FormControl>
         <FormControlLabel
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactEle... Remove this comment to see the full error message
           control={
             <Checkbox
               checked={autoRiskManagement}

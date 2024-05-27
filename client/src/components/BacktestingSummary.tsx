@@ -55,6 +55,7 @@ export default function BacktestingSummary({
     <div>
       <Title>Backtesting</Title>
 
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <FormControl fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Strategy</InputLabel>
         <Select
@@ -75,6 +76,7 @@ export default function BacktestingSummary({
         </Select>
       </FormControl>
 
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <FormControl fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Instrument</InputLabel>
         <Select
@@ -93,8 +95,10 @@ export default function BacktestingSummary({
         </Select>
       </FormControl>
 
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <FormControl key={uuid()} fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Chart Period</InputLabel>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <Select
           fullWidth
           value={chartPeriod}
@@ -112,9 +116,11 @@ export default function BacktestingSummary({
         </Select>
       </FormControl>
 
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <FormControl key={uuid()} fullWidth className={styles.margin}>
         <InputLabel className={styles.labelPadding}>Candles amount</InputLabel>
         <Select fullWidth defaultValue={"5000"} variant="filled">
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <MenuItem value={"5000"}>5000 Candles</MenuItem>
         </Select>
       </FormControl>

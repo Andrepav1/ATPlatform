@@ -20,6 +20,7 @@ const Auth = (state = INITIAL_STATE, action) => {
       state = INITIAL_STATE;
       break;
     case "INCREMENT":
+      // @ts-expect-error TS(2339): Property 'counter' does not exist on type '{ authe... Remove this comment to see the full error message
       state.counter++;
       break;
     default:

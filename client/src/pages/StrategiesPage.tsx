@@ -39,6 +39,7 @@ function StrategiesPage({ api_key, account_id, history }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: strategies_url })
       .then(({ strategies }) => {
         // console.log(strategies);
@@ -63,6 +64,7 @@ function StrategiesPage({ api_key, account_id, history }) {
     let delete_strategy_url = createURL("/strategies", {
       id: removingStrategyId,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; method: string; head... Remove this comment to see the full error message
     fetchRequest({
       url: delete_strategy_url,
       method: "DELETE",
@@ -105,7 +107,9 @@ function StrategiesPage({ api_key, account_id, history }) {
     };
 
     try {
+      // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
       let new_strategy_url = createURL("/strategies");
+      // @ts-expect-error TS(2339): Property 'strategy' does not exist on type '{}'.
       const { strategy } = await fetchRequest({
         url: new_strategy_url,
         body: { strategy: newStrategy },
@@ -133,12 +137,14 @@ function StrategiesPage({ api_key, account_id, history }) {
         open={open}
         setOpen={setOpen}
       />
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Container maxWidth="xl" className={styles.container}>
         <Box
           display="flex"
           flexDirection="row-reverse"
           className={styles.subheader}
         >
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Button
             variant={"contained"}
             color="primary"

@@ -28,6 +28,7 @@ function Header({ logout }) {
     <div className={styles.root}>
       <CssBaseline />
       <AppBar position="absolute" className={styles.appBar}>
+        // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
         <Toolbar>
           <Typography
             component="h1"
@@ -39,6 +40,7 @@ function Header({ logout }) {
             ATS
           </Typography>
           <IconButton color="inherit" onClick={logout}>
+            // @ts-expect-error TS(2769): No overload matches this call.
             <ExitToAppIcon />
           </IconButton>
         </Toolbar>

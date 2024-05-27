@@ -20,6 +20,7 @@ export default function OpenPositions({ positions }) {
   const [closingPositionId, setClosingPositionId] = React.useState();
 
   const confirmClosePosition = () => {
+    // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
     var close_trade_url = createURL("/trades/close");
 
     fetchRequest({
@@ -72,12 +73,14 @@ export default function OpenPositions({ positions }) {
     return (
       <TableRow key={uuid()}>
         <TableCell>
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           {getBUYSELLText(parseInt(position.currentUnits) > 0)}
         </TableCell>
         <TableCell>{position.instrument}</TableCell>
         <TableCell>{position.lotSize}</TableCell>
         <TableCell>{position.price}</TableCell>
         <TableCell>
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Typography
             style={{
               marginLeft: 8,
@@ -89,11 +92,14 @@ export default function OpenPositions({ positions }) {
           </Typography>
         </TableCell>
         <TableCell size="small">
+          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Box display="flex" flexDirection="row-reverse">
+            // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
             <IconButton
               color="secondary"
               onClick={() => closePosition(position.id)}
             >
+              // @ts-expect-error TS(2769): No overload matches this call.
               <CloseIcon />
             </IconButton>
           </Box>
@@ -104,6 +110,7 @@ export default function OpenPositions({ positions }) {
 
   if (!positions || positions.length === 0) {
     return (
+      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <React.Fragment>
         <Title>Open Positions</Title>
         <Table size="small">
@@ -126,6 +133,7 @@ export default function OpenPositions({ positions }) {
   }
 
   return (
+    // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
     <React.Fragment>
       <Title>Open Positions</Title>
       <Table size="small">

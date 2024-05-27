@@ -44,6 +44,7 @@ function BacktestingPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: strategies_url })
       .then(({ strategies }) => {
         setStrategiesData(strategies);
@@ -56,6 +57,7 @@ function BacktestingPage({ api_key, account_id }) {
       apiKey: api_key,
       accountId: account_id,
     });
+    // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: instruments_url })
       .then(({ instruments }) => {
         setInstrumentsData(instruments);
@@ -68,9 +70,11 @@ function BacktestingPage({ api_key, account_id }) {
   return (
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
+        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container spacing={2}>
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <BacktestingSummary
                 strategies={strategiesData}
                 instruments={instrumentsData}
@@ -83,6 +87,7 @@ function BacktestingPage({ api_key, account_id }) {
 
           <Grid item xs={12} md={8} lg={9}>
             <Paper className={styles.paperFixedHeight}>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <AreaChart />
             </Paper>
           </Grid>

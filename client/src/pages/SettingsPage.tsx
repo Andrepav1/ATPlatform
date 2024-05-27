@@ -20,6 +20,7 @@ function SettingsPage({ api_key }) {
   const updateSettings = () => {
     console.log("updating settings");
 
+    // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
     let update_settings_url = createURL("/users/update");
     fetchRequest({
       url: update_settings_url,
@@ -43,11 +44,13 @@ function SettingsPage({ api_key }) {
   return (
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
+        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container spacing={2}>
           <Grid item xs={3}></Grid>
 
           <Grid item xs={6}>
             <Paper>
+              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <SettingsForm
                 emailState={emailState}
                 updateSettings={updateSettings}

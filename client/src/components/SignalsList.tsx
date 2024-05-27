@@ -66,6 +66,7 @@ export default function SignalsList({
     return (
       <Grid item xs={12} key={uuid()}>
         <FormControl variant="standard" className={styles.marginHorizontal}>
+          // @ts-expect-error TS(2769): No overload matches this call.
           <Select
             variant="standard"
             value={signal.a}
@@ -87,6 +88,7 @@ export default function SignalsList({
         </FormControl>
 
         <FormControl variant="standard" className={styles.marginHorizontal}>
+          // @ts-expect-error TS(2769): No overload matches this call.
           <Select
             variant="standard"
             value={signal.comparison}
@@ -104,6 +106,7 @@ export default function SignalsList({
         </FormControl>
 
         <FormControl variant="standard" className={styles.marginHorizontal}>
+          // @ts-expect-error TS(2769): No overload matches this call.
           <Select
             variant="standard"
             value={signal.b}
@@ -121,6 +124,7 @@ export default function SignalsList({
 
         {signal.b === "number" && (
           <FormControl variant="standard" className={styles.textField}>
+            // @ts-expect-error TS(2769): No overload matches this call.
             <TextField
               type="number"
               value={signal.bN}
@@ -145,8 +149,10 @@ export default function SignalsList({
   if (signals.length === 0) {
     return (
       <Container className={styles.container}>
+        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container justify="space-between">
           <Grid>
+            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <Typography className={styles.noSignals}>
               <b
                 style={{
@@ -177,9 +183,11 @@ export default function SignalsList({
   }
 
   return (
+    // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
     <Container className={styles.container}>
       <Grid container justify="space-between">
         <Grid>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <Typography className={styles.noSignals}>
             <b
               style={{

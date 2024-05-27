@@ -39,13 +39,16 @@ export default function BotCard({ data }) {
 
   return (
     <React.Fragment key={uuid()}>
+      // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
       <Grid item xs={12} sm={6} md={4}>
+        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <Card>
           <Box
             display="flex"
             flexDirection="row-reverse"
             style={{ position: "relative" }}
           >
+            // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
             <Brightness1Icon
               style={{
                 color: data.live ? "#1bf723" : "#de0000",
@@ -63,6 +66,7 @@ export default function BotCard({ data }) {
             subheaderTypographyProps={{ align: "center" }}
             className={styles.cardHeader}
           />
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <CardContent>
             <div className={styles.cardPricing}>
               <Typography
@@ -85,6 +89,7 @@ export default function BotCard({ data }) {
               </Typography>
             </div>
           </CardContent>
+          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <CardActions>
             <Button fullWidth variant={"outlined"} color="secondary">
               {"Remove"}
