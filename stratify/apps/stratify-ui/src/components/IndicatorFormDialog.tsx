@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from "react";
-import uuid from "react-uuid";
+import React, { useEffect, useState } from 'react';
+import uuid from 'react-uuid';
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Checkbox from '@material-ui/core/Checkbox';
 import {
   Divider,
   FormControl,
   InputLabel,
   makeStyles,
-  Typography,
-} from "@material-ui/core";
-import SignalsList from "./SignalsList";
+  Typography
+} from '@material-ui/core';
+import SignalsList from './SignalsList';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   labelPadding: {
     paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1),
+    paddingTop: theme.spacing(1)
   },
   button: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   confirmButton: {
     marginBottom: theme.spacing(2),
-    marginRight: theme.spacing(2),
-  },
+    marginRight: theme.spacing(2)
+  }
 }));
 
 export default function IndicatorFormDialog(props) {
@@ -43,13 +43,13 @@ export default function IndicatorFormDialog(props) {
     setOpen,
     confirmIndicator,
     editingIndicator,
-    setEditingIndicator,
+    setEditingIndicator
   } = props;
 
   const styles = useStyles();
 
   // state
-  const [currentIndicator, setCurrentIndicator] = useState();
+  const [currentIndicator, setCurrentIndicator] = useState<any>();
   const [currentConfig, setCurrentConfig] = useState();
   const [buySignals, setBuySignals] = useState([]);
   const [sellSignals, setSellSignals] = useState([]);
@@ -69,7 +69,7 @@ export default function IndicatorFormDialog(props) {
     if (editingIndicator) {
       // Editing TODO
 
-      let newIndicator = indicators.find(
+      const newIndicator = indicators.find(
         (element) => element.name === editingIndicator.name
       );
       setCurrentIndicator(newIndicator);
@@ -77,15 +77,15 @@ export default function IndicatorFormDialog(props) {
 
       // Adding signals
       for (let i = 0; i < editingIndicator.signals.length; i++) {
-        if (editingIndicator.signals[i].type === "BUY") {
+        if (editingIndicator.signals[i].type === 'BUY') {
           setBuySignals((prevSignals) => [
             ...prevSignals,
-            editingIndicator.signals[i],
+            editingIndicator.signals[i]
           ]);
         } else {
           setSellSignals((prevSignals) => [
             ...prevSignals,
-            editingIndicator.signals[i],
+            editingIndicator.signals[i]
           ]);
         }
       }
@@ -98,10 +98,10 @@ export default function IndicatorFormDialog(props) {
   };
 
   const setCurrentIndicatorHandler = (indicator) => {
-    let config = {};
+    const config = {};
 
     indicator.config.forEach(
-      (data) => (config[data.name] = data["defaultValue"])
+      (data) => (config[data.name] = data['defaultValue'])
     );
 
     // reset signals
@@ -123,36 +123,30 @@ export default function IndicatorFormDialog(props) {
 
   const handleConfirmIndicator = () => {
     if (sellSignals.length === 0 && buySignals.length === 0) {
-      return alert("You need at least a signal.");
+      return alert('You need at least a signal.');
     }
 
     setOpen(false);
 
     confirmIndicator({
-      // @ts-expect-error TS(2532): Object is possibly 'undefined'.
       name: currentIndicator.name,
       config: currentConfig,
-      signals: [...sellSignals, ...buySignals],
+      signals: [...sellSignals, ...buySignals]
     });
   };
 
   const isSelected = (indicator) => {
     if (!currentIndicator) return false;
-    // @ts-expect-error TS(2339): Property 'name' does not exist on type 'never'.
     return currentIndicator.name === indicator.name;
   };
 
   return (
     <div>
-      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <Dialog fullWidth open={open} onClose={() => setOpen(false)}>
         <DialogTitle id="form-dialog-title">
           New Technical Indicator
         </DialogTitle>
-
-        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <DialogContent>
-          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <FormControl fullWidth className={styles.margin}>
             <InputLabel className={styles.labelPadding}>
               Technical Indicator
@@ -161,8 +155,7 @@ export default function IndicatorFormDialog(props) {
               variant="filled"
               autoFocus
               fullWidth
-              // @ts-expect-error TS(2339): Property 'name' does not exist on type 'never'.
-              value={currentIndicator ? currentIndicator.name : ""}
+              value={currentIndicator ? currentIndicator.name : ''}
             >
               {indicators &&
                 indicators.map((indicator) => (
@@ -178,9 +171,7 @@ export default function IndicatorFormDialog(props) {
             </Select>
           </FormControl>
 
-          // @ts-expect-error TS(2339): Property 'config' does not exist on type 'never'.
           {currentIndicator && currentIndicator.config.length !== 0 && (
-            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <React.Fragment>
               <Divider
                 variant="fullWidth"
@@ -198,20 +189,18 @@ export default function IndicatorFormDialog(props) {
           )}
 
           {currentIndicator &&
-            // @ts-expect-error TS(2339): Property 'config' does not exist on type 'never'.
             currentIndicator.config.map((data) => {
-              if (data.type === "boolean") {
+              if (data.type === 'boolean') {
                 return (
                   <Checkbox
                     key={uuid()}
-                    onChange={() => {}}
+                    // onChange={}
                     color="primary"
                     className={styles.margin}
                   />
                 );
-              } else if (data.type === "enum") {
+              } else if (data.type === 'enum') {
                 return (
-                  // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
                   <FormControl
                     key={uuid()}
                     variant="outlined"
@@ -220,9 +209,9 @@ export default function IndicatorFormDialog(props) {
                   >
                     <InputLabel
                       style={{
-                        backgroundColor: "white",
+                        backgroundColor: 'white',
                         paddingLeft: 6,
-                        paddingRight: 6,
+                        paddingRight: 6
                       }}
                     >
                       {data.name}
@@ -232,8 +221,8 @@ export default function IndicatorFormDialog(props) {
                       defaultValue={
                         // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                         currentConfig[data.name]
-                          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-                          ? currentConfig[data.name]
+                          ? // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                            currentConfig[data.name]
                           : data.defaultValue
                       }
                       onChange={({ target: { value } }) =>
@@ -248,7 +237,7 @@ export default function IndicatorFormDialog(props) {
                     </Select>
                   </FormControl>
                 );
-              } else if (data.name === "keepSignalFor") {
+              } else if (data.name === 'keepSignalFor') {
                 return null;
                 // TEMPORARILY REMOVED: TO ADD LATER ON
                 // return (
@@ -289,12 +278,12 @@ export default function IndicatorFormDialog(props) {
                     defaultValue={
                       // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                       currentConfig[data.name]
-                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-                        ? currentConfig[data.name]
+                        ? // @ts-expect-error TS(2532): Object is possibly 'undefined'.
+                          currentConfig[data.name]
                         : data.defaultValue.toString()
                     }
                     InputLabelProps={{
-                      shrink: true,
+                      shrink: true
                     }}
                   />
                 );
@@ -302,7 +291,6 @@ export default function IndicatorFormDialog(props) {
             })}
 
           {currentIndicator && (
-            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <React.Fragment>
               <Divider
                 variant="fullWidth"
@@ -323,7 +311,7 @@ export default function IndicatorFormDialog(props) {
                   <SignalsList
                     signals={buySignals}
                     setSignals={setBuySignals}
-                    type={"BUY"}
+                    type={'BUY'}
                     indicator={currentIndicator}
                   />
                 )
@@ -335,7 +323,7 @@ export default function IndicatorFormDialog(props) {
                   <SignalsList
                     signals={sellSignals}
                     setSignals={setSellSignals}
-                    type={"SELL"}
+                    type={'SELL'}
                     indicator={currentIndicator}
                   />
                 )
@@ -343,7 +331,6 @@ export default function IndicatorFormDialog(props) {
             </React.Fragment>
           )}
         </DialogContent>
-        // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
         <DialogActions>
           <Button
             onClick={() => handleCancel()}

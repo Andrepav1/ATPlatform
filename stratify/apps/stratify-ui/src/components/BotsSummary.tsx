@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 
 // import { makeStyles } from '@material-ui/core/styles';
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import { Box, Switch, TableHead, Typography } from "@material-ui/core";
-import uuid from "react-uuid";
-import Title from "./Title";
-import { createURL, fetchRequest } from "../util/network";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import { Box, Switch, TableHead, Typography } from '@material-ui/core';
+import uuid from 'react-uuid';
+import Title from './Title';
+import { createURL, fetchRequest } from '../util/network';
 
 // const useStyles = makeStyles((theme) => ({
 
@@ -17,20 +17,20 @@ import { createURL, fetchRequest } from "../util/network";
 export default function BotsSummary({ bots, setBots }) {
   const updateBot = (id, updateObj) => {
     // @ts-expect-error TS(2554): Expected 2-3 arguments, but got 1.
-    let update_bot_url = createURL("/bots/update");
+    const update_bot_url = createURL('/bots/update');
     fetchRequest({
       url: update_bot_url,
-      method: "PUT",
+      method: 'PUT',
       body: { ...updateObj, id },
       headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
+        'Content-Type': 'application/json;charset=utf-8'
+      }
     })
       .then(() => {
-        console.log("success");
+        console.log('success');
       })
       .catch((error) => {
-        console.log("fetch error", error);
+        console.log('fetch error', error);
       });
   };
 
@@ -49,13 +49,10 @@ export default function BotsSummary({ bots, setBots }) {
     return (
       <TableRow key={uuid()}>
         <TableCell align="left">
-          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Typography noWrap>{bot.name}</Typography>
         </TableCell>
         <TableCell size="small">
-          // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
           <Box display="flex" flexDirection="row-reverse">
-            // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
             <Switch
               checked={bot.live}
               onChange={() => setBotStatus(bot._id, !bot.live)}
@@ -69,10 +66,9 @@ export default function BotsSummary({ bots, setBots }) {
 
   if (!bots || bots.length === 0) {
     return (
-      // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
       <React.Fragment>
         <Title>Your bots</Title>
-        <Typography noWrap style={{ marginTop: 100, color: "#88888888" }}>
+        <Typography noWrap style={{ marginTop: 100, color: '#88888888' }}>
           Nothing here
         </Typography>
       </React.Fragment>
@@ -80,18 +76,15 @@ export default function BotsSummary({ bots, setBots }) {
   }
 
   return (
-    // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
     <React.Fragment>
       <Title>Your bots</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell align="left">
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap>Bot Name</Typography>
             </TableCell>
             <TableCell size="small" align="right">
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Typography noWrap style={{ marginRight: 16 }}>
                 Live
               </Typography>

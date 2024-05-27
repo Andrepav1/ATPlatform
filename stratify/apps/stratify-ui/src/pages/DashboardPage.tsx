@@ -1,43 +1,43 @@
-import "../App.css";
-import React, { useEffect, useState } from "react";
-import socketIOClient from "socket.io-client";
-import { connect } from "react-redux";
+import '../App.css';
+import React, { useEffect, useState } from 'react';
+import socketIOClient from 'socket.io-client';
+import { connect } from 'react-redux';
 
 // materia UI import
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Summary from "../components/Summary";
-import Activity from "../components/Activity";
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Summary from '../components/Summary';
+import Activity from '../components/Activity';
 
 // util
-import { fetchRequest, createURL } from "../util/network";
-import { SOCKET_IO_ENDPOINT } from "../util/apiConstants";
-import OpenPositions from "../components/OpenPositions";
-import BotsSummary from "../components/BotsSummary";
-import BotSummary from "../components/BotSummary";
+import { fetchRequest, createURL } from '../util/network';
+import { SOCKET_IO_ENDPOINT } from '../util/apiConstants';
+import OpenPositions from '../components/OpenPositions';
+import BotsSummary from '../components/BotsSummary';
+import BotSummary from '../components/BotSummary';
 
-const FIXED_HEIGHT = "320px";
+const FIXED_HEIGHT = '320px';
 
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   },
   paper: {
     padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column'
   },
   paperFixedHeight: {
     padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-    height: FIXED_HEIGHT,
-  },
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+    height: FIXED_HEIGHT
+  }
 }));
 
 function DashboardPage({ api_key, account_id }) {
@@ -51,9 +51,9 @@ function DashboardPage({ api_key, account_id }) {
   useEffect(() => {
     // =================================================
     // fetching summary once when visiting page
-    let summary_url = createURL("/accounts/summary", {
+    const summary_url = createURL('/accounts/summary', {
       apiKey: api_key,
-      accountId: account_id,
+      accountId: account_id
     });
     // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: summary_url })
@@ -63,14 +63,14 @@ function DashboardPage({ api_key, account_id }) {
         setSummaryData(result);
       })
       .catch((error) => {
-        console.log("fetch error", error);
+        console.log('fetch error', error);
       });
 
     // =================================================
     // fetching summary once when visiting page
-    let positions_url = createURL("/trades", {
+    const positions_url = createURL('/trades', {
       apiKey: api_key,
-      accountId: account_id,
+      accountId: account_id
     });
     // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: positions_url })
@@ -79,32 +79,32 @@ function DashboardPage({ api_key, account_id }) {
         setPositionsData(trades);
       })
       .catch((error) => {
-        console.log("fetch error", error);
+        console.log('fetch error', error);
       });
 
     // =================================================
     // fetching transactions once when visiting page
-    let transactions_url = createURL("/transactions", {
+    const transactions_url = createURL('/transactions', {
       apiKey: api_key,
-      accountId: account_id,
+      accountId: account_id
     });
     // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: transactions_url })
       .then((result) => {
         // console.log(result);
-        let transactionCount = 5;
+        const transactionCount = 5;
         // @ts-expect-error TS(2339): Property 'reverse' does not exist on type 'unknown... Remove this comment to see the full error message
         setActivityData(result.reverse().slice(0, transactionCount));
       })
       .catch((error) => {
-        console.log("fetch error", error);
+        console.log('fetch error', error);
       });
 
     // =================================================
     // fetching bots once when visiting page
-    let bots_url = createURL("/bots", {
+    const bots_url = createURL('/bots', {
       apiKey: api_key,
-      accountId: account_id,
+      accountId: account_id
     });
     // @ts-expect-error TS(2345): Argument of type '{ url: URL; }' is not assignable... Remove this comment to see the full error message
     fetchRequest({ url: bots_url })
@@ -112,49 +112,47 @@ function DashboardPage({ api_key, account_id }) {
         setBotsData(bots);
       })
       .catch((error) => {
-        console.log("fetch error", error);
+        console.log('fetch error', error);
       });
 
     // =================================================
     // socket.io data
-    // @ts-expect-error TS(2349): This expression is not callable.
     const socket = socketIOClient(SOCKET_IO_ENDPOINT, {
-      query: { apiKey: api_key, accountId: account_id },
+      query: { apiKey: api_key, accountId: account_id }
     });
 
     // keep fetching summary
-    socket.on("Summary", (data) => {
+    socket.on('Summary', (data) => {
       setSummaryData(data);
     });
 
     // keep fetching open positions
-    socket.on("OpenPositions", (data) => {
+    socket.on('OpenPositions', (data) => {
       setPositionsData(data);
     });
 
     // keep fetching open positions
-    socket.on("Bots", (data) => {
+    socket.on('Bots', (data) => {
       setBotsData(data);
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, [api_key, account_id]);
 
   return (
     <div className="Main">
       <Container maxWidth="xl" className={styles.container}>
-        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <OpenPositions positions={positionsData} />
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Summary data={summaryData} />
             </Paper>
           </Grid>
@@ -162,7 +160,6 @@ function DashboardPage({ api_key, account_id }) {
           {botsData.map((bot) => (
             <Grid item xs={12} md={6} lg={4}>
               <Paper className={styles.paperFixedHeight}>
-                // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
                 <BotSummary bot={bot} positions={positionsData} />
               </Paper>
             </Grid>
@@ -170,14 +167,12 @@ function DashboardPage({ api_key, account_id }) {
 
           <Grid item xs={12} md={6} lg={4}>
             <Paper className={styles.paperFixedHeight}>
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <BotsSummary bots={botsData} setBots={setBotsData} />
             </Paper>
           </Grid>
 
           <Grid item xs={12} md={12} lg={8}>
             <Paper className={styles.paperFixedHeight}>
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactNod... Remove this comment to see the full error message
               <Activity data={activityData} title="Recent Activity" />
             </Paper>
           </Grid>

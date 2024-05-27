@@ -7,30 +7,33 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
-} from "@material-ui/core";
-import React from "react";
-import { BUY_GREEN, SELL_RED } from "../util/colors";
-import { comparisons } from "../util/apiConstants";
-import uuid from "react-uuid";
+  Typography
+} from '@material-ui/core';
+import React from 'react';
+import { BUY_GREEN, SELL_RED } from '../util/colors';
+import { comparisons } from '../util/apiConstants';
+import uuid from 'react-uuid';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(3)
   },
   marginHorizontal: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   textField: {
-    width: 60,
+    width: 60
   },
+  noSignals: {
+    // some components using this even when it wasn't defined ?
+  }
 }));
 
 export default function SignalsList({
   signals,
   setSignals,
   type,
-  indicator: { components },
+  indicator: { components }
 }) {
   const styles = useStyles();
 
@@ -47,13 +50,13 @@ export default function SignalsList({
         a: components[0],
         b: components[1],
         bN: 0,
-        comparison: 0,
-      },
+        comparison: 0
+      }
     ]);
   };
 
   const handleSignalChange = (signalId, key, value) => {
-    let newSignals = [...signals];
+    const newSignals = [...signals];
     for (let i = 0; i < newSignals.length; i++) {
       if (newSignals[i].id === signalId) {
         newSignals[i][key] = value;
@@ -71,13 +74,13 @@ export default function SignalsList({
             variant="standard"
             value={signal.a}
             onChange={({ target: { value } }) =>
-              handleSignalChange(signal.id, "a", value)
+              handleSignalChange(signal.id, 'a', value)
             }
           >
             {
               // Allow all components apart from number
               components.map((comp) =>
-                comp !== "number" && comp !== "price" ? (
+                comp !== 'number' && comp !== 'price' ? (
                   <MenuItem key={uuid()} value={comp}>
                     {comp}
                   </MenuItem>
@@ -93,7 +96,7 @@ export default function SignalsList({
             variant="standard"
             value={signal.comparison}
             onChange={({ target: { value } }) =>
-              handleSignalChange(signal.id, "comparison", value)
+              handleSignalChange(signal.id, 'comparison', value)
             }
           >
             <MenuItem value={comparisons.LESS_THAN}>Less than</MenuItem>
@@ -111,7 +114,7 @@ export default function SignalsList({
             variant="standard"
             value={signal.b}
             onChange={({ target: { value } }) =>
-              handleSignalChange(signal.id, "b", value)
+              handleSignalChange(signal.id, 'b', value)
             }
           >
             {components.map((comp) => (
@@ -122,14 +125,14 @@ export default function SignalsList({
           </Select>
         </FormControl>
 
-        {signal.b === "number" && (
+        {signal.b === 'number' && (
           <FormControl variant="standard" className={styles.textField}>
             // @ts-expect-error TS(2769): No overload matches this call.
             <TextField
               type="number"
               value={signal.bN}
               onChange={({ target: { value } }) =>
-                handleSignalChange(signal.id, "bN", value)
+                handleSignalChange(signal.id, 'bN', value)
               }
             />
           </FormControl>
@@ -140,7 +143,7 @@ export default function SignalsList({
           color="secondary"
           onClick={() => handleRemoveSignal(signal.id)}
         >
-          {"x"}
+          {'x'}
         </Button>
       </Grid>
     );
@@ -149,23 +152,21 @@ export default function SignalsList({
   if (signals.length === 0) {
     return (
       <Container className={styles.container}>
-        // @ts-expect-error TS(2769): No overload matches this call.
         <Grid container justify="space-between">
           <Grid>
-            // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
             <Typography className={styles.noSignals}>
               <b
                 style={{
-                  backgroundColor: type === "BUY" ? BUY_GREEN : SELL_RED,
+                  backgroundColor: type === 'BUY' ? BUY_GREEN : SELL_RED,
                   padding: 6,
                   borderRadius: 4,
-                  color: "white",
-                  fontSize: 14,
+                  color: 'white',
+                  fontSize: 14
                 }}
               >
                 {type}
               </b>
-              {" Signal"}
+              {' Signal'}
             </Typography>
           </Grid>
           <Grid>
@@ -174,7 +175,7 @@ export default function SignalsList({
               color="primary"
               onClick={() => handleAddSignal()}
             >
-              {"+ New"}
+              {'+ New'}
             </Button>
           </Grid>
         </Grid>
@@ -183,24 +184,22 @@ export default function SignalsList({
   }
 
   return (
-    // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
     <Container className={styles.container}>
       <Grid container justify="space-between">
         <Grid>
-          // @ts-expect-error TS(2746): This JSX tag's 'children' prop expects a single ch... Remove this comment to see the full error message
           <Typography className={styles.noSignals}>
             <b
               style={{
-                backgroundColor: type === "BUY" ? BUY_GREEN : SELL_RED,
+                backgroundColor: type === 'BUY' ? BUY_GREEN : SELL_RED,
                 padding: 6,
                 borderRadius: 4,
-                color: "white",
-                fontSize: 14,
+                color: 'white',
+                fontSize: 14
               }}
             >
               {type}
             </b>
-            {" when:"}
+            {' when:'}
           </Typography>
         </Grid>
         <Grid>
@@ -209,7 +208,7 @@ export default function SignalsList({
             color="primary"
             onClick={() => handleAddSignal()}
           >
-            {"+ New"}
+            {'+ New'}
           </Button>
         </Grid>
       </Grid>

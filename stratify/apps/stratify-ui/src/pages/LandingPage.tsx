@@ -1,67 +1,67 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { BASE_URL } from "../util/apiConstants";
-import { fetchRequest } from "../util/network";
+import { BASE_URL } from '../util/apiConstants';
+import { fetchRequest } from '../util/network';
 
-import "../App.css";
+import '../App.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
+    height: '100vh'
   },
   image: {
-    backgroundImage: "url(https://miro.medium.com/max/3200/0*wUbJjPFh9sUc7HxK)",
-    backgroundRepeat: "no-repeat",
+    backgroundImage: 'url(https://miro.medium.com/max/3200/0*wUbJjPFh9sUc7HxK)',
+    backgroundRepeat: 'no-repeat',
     backgroundColor:
-      theme.palette.type === "light"
+      theme.palette.type === 'light'
         ? theme.palette.grey[50]
         : theme.palette.grey[900],
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
   },
   paper: {
     margin: theme.spacing(8, 4),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: theme.palette.primary.dark
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(1, 0, 6),
-  },
+    margin: theme.spacing(1, 0, 6)
+  }
 }));
 
-const ACCOUNTS_URL = BASE_URL + "/accounts";
-const LOGIN_URL = BASE_URL + "/auth/login";
+const ACCOUNTS_URL = BASE_URL + '/accounts';
+const LOGIN_URL = BASE_URL + '/auth/login';
 
 function LandingPage({ login }) {
   const styles = useStyles();
 
-  const [api_key, setApi_key] = useState("");
-  const [account_id, setAccount_id] = useState("");
-  const [account_id_alias, setAccount_id_alias] = useState("");
+  const [api_key, setApi_key] = useState('');
+  const [account_id, setAccount_id] = useState('');
+  const [account_id_alias, setAccount_id_alias] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [textFieldDisabled, setTextFieldDisabled] = useState(false);
   const [demoAccountChecked, setDemoAccountChecked] = useState(true);
@@ -80,32 +80,32 @@ function LandingPage({ login }) {
   const authenticate = () => {
     fetchRequest({
       url: LOGIN_URL,
-      method: "POST",
+      method: 'POST',
       body: {
         apiKey: api_key,
         accountId: account_id,
-        live: !demoAccountChecked,
+        live: !demoAccountChecked
       },
       headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
+        'Content-Type': 'application/json;charset=utf-8'
+      }
     })
       .then(() => {
         login(api_key, account_id, !demoAccountChecked);
       })
       .catch((error) => {
         alert(
-          error.errorMessage ? error.errorMessage : "Could not use API KEY"
+          error.errorMessage ? error.errorMessage : 'Could not use API KEY'
         );
       });
   };
 
   const requestAccounts = () => {
-    var acc_url = new URL(ACCOUNTS_URL);
+    const acc_url = new URL(ACCOUNTS_URL);
     // @ts-expect-error TS(2322): Type 'URLSearchParams' is not assignable to type '... Remove this comment to see the full error message
     acc_url.search = new URLSearchParams({
       apiKey: api_key,
-      live: !demoAccountChecked,
+      live: !demoAccountChecked
     });
 
     // @ts-expect-error TS(2345): Argument of type '{ url: string; }' is not assigna... Remove this comment to see the full error message
@@ -113,7 +113,7 @@ function LandingPage({ login }) {
       .then(({ accounts }) => {
         if (accounts.lenght === 0) {
           setAccounts([]);
-          alert("Could not use API KEY");
+          alert('Could not use API KEY');
         } else if (accounts.length === 1) {
           setAccount_id(accounts[0].id);
           setAccount_id_alias(accounts[0].alias);
@@ -129,7 +129,7 @@ function LandingPage({ login }) {
       .catch((error) => {
         setAccounts([]);
         alert(
-          error.errorMessage ? error.errorMessage : "Could not use API KEY"
+          error.errorMessage ? error.errorMessage : 'Could not use API KEY'
         );
       });
   };
@@ -161,7 +161,6 @@ function LandingPage({ login }) {
               onChange={(event) => setApi_key(event.target.value)}
             />
             <FormControlLabel
-              // @ts-expect-error TS(2322): Type 'Element' is not assignable to type 'ReactEle... Remove this comment to see the full error message
               control={
                 <Checkbox
                   disabled={textFieldDisabled}
@@ -191,11 +190,11 @@ function LandingPage({ login }) {
                   aria-haspopup="true"
                   onClick={handleClick}
                 >
-                  {"Selected Account: " +
+                  {'Selected Account: ' +
                     account_id +
-                    " (" +
+                    ' (' +
                     account_id_alias +
-                    ")"}
+                    ')'}
                 </Button>
                 <Menu
                   variant="selectedMenu"
@@ -203,10 +202,12 @@ function LandingPage({ login }) {
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                 >
-                  // @ts-expect-error TS(2322): Type 'Element[]' is not assignable to type 'ReactN... Remove this comment to see the full error message
+                  // @ts-expect-error TS(2322): Type 'Element[]' is not
+                  assignable to type 'ReactN... Remove this comment to see the
+                  full error message
                   {accounts.map((account) => (
                     <MenuItem onClick={() => handleSelect(account)}>
-                      {account.id + " (" + account.alias + ")"}
+                      {account.id + ' (' + account.alias + ')'}
                     </MenuItem>
                   ))}
                 </Menu>
@@ -232,9 +233,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (api_key, account_id, live) =>
       dispatch({
-        type: "LOGIN",
-        payload: { api_key, account_id, live },
-      }),
+        type: 'LOGIN',
+        payload: { api_key, account_id, live }
+      })
   };
 };
 

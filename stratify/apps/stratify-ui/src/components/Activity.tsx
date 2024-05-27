@@ -28,7 +28,7 @@ export default function Activity({
   full,
   changePageHandler,
   currentPage,
-}) {
+}: any) {
   const styles = useStyles();
 
   const getType = (type) => {
