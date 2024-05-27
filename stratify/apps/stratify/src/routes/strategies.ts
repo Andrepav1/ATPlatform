@@ -23,25 +23,23 @@ router.get('/', (req, res, next) => {
 // delete strategy
 router.delete('/', (req, res, next) => {
   const strategyId = req.query.id;
-  Strategy.findByIdAndRemove(strategyId, {}, (error, strategy) => {
-    if (error) return res.json({ error });
-    res.json({ strategy });
+  Strategy.findByIdAndDelete(strategyId, {}).then((value) => {
+    res.json({ strategy: value });
   });
 });
 
 // create strategy
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { strategy } = req.body;
 
   // Create an instance of model
-  var strategy_instance = new Strategy(strategy);
+  const strategy_instance = new Strategy(strategy);
 
   // Save the new model instance, passing a callback
-  strategy_instance.save((error, strategy) => {
-    if (error) return res.json({ error });
-    console.log('strategy saved');
-    res.json({ strategy });
-  });
+  const saved = await strategy_instance.save();
+
+  console.log('strategy saved');
+  res.json({ strategy: saved });
 });
 
 router.patch('/', (req, res, next) => {

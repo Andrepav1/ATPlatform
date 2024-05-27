@@ -1,6 +1,6 @@
 import { calculateBots } from '../util/bots';
 
-const cron = require('node-cron');
+import cron from 'node-cron';
 
 // const streamInstrument = async (instruments) => {
 

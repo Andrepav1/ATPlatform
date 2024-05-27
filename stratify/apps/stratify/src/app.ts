@@ -3,8 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
 import fx from 'simple-fxtrade';
-
-require('dotenv').config();
+import 'dotenv/config';
 
 // routes import
 import indexRouter from './routes/index';
@@ -33,7 +32,7 @@ fx.configure({
 // =========================================================================
 
 // middleware
-var app = express();
+const app = express();
 
 app.use(cors());
 app.use(logger('dev'));

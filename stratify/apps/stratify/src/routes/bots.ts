@@ -18,23 +18,25 @@ router.get('/', (req, res, next) => {
 });
 
 // get single bot
-router.get('/', (req, res, next) => {});
+router.get('/', (req, res, next) => {
+  return null;
+});
 
 // delete bot
-router.delete('/', (req, res, next) => {});
+router.delete('/', (req, res, next) => {
+  return null;
+});
 
 // create bot
 router.post('/', (req, res, next) => {
   const { bot } = req.body;
 
   // Create an instance of model
-  var bot_instance = new Bot(bot);
+  const bot_instance = new Bot(bot);
 
   // Save the new model instance, passing a callback
-  bot_instance.save((error) => {
-    if (error) return res.json({ error });
+  bot_instance.save().then((bot) => {
     console.log('bot saved');
-
     res.json({ bot });
   });
 });

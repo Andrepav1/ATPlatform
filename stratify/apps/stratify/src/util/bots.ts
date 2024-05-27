@@ -1,15 +1,15 @@
-import { Bot } from "../models/bot";
-import { Signal } from "./constants";
-import { getInstruments, getInstrumentUnits } from "./instruments";
-import { placeOrder } from "./orders";
-import { getTrades, closeTrade } from "./trades";
+import { Bot } from '../models/bot';
+import { Signal } from './constants';
+import { getInstruments, getInstrumentUnits } from './instruments';
+import { placeOrder } from './orders';
+import { getTrades, closeTrade } from './trades';
 import {
   extractInputData,
   getIndicatorValues,
   getIndicatorSignal
-} from "./technical-indicator";
+} from './technical-indicator';
 
-import { sendMail } from "../mailer";
+import { sendMail } from '../mailer';
 
 // Calculates a buy/sell/neutral signal for each of the indicators
 // and use them together to produce a single signal for the given instrument
@@ -18,13 +18,13 @@ export const getInstrumentSignal = (strategy, candles) => {
   let sellTriggers = 0;
 
   // prices from oldest to newest
-  let prices = extractInputData(candles, ["values"]).values;
+  const prices = extractInputData(candles, ['values']).values;
 
   strategy.indicators.forEach((indicator) => {
-    let tiValues = getIndicatorValues(indicator, candles);
+    const tiValues = getIndicatorValues(indicator, candles);
 
     try {
-      let signal = getIndicatorSignal(indicator, tiValues, prices);
+      const signal = getIndicatorSignal(indicator, tiValues, prices);
 
       switch (signal) {
         case Signal.BUY:
@@ -63,7 +63,7 @@ export const calculateBot = async (bot) => {
   const { activeStrategy, chartPeriod, instruments, userAPIkey } = bot;
 
   try {
-    let instrumentsData = await getInstruments(instruments, chartPeriod);
+    const instrumentsData = await getInstruments(instruments, chartPeriod);
 
     instrumentsData.forEach(({ candles, instrument }) => {
       // removing last candle if it is not complete
@@ -72,12 +72,12 @@ export const calculateBot = async (bot) => {
       }
 
       // Get instrument signal
-      let instrumentSignal = getInstrumentSignal(activeStrategy, candles);
+      const instrumentSignal = getInstrumentSignal(activeStrategy, candles);
 
       let units;
       switch (instrumentSignal) {
         case Signal.BUY:
-          console.log("[" + instrument + "] BUY SIGNAL!! TO THE MOON!!!");
+          console.log('[' + instrument + '] BUY SIGNAL!! TO THE MOON!!!');
           units = getInstrumentUnits(
             instrument,
             parseFloat(activeStrategy.lotSize)
@@ -86,7 +86,7 @@ export const calculateBot = async (bot) => {
           placeStrategyOrder(instrument, units, bot); // place order, following trading policy
           break;
         case Signal.SELL:
-          console.log("[" + instrument + "] SELL SIGNAL!!");
+          console.log('[' + instrument + '] SELL SIGNAL!!');
           units = getInstrumentUnits(
             instrument,
             -parseFloat(activeStrategy.lotSize)
@@ -95,7 +95,7 @@ export const calculateBot = async (bot) => {
           placeStrategyOrder(instrument, units, bot);
           break;
         case Signal.NEUTRAL:
-          console.log("[" + instrument + "] NO SIGNAL");
+          console.log('[' + instrument + '] NO SIGNAL');
           // WHAT TO DO HERE DEPENDS ON THE POLICY
           break;
         default:
@@ -108,9 +108,9 @@ export const calculateBot = async (bot) => {
 };
 
 export const calculateBots = async (chartPeriod) => {
-  let now = new Date(Date.now());
+  const now = new Date(Date.now());
   console.log(
-    "[" + now.getHours() + ":" + now.getMinutes() + "] " + chartPeriod + " Bots"
+    '[' + now.getHours() + ':' + now.getMinutes() + '] ' + chartPeriod + ' Bots'
   );
 
   try {
@@ -118,7 +118,7 @@ export const calculateBots = async (chartPeriod) => {
     const bots = await getBots({ chartPeriod, live: true });
 
     bots.forEach((bot) => {
-      console.log("[BOT] " + bot.name);
+      console.log('[BOT] ' + bot.name);
       calculateBot(bot);
     });
   } catch (error) {
@@ -137,11 +137,15 @@ const placeStrategyOrder = async (instrument, units, bot) => {
 
   try {
     // Get BOT opened position
-    let { trades } = await getTrades();
-    let botPositions = filterBotPositions(trades, openedPositions, instrument);
+    const { trades } = await getTrades();
+    const botPositions = filterBotPositions(
+      trades,
+      openedPositions,
+      instrument
+    );
 
     let closedTrade;
-    let closedPositions = [];
+    const closedPositions = [];
     for (let i = 0; i < botPositions.length; i++) {
       if (botPositions[i].currentUnits >= 0 && units < 0) {
         // opened position is BUY, new order is SELL
@@ -170,7 +174,7 @@ const placeStrategyOrder = async (instrument, units, bot) => {
     }
 
     // round to 2 decimal places
-    let decimalPlaces = 2;
+    const decimalPlaces = 2;
     newPerformance =
       Math.round(
         (newPerformance + Number.EPSILON) * Math.pow(10, decimalPlaces)
@@ -186,7 +190,7 @@ const placeStrategyOrder = async (instrument, units, bot) => {
 };
 
 export const getBots = async (params = {}): Promise<any[]> => {
-  return await Bot.find(params).populate("activeStrategy");
+  return await Bot.find(params).populate('activeStrategy');
 };
 
 const pushNewOpenedPosition = (botId, positionId) => {
@@ -194,7 +198,6 @@ const pushNewOpenedPosition = (botId, positionId) => {
     Bot.findByIdAndUpdate(
       botId,
       { $push: { openedPositions: positionId } },
-      null,
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -208,7 +211,6 @@ const updateBotPerformance = (botId, variance) => {
     Bot.findByIdAndUpdate(
       botId,
       { $inc: { performance: variance } },
-      null,
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -219,7 +221,7 @@ const updateBotPerformance = (botId, variance) => {
 
 export const updateBot = (id, updateObj) => {
   return new Promise((resolve, reject) => {
-    Bot.findByIdAndUpdate(id, { $set: updateObj }, null, (error, result) => {
+    Bot.findByIdAndUpdate(id, { $set: updateObj }, (error, result) => {
       if (error) return reject(error);
       resolve(result);
     });

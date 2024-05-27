@@ -1,4 +1,4 @@
-import { User } from "../models/user";
+import { User } from '../models/user';
 
 export const getUserByApiKey = (api_key): any => {
   return new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ export const getUserByApiKey = (api_key): any => {
 
 export const updateUser = (api_key, updateObj) => {
   return new Promise((resolve, reject) => {
-    User.updateOne({ api_key }, updateObj, {}, (error, result) => {
+    User.updateOne({ api_key }, updateObj, (error, result) => {
       if (error) return reject(error);
       resolve(result);
     });

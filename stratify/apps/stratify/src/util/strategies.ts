@@ -5,7 +5,6 @@ export const pushNewIndicator = (strategyId, indicator) => {
     Strategy.findByIdAndUpdate(
       strategyId,
       { $push: { indicators: indicator } },
-      null,
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -16,7 +15,7 @@ export const pushNewIndicator = (strategyId, indicator) => {
 
 export const updateStrategy = (strategy) => {
   return new Promise((resolve, reject) => {
-    Strategy.findByIdAndUpdate(strategy._id, strategy, null, (error) => {
+    Strategy.findByIdAndUpdate(strategy._id, strategy, (error) => {
       if (error) return reject(error);
       resolve(null);
     });
